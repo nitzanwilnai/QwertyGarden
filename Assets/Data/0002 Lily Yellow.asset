@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0002 Lily Yellow
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 68e990ae1d8704ad7b124147149c47b2, type: 3}
+  FlowerCard: {fileID: 21300000, guid: c92fbf2e6467e4b7ab3c5e95cec99a2b, type: 3}
+  Name: Lily Yellow
+  Cost: 0
