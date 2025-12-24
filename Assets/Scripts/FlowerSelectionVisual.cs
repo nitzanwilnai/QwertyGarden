@@ -13,10 +13,16 @@ public class FlowerSelectionVisual
     Transform m_keyboardParent;
 
     KeyboardData keyboardData;
-    int m_keyboardIndex;
+    GameData gameData;
+    MetaData metaData;
+    Balance balance;
 
-    public void Init(GameObject UI)
+    public void Init(GameObject UI, MetaData metaData, GameData gameData, Balance balance)
     {
+        this.metaData = metaData;
+        this.gameData = gameData;
+        this.balance = balance;
+
         m_UI = UI;
         m_UI.SetActive(false);
 
@@ -24,15 +30,21 @@ public class FlowerSelectionVisual
         m_keyboardParent = guiRef.GetGameObject("Keyboard").transform;
     }
 
-    public void Show(KeyboardData keyboardData, int keyboardIndex)
+    public void Show(KeyboardData keyboardData)
     {
         this.keyboardData = keyboardData;
-        m_keyboardIndex = keyboardIndex;
         m_UI.SetActive(true);
         m_keyboardImage = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
         m_keyboardImage.transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
         m_keyboardImage.transform.localPosition = Vector3.zero;
         m_keyboardImage.transform.SetAsFirstSibling();
+
+        for (int keyIndex = 0; keyIndex < 26; keyIndex++)
+        {
+            int flowerIndex = keyboardData.FlowerIndex[keyIndex];
+            m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerCard;
+
+        }
     }
 
     public void Hide()
@@ -47,7 +59,8 @@ public class FlowerSelectionVisual
         {
             if (Keyboard.current.enterKey.wasReleasedThisFrame)
             {
-                KeyboardDataIO.SaveKeyboard(keyboardData, m_keyboardIndex);
+                CozyLogic.StartCozy(keyboardData, gameData, balance);
+                KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
                 Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
             }
             if (Keyboard.current.escapeKey.wasReleasedThisFrame)
@@ -61,7 +74,7 @@ public class FlowerSelectionVisual
             {
                 keyboardData.FlowerIndex[keyIndex] = (keyboardData.FlowerIndex[keyIndex] + 1) % AssetManager.Instance.Flowers.Length;
                 int flowerIndex = keyboardData.FlowerIndex[keyIndex];
-                Debug.Log("keyboardData.FlowerIndex["+keyIndex+"] " + keyboardData.FlowerIndex[keyIndex] + " m_keyboardImages.KeyImages["+keyIndex+"].name " + m_keyboardImage.KeyImages[keyIndex] + " changes to sprite AssetManager.Instance.Flowers["+flowerIndex+"].FlowerCard " + AssetManager.Instance.Flowers[flowerIndex].FlowerCard);
+                Debug.Log("keyboardData.FlowerIndex[" + keyIndex + "] " + keyboardData.FlowerIndex[keyIndex] + " m_keyboardImages.KeyImages[" + keyIndex + "].name " + m_keyboardImage.KeyImages[keyIndex] + " changes to sprite AssetManager.Instance.Flowers[" + flowerIndex + "].FlowerCard " + AssetManager.Instance.Flowers[flowerIndex].FlowerCard);
                 m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerCard;
             }
         }

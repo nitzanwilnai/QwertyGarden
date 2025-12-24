@@ -65,8 +65,8 @@ public class GardenSelectionVisual
                 for (int keyIndex = 0; keyIndex < 26; keyIndex++)
                 {
                     int flowerIndex = m_keyboardDatas[m_keyboardCount].FlowerIndex[keyIndex];
-                    m_keyboardImages[m_keyboardCount].KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerCard;
-
+                    int progress = m_keyboardDatas[m_keyboardCount].FlowerProgress[keyIndex];
+                    m_keyboardImages[m_keyboardCount].KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerPrefab.Sprites[progress];
                 }
 
                 m_keyboardCount++;
@@ -107,8 +107,15 @@ public class GardenSelectionVisual
         {
             if (Keyboard.current.enterKey.wasReleasedThisFrame)
             {
-                Game.Instance.LoadKeyboard(m_keyboardIndex);
-                Game.Instance.SetMenuState(MENU_STATE.FLOWER_SELECTION);
+                if (m_keyboardIndex < m_keyboardCount)
+                {
+                    Game.Instance.LoadKeyboard(m_keyboardIndex);
+                    Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                }
+                else
+                {
+                    Game.Instance.SetMenuState(MENU_STATE.KEYBOARD_SELECTION);
+                }
             }
             if (Keyboard.current.escapeKey.wasReleasedThisFrame)
             {

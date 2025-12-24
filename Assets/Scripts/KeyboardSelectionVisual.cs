@@ -14,13 +14,13 @@ public class KeyboardSelectionVisual
     KeyboardImages[] m_keyboardImages;
     KeyboardData[] m_keyboardDatas;
     GameObject[] m_keyboardSelectionBox;
-    GameObject m_newKeyboardGO;
-    int m_keyboardCount;
-    int m_keyboardIndex = 0;
+    int m_keyboardType = 0;
 
     public float m_currentX;
     public float m_targetX;
 
+    KeyboardData keyboardData;
+    MetaData metaData;
     Balance balance;
 
     public void Init(GameObject UI, Balance balance)
@@ -31,7 +31,6 @@ public class KeyboardSelectionVisual
         m_UI.SetActive(false);
 
         GUIRef guiRef = m_UI.GetComponent<GUIRef>();
-        m_newKeyboardGO = guiRef.GetGameObject("NewKeyboard");
         m_keyboardParent = guiRef.GetGameObject("KeyboardParent").transform;
 
         m_keyboardSelectionBox = new GameObject[balance.MaxKeyboards];
@@ -41,40 +40,27 @@ public class KeyboardSelectionVisual
             m_keyboardDatas[i] = new KeyboardData();
     }
 
-    public void Show()
+    public void Show(KeyboardData keyboardData, MetaData metaData)
     {
+        this.keyboardData = keyboardData;
+        this.metaData = metaData;
+
         m_UI.SetActive(true);
 
-        m_keyboardCount = 0;
-        for (int i = 0; i < balance.MaxKeyboards; i++)
-            if (KeyboardDataIO.KeyboardDataExists(i))
-            {
-                KeyboardLogic.InitKeyboardData(m_keyboardDatas[m_keyboardCount]);
-                KeyboardDataIO.LoadKeyboard(m_keyboardDatas[m_keyboardCount], i);
+        for (int keyboardType = 0; keyboardType < AssetManager.Instance.KeyboardImages.Length; keyboardType++)
+        {
+            GameObject keyboardSelectionBox = GameObject.Instantiate(AssetManager.Instance.KeyboardSelectionBox, m_keyboardParent);
+            keyboardSelectionBox.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            keyboardSelectionBox.transform.localPosition = new Vector3(keyboardType * m_keyboardOffset, 0.0f, 0.0f);
+            m_keyboardSelectionBox[keyboardType] = keyboardSelectionBox;
 
-                GameObject keyboardSelectionBox = GameObject.Instantiate(AssetManager.Instance.KeyboardSelectionBox, m_keyboardParent);
-                keyboardSelectionBox.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                keyboardSelectionBox.transform.localPosition = new Vector3(m_keyboardCount * m_keyboardOffset, 0.0f, 0.0f);
-                m_keyboardSelectionBox[m_keyboardCount] = keyboardSelectionBox;
+            m_keyboardImages[keyboardType] = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardType], keyboardSelectionBox.transform);
+            m_keyboardImages[keyboardType].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            m_keyboardImages[keyboardType].transform.localPosition = Vector3.zero;
+            m_keyboardImages[keyboardType].transform.SetAsFirstSibling();
+        }
 
-                m_keyboardImages[m_keyboardCount] = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[m_keyboardDatas[m_keyboardCount].KeyboardType], keyboardSelectionBox.transform);
-                m_keyboardImages[m_keyboardCount].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                m_keyboardImages[m_keyboardCount].transform.localPosition = Vector3.zero;
-                m_keyboardImages[m_keyboardCount].transform.SetAsFirstSibling();
-
-                for (int keyIndex = 0; keyIndex < 26; keyIndex++)
-                {
-                    int flowerIndex = m_keyboardDatas[m_keyboardCount].FlowerIndex[keyIndex];
-                    m_keyboardImages[m_keyboardCount].KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerCard;
-
-                }
-
-                m_keyboardCount++;
-            }
-
-        m_newKeyboardGO.transform.localPosition = new Vector3(m_keyboardCount * m_keyboardOffset, 0.0f, 0.0f);
-
-        m_keyboardIndex = 0;
+        m_keyboardType = 0;
 
     }
 
@@ -82,9 +68,8 @@ public class KeyboardSelectionVisual
     {
         m_UI.SetActive(false);
 
-        for (int i = 0; i < m_keyboardCount; i++)
-            GameObject.Destroy(m_keyboardImages[i]);
-        m_keyboardCount = 0;
+        for (int keyboardIdx = 0; keyboardIdx < AssetManager.Instance.KeyboardImages.Length; keyboardIdx++)
+            GameObject.Destroy(m_keyboardImages[keyboardIdx]);
     }
 
     public void Tick(float dt)
@@ -107,27 +92,27 @@ public class KeyboardSelectionVisual
         {
             if (Keyboard.current.enterKey.wasReleasedThisFrame)
             {
-                Game.Instance.LoadKeyboard(m_keyboardIndex);
+                keyboardData.KeyboardType = m_keyboardType;
                 Game.Instance.SetMenuState(MENU_STATE.FLOWER_SELECTION);
             }
             if (Keyboard.current.escapeKey.wasReleasedThisFrame)
             {
-                Game.Instance.SetMenuState(MENU_STATE.MAIN_MENU);
+                Game.Instance.SetMenuState(MENU_STATE.GARDEN_SELECTION);
             }
             if (Keyboard.current.leftArrowKey.wasReleasedThisFrame)
             {
-                if (m_keyboardIndex > 0)
+                if (m_keyboardType > 0)
                 {
-                    m_keyboardIndex--;
-                    m_targetX = m_keyboardIndex * -m_keyboardOffset;
+                    m_keyboardType--;
+                    m_targetX = m_keyboardType * -m_keyboardOffset;
                 }
             }
             if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
             {
-                if (m_keyboardIndex < m_keyboardCount)
+                if (m_keyboardType < AssetManager.Instance.KeyboardImages.Length - 1)
                 {
-                    m_keyboardIndex++;
-                    m_targetX = m_keyboardIndex * -m_keyboardOffset;
+                    m_keyboardType++;
+                    m_targetX = m_keyboardType * -m_keyboardOffset;
                 }
             }
 

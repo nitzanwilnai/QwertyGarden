@@ -4,7 +4,7 @@ namespace QwertyGarden
 {
     public static class CozyLogic
     {
-        public static void StartGame(KeyboardData keyboardData, GameData gameData, Balance balance)
+        public static void StartCozy(KeyboardData keyboardData, GameData gameData, Balance balance)
         {
             KeyboardLogic.StartGame(keyboardData);
 

@@ -17,15 +17,18 @@ namespace QwertyGarden
             using (BinaryWriter bw = new BinaryWriter(fs))
             {
                 bw.Write(keyboardData.KeyboardType);
-                bw.Write(keyboardData.FlowerIndex.Length);
-                for (int i = 0; i < keyboardData.FlowerIndex.Length; i++)
+                bw.Write(26);
+                for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.FlowerIndex[i]);
-                for (int i = 0; i < keyboardData.CharacterCount.Length; i++)
+                for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.CharacterCount[i]);
-                for (int i = 0; i < keyboardData.FlowerProgress.Length; i++)
+                for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.FlowerProgress[i]);
+
                 bw.Write(keyboardData.TypedWord);
                 bw.Write(keyboardData.WrongCount);
+
+                bw.Write(1234567);
             }
         }
 
@@ -46,20 +49,21 @@ namespace QwertyGarden
                     {
                         keyboardData.KeyboardType = br.ReadInt32();
 
-                        int numFlowerIndices = br.ReadInt32();
-                        for (int i = 0; i < numFlowerIndices; i++)
+                        int maxFlowers = br.ReadInt32();
+                        for (int i = 0; i < maxFlowers; i++)
                             keyboardData.FlowerIndex[i] = br.ReadInt32();
 
-                        int numCharacterCount = br.ReadInt32();
-                        for (int i = 0; i < numCharacterCount; i++)
+                        for (int i = 0; i < maxFlowers; i++)
                             keyboardData.CharacterCount[i] = br.ReadInt32();
 
-                        int numFlowerProgress = br.ReadInt32();
-                        for (int i = 0; i < numFlowerProgress; i++)
+                        for (int i = 0; i < maxFlowers; i++)
                             keyboardData.FlowerProgress[i] = br.ReadInt32();
 
                         keyboardData.TypedWord = br.ReadString();
                         keyboardData.WrongCount = br.ReadInt32();
+
+                        int magic = br.ReadInt32();
+                        Debug.Log("LoadKeyboard(" + index + ") magic " + magic);
                     }
                 }
             }

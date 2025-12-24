@@ -9,5 +9,6 @@ namespace QwertyGarden
         public int Coins;
         public GAME_TYPE GameType;
         public MENU_STATE MenuState;
+        public int KeyboardIndex;
     }
 }

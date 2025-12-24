@@ -160,12 +160,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a10885445311e4970a50fa61a9ba8ce1, type: 2}
   KeyboardImages:
   - {fileID: 4327311637543791227, guid: 326a9281f4726457a93644f0a4339177, type: 3}
+  - {fileID: 4327311637543791227, guid: 609d0b469e66d4dbd825f680aa9623f4, type: 3}
   KeyboardSelectionBox: {fileID: 5760576646857754906, guid: 630617642d1594f0097d24f73ec3ac5a, type: 3}
   KeyboardRefs:
   - {fileID: 4015376963301545194, guid: 30bf14bd7544c4c3982f73b312b0df57, type: 3}
-  KeyboardsTest:
-  - {fileID: 4015376963301545194, guid: 30bf14bd7544c4c3982f73b312b0df57, type: 3}
-  TESTTEST: {fileID: 4015376963301545194, guid: 30bf14bd7544c4c3982f73b312b0df57, type: 3}
+  - {fileID: 4015376963301545194, guid: dc016177766da4120ac25fd6a4a42bfa, type: 3}
 --- !u!4 &147465293
 Transform:
   m_ObjectHideFlags: 0
@@ -376,6 +375,145 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7769472392672322228, guid: 2a6e79ee080464d8aac3e052e6216521, type: 3}
   m_PrefabInstance: {fileID: 3751932886897249139}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1116032684 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1783972733671701091, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+  m_PrefabInstance: {fileID: 1200601193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1200601193
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 362112691762049319, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1327426585247046037, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_text
+      value: Choose a keyboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783972733671701091, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_Name
+      value: UI - Keyboard Selection
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783972733671701091, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734426625464107149, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: GUIRefGameObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734426625464107149, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: GUIRefGameObjects.Array.data[0].Name
+      value: KeyboardParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734426625464107149, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: GUIRefGameObjects.Array.data[1].Name
+      value: NewKeyboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734426625464107149, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: GUIRefGameObjects.Array.data[0].Value
+      value: 
+      objectReference: {fileID: 1902318785}
+    - target: {fileID: 6734426625464107149, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: GUIRefGameObjects.Array.data[1].Value
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8294474209233986054, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_text
+      value: Press ENTER to choose this keyboard
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 362112691762049319, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
 --- !u!1 &1394245867
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,6 +635,8 @@ MonoBehaviour:
   UIMainMenu: {fileID: 511921252}
   UIKeyboadSelection: {fileID: 120193827}
   UIFlowerSelection: {fileID: 926926446}
+  UIGardenSelection: {fileID: 120193827}
+  UIKeyboardSelection: {fileID: 1116032684}
 --- !u!4 &1562477364
 Transform:
   m_ObjectHideFlags: 0
@@ -562,33 +702,6 @@ MonoBehaviour:
   WordSlideSpeed: 20
   WordSlideLimit: 9
   SpriteParent: {fileID: 351318461}
-  LettersGO:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   UI: {fileID: 461569026}
   Words: []
   FlowerPrefab: {fileID: 2269548641135264188, guid: 16af2e3138ce44bed8a7e5088d29d7a4, type: 3}
@@ -824,6 +937,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1605099537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1902318785 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2770205768309319186, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+  m_PrefabInstance: {fileID: 1200601193}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2046495967
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,9 +1406,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1327426585247046037, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_text
+      value: Select garden
+      objectReference: {fileID: 0}
     - target: {fileID: 1783972733671701091, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
       propertyPath: m_Name
       value: UI - Garden Selection
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783972733671701091, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4329493429149718996, guid: cc02150aa72c34b3ea8f4604810b2dd5, type: 3}
       propertyPath: m_Pivot.x
@@ -1388,5 +1514,6 @@ SceneRoots:
   - {fileID: 5313365186615848197}
   - {fileID: 1475923619435575524}
   - {fileID: 8138970789307193873}
+  - {fileID: 1200601193}
   - {fileID: 3751932886897249139}
   - {fileID: 147465293}

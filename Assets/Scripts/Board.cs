@@ -111,7 +111,7 @@ namespace QwertyGarden
                     Debug.Log("word length " + i + " = " + wordCount[i]);
         }
 
-        public void StartLesson(KeyboardData keyboardData)
+        public void PlayLesson(KeyboardData keyboardData)
         {
             LessonLogic.StartLesson(keyboardData, lessonData, balance);
 
@@ -119,10 +119,8 @@ namespace QwertyGarden
             m_wordText.text = balance.LessonWords[lessonData.LessonWordIndex];
         }
 
-        public void StartGame(KeyboardData keyboardData)
+        public void PlayCozy(KeyboardData keyboardData)
         {
-            CozyLogic.StartGame(keyboardData, gameData, balance);
-
             Show(keyboardData);
             m_wordText.text = balance.Words[gameData.WordIndex];
         }
@@ -140,12 +138,15 @@ namespace QwertyGarden
 
             m_wordText = m_keyboardRef.WordText;
 
-            for (int i = 0; i < 26; i++)
+            for (int keyIndex = 0; keyIndex < 26; keyIndex++)
             {
-                int flowerIndex = keyboardData.FlowerIndex[i];
+                int flowerIndex = keyboardData.FlowerIndex[keyIndex];
                 Flower flower = Instantiate(AssetManager.Instance.Flowers[flowerIndex].FlowerPrefab, m_keyboardRef.FlowerParent);
-                m_flowers[i] = flower;
-                m_flowers[i].ResetFlower(balance.NumFlowerFrames);
+                m_flowers[keyIndex] = flower;
+                m_flowers[keyIndex].ResetFlower(balance.NumFlowerFrames);
+
+                int progress = keyboardData.FlowerProgress[keyIndex];
+                flower.GrowFlower(progress);
             }
 
             for (int i = 0; i < MaxSpinningCoins; i++)
@@ -302,6 +303,11 @@ namespace QwertyGarden
                 CozyLogic.GameTyping(metaData, keyboardData, gameData, balance, c, out wordComplete, out incorrectCharacter);
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
+                for (int i = 0; i < 26; i++)
+                    if (keyboardData.FlowerProgress[i] >= balance.NumFlowerFrames)
+                        Debug.LogError("keyboardData.FlowerProgress[" + i + "] " + keyboardData.FlowerProgress[i]);
+                KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
+
                 // int charIndex = incorrectCharacter ? currentWord[keyboardData.TypedWord.Length] - 65 : char.ToUpper(c) - 65;
                 // Vector2 pos = PlantKeys[charIndex].transform.position;
                 // ParticleSystemBoard.Emit(particleColor, pos, ParticleSystemBoard.particleBalance.NumSprites);
@@ -333,6 +339,8 @@ namespace QwertyGarden
                 LessonLogic.LessonTyping(metaData, keyboardData, lessonData, balance, char.ToUpper(c), out wordComplete, out incorrectCharacter);
 
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
+
+                KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
                 // if (wordComplete)
                 // {

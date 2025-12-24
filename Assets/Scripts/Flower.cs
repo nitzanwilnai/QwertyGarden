@@ -34,6 +34,5 @@ namespace QwertyGarden
             SpriteRenderer.sprite = Sprites[m_flowerVariationIndex + index];
             Animation.Play("FlowerGrow");
         }
-
     }
 }
