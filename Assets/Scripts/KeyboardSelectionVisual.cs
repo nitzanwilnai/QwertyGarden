@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class KeyboardSelectionVisual
 {
     float m_keyboardOffset = 1088.0f;
-    float m_slideVelocity = 2000.0f;
+    float m_slideVelocity = 10000.0f;
     GameObject m_UI;
 
     Transform m_keyboardParent;
@@ -58,10 +58,14 @@ public class KeyboardSelectionVisual
             m_keyboardImages[keyboardType].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             m_keyboardImages[keyboardType].transform.localPosition = Vector3.zero;
             m_keyboardImages[keyboardType].transform.SetAsFirstSibling();
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                m_keyboardImages[keyboardType].KeyImages[keyIdx].gameObject.SetActive(false);
         }
 
         m_keyboardType = 0;
-
+        m_currentX = 0.0f;
+        m_targetX = 0.0f;
     }
 
     public void Hide()
@@ -79,12 +83,16 @@ public class KeyboardSelectionVisual
             m_currentX += dt * m_slideVelocity;
             if (m_currentX >= m_targetX)
                 m_currentX = m_targetX;
+
+            Debug.Log("m_currentX " + m_currentX);
         }
         if (m_currentX > m_targetX)
         {
             m_currentX -= dt * m_slideVelocity;
             if (m_currentX <= m_targetX)
                 m_currentX = m_targetX;
+
+            Debug.Log("m_currentX " + m_currentX);
         }
         m_keyboardParent.transform.localPosition = new Vector3(m_currentX, 0.0f, 0.0f);
 

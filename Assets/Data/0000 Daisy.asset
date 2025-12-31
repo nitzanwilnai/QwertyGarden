@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0000 Daisy
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 93d254d6d64ba4011bf21d966e1e04d4, type: 3}
+  FlowerCard: {fileID: 21300000, guid: 91283a01edadb43b2838ca46bdb5d6bb, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: acdc1d56c93144b6e8d32e0cdfa9957a, type: 3}
+  FlowerName: Daisy
+  SeedCost: 2
+  SellValue: 5
+  GrowTime: 300
+  FlowerFrames:
+  - {fileID: 21300000, guid: 9a0f9e98bbfa14fb9a9bd16be10dbf22, type: 3}
+  - {fileID: 21300000, guid: 91c0f22e8c7cb4823b2e312b1d4b1ba1, type: 3}
+  - {fileID: 21300000, guid: c2576a8e702944ad4ae82625e116b151, type: 3}
+  - {fileID: 21300000, guid: a8eee06757c984b43a64b8fca01a7f97, type: 3}
+  - {fileID: 21300000, guid: bcb60fb60e3084b93aaab34f2579ffb1, type: 3}
+  - {fileID: 21300000, guid: 3feaaaac9235a4044b84542a0467b233, type: 3}
+  - {fileID: 21300000, guid: 20022b48a700d49feba1fd791eee2762, type: 3}
+  - {fileID: 21300000, guid: 8713d7e5e95ff448f9f47f5749eda617, type: 3}
+  - {fileID: 21300000, guid: 8eae74316dee145d4b7d4908f5a41c80, type: 3}
+  - {fileID: 21300000, guid: 6f6ded6110a2146f394e35dd27601c20, type: 3}

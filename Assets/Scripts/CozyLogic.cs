@@ -1,33 +1,52 @@
+using System;
 using UnityEngine;
 
 namespace QwertyGarden
 {
     public static class CozyLogic
     {
-        public static void StartCozy(KeyboardData keyboardData, GameData gameData, Balance balance)
+        public static bool TryStartCozy(KeyboardData keyboardData, MetaData metaData, Balance balance)
         {
-            KeyboardLogic.StartGame(keyboardData);
+            Span<int> flowerCount = stackalloc int[balance.NumFlowers];
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                int flowerType = keyboardData.FlowerType[keyIdx];
+                flowerCount[flowerType]++;
+            }
+            decimal totalCost = 0;
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                if (flowerCount[flowerType] > 0)
+                    totalCost += balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
 
-            int randomIndex = Mathf.FloorToInt(UnityEngine.Random.value * balance.Words.Length);
-            gameData.WordIndex = randomIndex;
+            if (totalCost <= metaData.Coins)
+            {
+                metaData.Coins -= totalCost;
+                KeyboardLogic.StartGame(keyboardData);
 
-            assignNextGameWord(keyboardData, gameData, balance);
+                int randomIndex = Mathf.FloorToInt(UnityEngine.Random.value * balance.Words.Length);
+                keyboardData.WordIndex = randomIndex;
+
+                assignNextGameWord(keyboardData, balance);
+
+                return true;
+            }
+            return false;
         }
 
-        public static void GameTyping(MetaData metaData, KeyboardData keyboardData, GameData gameData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter)
+        public static void GameTyping(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter)
         {
             wordComplete = false;
             incorrectCharacter = false;
 
-            string currentWord = balance.Words[gameData.WordIndex];
+            string currentWord = balance.Words[keyboardData.WordIndex];
 
             KeyboardLogic.TryAddCharacter(metaData, keyboardData, balance, c, ref wordComplete, ref incorrectCharacter, currentWord);
 
             if (wordComplete)
-                assignNextGameWord(keyboardData, gameData, balance);
+                assignNextGameWord(keyboardData, balance);
         }
 
-        static void assignNextGameWord(KeyboardData keyboardData, GameData gameData, Balance balance)
+        static void assignNextGameWord(KeyboardData keyboardData, Balance balance)
         {
             int lowestValue = int.MaxValue;
             int lowestUsedLetter = -1;
@@ -58,11 +77,11 @@ namespace QwertyGarden
             keyboardData.WrongCount = 0;
 
             // assign random word for lowest used letter
-            int randomWord = Mathf.FloorToInt(Random.value * balance.WordsForLetters[lowestUsedLetter].Length);
-            gameData.WordIndex = balance.WordsForLetters[lowestUsedLetter][randomWord];
+            int randomWord = Mathf.FloorToInt(UnityEngine.Random.value * balance.WordsForLetters[lowestUsedLetter].Length);
+            keyboardData.WordIndex = balance.WordsForLetters[lowestUsedLetter][randomWord];
             keyboardData.TypedWord = "";
             Debug.Log("balance.WordsForLetters[" + lowestUsedLetter + "][" + randomWord + "] " + balance.WordsForLetters[lowestUsedLetter][randomWord]);
-            Debug.Log("assignNextGameWord() lowestUsedLetter = " + (char)(lowestUsedLetter + 65) + " lowestValue " + lowestValue + " new word " + balance.Words[gameData.WordIndex]);
+            Debug.Log("assignNextGameWord() lowestUsedLetter = " + (char)(lowestUsedLetter + 65) + " lowestValue " + lowestValue + " new word " + balance.Words[keyboardData.WordIndex]);
         }
     }
 }

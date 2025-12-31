@@ -23,7 +23,7 @@ namespace QwertyGarden
     public class BalanceParser : MonoBehaviour
     {
 #if UNITY_EDITOR
-        [MenuItem("TypingGarden/Balance/Parse Local")]
+        [MenuItem("QwertyGarden/Balance/Parse Local")]
         public static void ParseLocal()
         {
             Debug.Log("Parse balance started!");
@@ -52,6 +52,23 @@ namespace QwertyGarden
                 {
                     int version = 2;
                     bw.Write(version);
+
+                    BalanceSO balanceSO = (BalanceSO)AssetDatabase.LoadAssetAtPath("Assets/Data/BalanceSO.asset", typeof(BalanceSO));
+                    bw.Write(balanceSO.StartingCoins);
+                    bw.Write(balanceSO.Flowers.Length);
+                    for (int flowerType = 0; flowerType < balanceSO.Flowers.Length; flowerType++)
+                    {
+                        bw.Write(balanceSO.Flowers[flowerType].FlowerPrefab.name);
+                        bw.Write(balanceSO.Flowers[flowerType].FlowerCard.name);
+                        bw.Write(balanceSO.Flowers[flowerType].FlowerIcon.name);
+                        bw.Write(balanceSO.Flowers[flowerType].FlowerName);
+                        bw.Write(balanceSO.Flowers[flowerType].SeedCost);
+                        bw.Write(balanceSO.Flowers[flowerType].SellValue);
+                        bw.Write(balanceSO.Flowers[flowerType].GrowTime);
+                        bw.Write(balanceSO.Flowers[flowerType].FlowerFrames.Length);
+                        for (int frameIndex = 0; frameIndex < balanceSO.Flowers[flowerType].FlowerFrames.Length; frameIndex++)
+                            bw.Write(balanceSO.Flowers[flowerType].FlowerFrames[frameIndex].name);
+                    }
 
                     parseLesson(bw);
 
@@ -197,6 +214,7 @@ namespace QwertyGarden
                         includeWord = true;
                 }
 
+                includeWord = true;
                 if (includeWord)
                     for (int letterIdx = 0; letterIdx < words[wordIdx].Length; letterIdx++)
                         for (char c = 'A'; c <= 'Z'; c++)
@@ -204,8 +222,22 @@ namespace QwertyGarden
                                 letterCounter[(int)c - 65]++;
             }
 
+            int largestLetter = 0;
+            int largestCount = 0;
             for (int i = 0; i < 26; i++)
-                Debug.Log((char)(i + 65) + " letter count " + letterCounter[i]);
+            {
+                if (letterCounter[i] > largestCount)
+                {
+                    largestLetter = i;
+                    largestCount = letterCounter[i];
+                }
+            }
+
+            for (int i = 0; i < 26; i++)
+            {
+                Debug.Log((char)(i + 65) + " count " + letterCounter[i] + " multiplier " + Mathf.RoundToInt((float)largestCount / (float)letterCounter[i]));
+                bw.Write(Mathf.RoundToInt((float)largestCount / (float)letterCounter[i]));
+            }
 
 
             /*

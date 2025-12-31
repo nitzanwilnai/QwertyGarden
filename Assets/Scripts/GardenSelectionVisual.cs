@@ -1,12 +1,13 @@
 using CommonTools;
 using QwertyGarden;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GardenSelectionVisual
 {
     float m_keyboardOffset = 1088.0f;
-    float m_slideVelocity = 2000.0f;
+    float m_slideVelocity = 10000.0f;
     GameObject m_UI;
 
     Transform m_keyboardParent;
@@ -21,11 +22,16 @@ public class GardenSelectionVisual
     public float m_currentX;
     public float m_targetX;
 
-    Balance balance;
+    TextMeshProUGUI m_coinsText;
+    TextMeshProUGUI m_newKeyboardCostText;
 
-    public void Init(GameObject UI, Balance balance)
+    Balance balance;
+    MetaData metaData;
+
+    public void Init(GameObject UI, Balance balance, MetaData metaData)
     {
         this.balance = balance;
+        this.metaData = metaData;
 
         m_UI = UI;
         m_UI.SetActive(false);
@@ -33,6 +39,10 @@ public class GardenSelectionVisual
         GUIRef guiRef = m_UI.GetComponent<GUIRef>();
         m_newKeyboardGO = guiRef.GetGameObject("NewKeyboard");
         m_keyboardParent = guiRef.GetGameObject("KeyboardParent").transform;
+
+        GameObject topBarGO = guiRef.GetGameObject("TopBar");
+        m_coinsText = topBarGO.GetComponent<GUIRef>().GetTextGUI("Coins");
+        m_newKeyboardCostText = guiRef.GetTextGUI("NewKeyboardCost");
 
         m_keyboardSelectionBox = new GameObject[balance.MaxKeyboards];
         m_keyboardImages = new KeyboardImages[balance.MaxKeyboards];
@@ -64,15 +74,17 @@ public class GardenSelectionVisual
 
                 for (int keyIndex = 0; keyIndex < 26; keyIndex++)
                 {
-                    int flowerIndex = m_keyboardDatas[m_keyboardCount].FlowerIndex[keyIndex];
+                    int flowerType = m_keyboardDatas[m_keyboardCount].FlowerType[keyIndex];
                     int progress = m_keyboardDatas[m_keyboardCount].FlowerProgress[keyIndex];
-                    m_keyboardImages[m_keyboardCount].KeyImages[keyIndex].sprite = AssetManager.Instance.Flowers[flowerIndex].FlowerPrefab.Sprites[progress];
+                    m_keyboardImages[m_keyboardCount].KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerProgress(balance.FlowerName[flowerType], balance.FlowerFrames[flowerType][progress]);
                 }
 
                 m_keyboardCount++;
             }
 
         m_newKeyboardGO.transform.localPosition = new Vector3(m_keyboardCount * m_keyboardOffset, 0.0f, 0.0f);
+
+        m_coinsText.text = metaData.Coins.ToString("N0");
 
         m_keyboardIndex = 0;
 
@@ -114,6 +126,7 @@ public class GardenSelectionVisual
                 }
                 else
                 {
+                    Game.Instance.LoadNewKeyboard(m_keyboardCount);
                     Game.Instance.SetMenuState(MENU_STATE.KEYBOARD_SELECTION);
                 }
             }

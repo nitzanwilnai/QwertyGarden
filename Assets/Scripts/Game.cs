@@ -31,14 +31,17 @@ namespace QwertyGarden
         protected override void Awake()
         {
             base.Awake();
-            Board.Init(m_metaData, m_lessonData, m_gameData, m_balance, Camera);
+            AssetManager.Instance.LoadCommonAssetBundle();
+
             m_balance.LoadBalance();
+            Board.Init(m_metaData, m_lessonData, m_gameData, m_balance, Camera);
+            MetaLogic.Init(m_metaData, m_balance);
             KeyboardLogic.InitKeyboardData(m_keyboardData);
             LessonLogic.InitLessonData(m_lessonData, m_balance);
 
             m_mainMenuVisual.Init(UIMainMenu);
             m_keyboardSelectionVisual.Init(UIKeyboadSelection, m_balance);
-            m_gardenSelectionVisual.Init(UIGardenSelection, m_balance);
+            m_gardenSelectionVisual.Init(UIGardenSelection, m_balance, m_metaData);
             m_flowerSlipSelectionVisual.Init(UIFlowerSelection, m_metaData, m_gameData, m_balance);
             m_keyboardSelectionVisual.Init(UIKeyboardSelection, m_balance);
         }
@@ -63,6 +66,13 @@ namespace QwertyGarden
             m_metaData.KeyboardIndex = keyboardIndex;
             MetaDataIO.SaveMeta(m_metaData);
             KeyboardDataIO.LoadKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
+        }
+
+        public void LoadNewKeyboard(int keyboardIndex)
+        {
+            m_metaData.KeyboardIndex = keyboardIndex;
+            MetaDataIO.SaveMeta(m_metaData);
+            KeyboardLogic.InitKeyboardData(m_keyboardData);
         }
 
         public void SetMenuState(MENU_STATE newMenuState)
@@ -106,7 +116,7 @@ namespace QwertyGarden
             else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
                 m_keyboardSelectionVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSlipSelectionVisual.Tick();
+                m_flowerSlipSelectionVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Tick(dt);
 

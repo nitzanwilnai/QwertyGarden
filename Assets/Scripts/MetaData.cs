@@ -6,9 +6,11 @@ namespace QwertyGarden
     public enum GAME_TYPE { LESSON, COZY };
     public class MetaData
     {
-        public int Coins;
+        public decimal Coins;
         public GAME_TYPE GameType;
         public MENU_STATE MenuState;
         public int KeyboardIndex;
+        public float LastTimeStamp;
+        public float GrowTime;
     }
 }

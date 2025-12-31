@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0002 Pansy
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 0636ad91de2774d1fa77ac5daa4abf49, type: 3}
+  FlowerCard: {fileID: 21300000, guid: ac57bee739a3845f1a4ec8df8e07136c, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: ef3823d86dd6441a0975cc0d7b64bc56, type: 3}
+  FlowerName: Pansy
+  SeedCost: 8
+  SellValue: 15
+  GrowTime: 300
+  FlowerFrames:
+  - {fileID: 21300000, guid: 393d794bcea8d449b8a60770ff1645ae, type: 3}
+  - {fileID: 21300000, guid: cd57e2746ed384f69abc9d4e89a7000d, type: 3}
+  - {fileID: 21300000, guid: eff1b3350bf9a4db188260c6457635aa, type: 3}
+  - {fileID: 21300000, guid: 272124a57215244b9b3a5e1c67d5f77a, type: 3}
+  - {fileID: 21300000, guid: afe1233ee71fd401bba628029d448ed3, type: 3}
+  - {fileID: 21300000, guid: af473d5dd76c64bea834bd6ebd565ec2, type: 3}
+  - {fileID: 21300000, guid: e51b8f435d8c74ba780fac7d7fe95e13, type: 3}
+  - {fileID: 21300000, guid: a1496aac06d6149f8a4a517d448b4e11, type: 3}
+  - {fileID: 21300000, guid: 04fc79afeb1b24f389888b8ca55bf2e7, type: 3}
+  - {fileID: 21300000, guid: 9b9332c0bb388442293ceb4e2749414b, type: 3}
