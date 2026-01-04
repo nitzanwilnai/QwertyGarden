@@ -95,7 +95,7 @@ public class GardenSelectionVisual
         m_UI.SetActive(false);
 
         for (int i = 0; i < m_keyboardCount; i++)
-            GameObject.Destroy(m_keyboardImages[i]);
+            GameObject.Destroy(m_keyboardImages[i].gameObject);
         m_keyboardCount = 0;
     }
 
@@ -130,11 +130,24 @@ public class GardenSelectionVisual
                     Game.Instance.SetMenuState(MENU_STATE.KEYBOARD_SELECTION);
                 }
             }
-            if (Keyboard.current.escapeKey.wasReleasedThisFrame)
+            else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+            {
+                if (m_keyboardIndex < m_keyboardCount)
+                {
+                    Game.Instance.LoadKeyboard(m_keyboardIndex);
+                    Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN);
+                }
+                else
+                {
+                    Game.Instance.LoadNewKeyboard(m_keyboardCount);
+                    Game.Instance.SetMenuState(MENU_STATE.KEYBOARD_SELECTION);
+                }
+            }
+            else if (Keyboard.current.escapeKey.wasReleasedThisFrame)
             {
                 Game.Instance.SetMenuState(MENU_STATE.MAIN_MENU);
             }
-            if (Keyboard.current.leftArrowKey.wasReleasedThisFrame)
+            else if (Keyboard.current.leftArrowKey.wasReleasedThisFrame)
             {
                 if (m_keyboardIndex > 0)
                 {
@@ -142,7 +155,7 @@ public class GardenSelectionVisual
                     m_targetX = m_keyboardIndex * -m_keyboardOffset;
                 }
             }
-            if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
+            else if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
             {
                 if (m_keyboardIndex < m_keyboardCount)
                 {

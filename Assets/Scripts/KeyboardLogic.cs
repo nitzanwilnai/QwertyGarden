@@ -38,7 +38,7 @@ namespace QwertyGarden
             int flowerType = keyboardData.FlowerType[index];
             keyboardData.CharacterCount[index]++;
             keyboardData.FlowerProgress[index]++;
-            if (keyboardData.FlowerProgress[index] >= balance.NumFlowerFrames)
+            if (keyboardData.FlowerProgress[index] >= balance.MaxFlowerFrames)
             {
                 keyboardData.FlowerProgress[index] = 0;
                 keyboardData.FlowerCount[flowerType]++;

@@ -10,6 +10,36 @@ using UnityEngine.UI;
 
 namespace QwertyGarden
 {
+    public class CollectedFlowersGUI
+    {
+        public RectTransform[] FlowerRT;
+        public Vector3[][] FlowerCorners;
+
+        public int[] SourceKeyIndex;
+        public int[] TargetFlowerType;
+
+        public GameObject[] FlowersUI;
+        public TextMeshProUGUI[] FlowersText;
+        public Animation[] FlowersAnim;
+        public GameObject[] FlyingFlowers;
+    }
+
+    public class InoviceGUI
+    {
+        public GameObject InoviceGO;
+        public TextMeshProUGUI TotalSellValueText;
+        public TextMeshProUGUI CurrentCoinText;
+        public TextMeshProUGUI BalanceText;
+        public Animation ChangeAnimation;
+    }
+
+    public class InvoiceLineGUI
+    {
+        public GameObject GO;
+        public TextMeshProUGUI Item;
+        public TextMeshProUGUI Value;
+    }
+
     public class Board : MonoBehaviour
     {
         public enum WORD_STATE { READY, SLIDE_OUT, SLIDE_IN };
@@ -50,31 +80,29 @@ namespace QwertyGarden
         public AnimationCurve SpinningCoinScale;
         SpinningCoin[] m_spinningCoinPool;
         float[] m_spinningCoinTime;
-        Vector3[] m_spinningCoinOriginIndex;
+        Vector3[] m_spinningCoinOrigin;
         decimal m_localCoinCount;
         decimal m_targetCoinCount;
         float m_coinCountTime;
         public float CoinCountTime;
 
-        GameObject[] m_collectedFlowers;
-        TextMeshProUGUI[] m_collectdFlowerText;
+        public GameObject FlyingFlowerPrefab;
+        CollectedFlowersGUI m_collectedFlowers = new CollectedFlowersGUI();
 
-        TextMeshProUGUI m_totalCostText;
-        TextMeshProUGUI m_changeText;
-        TextMeshProUGUI m_currentCoinText;
-        Animation m_changeAnimation;
+        InoviceGUI m_inoviceGUI = new InoviceGUI();
+        bool m_showInvoice;
+        InvoiceAnimation m_invoiceAnimation;
+        InvoiceLineGUI[] m_invoiceLines;
 
         LessonData lessonData;
-        GameData gameData;
         MetaData metaData;
         Balance balance;
         KeyboardData keyboardData;
         Camera worldCamera;
 
-        public void Init(MetaData metaData, LessonData lessonData, GameData gameData, Balance balance, Camera camera)
+        public void Init(MetaData metaData, LessonData lessonData, Balance balance, Camera camera)
         {
             this.lessonData = lessonData;
-            this.gameData = gameData;
             this.balance = balance;
             this.metaData = metaData;
 
@@ -85,25 +113,48 @@ namespace QwertyGarden
             m_coinTargetAnimation = guiRef.GetAnimation("Coin");
             m_coinsText = guiRef.GetTextGUI("Coin");
 
-            m_collectdFlowerText = new TextMeshProUGUI[balance.NumFlowers];
             Transform uiFlowerParent = guiRef.GetGameObject("Flowers").transform;
-            m_collectedFlowers = new GameObject[balance.NumFlowers];
+            m_collectedFlowers.FlowersText = new TextMeshProUGUI[balance.NumFlowers];
+            m_collectedFlowers.FlowersAnim = new Animation[balance.NumFlowers];
+            m_collectedFlowers.FlowersUI = new GameObject[balance.NumFlowers];
+            m_collectedFlowers.SourceKeyIndex = new int[balance.NumFlowers];
+            m_collectedFlowers.TargetFlowerType = new int[balance.NumFlowers];
+            m_collectedFlowers.FlyingFlowers = new GameObject[balance.NumFlowers];
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                GameObject go = Instantiate(AssetManager.Instance.InGameUIFlower, uiFlowerParent);
-                GUIRef flowerGUIRef = go.GetComponent<GUIRef>();
-                m_collectdFlowerText[flowerType] = flowerGUIRef.GetTextGUI("Count");
-                m_collectdFlowerText[flowerType].text = "";
+                GameObject uiFlower = Instantiate(AssetManager.Instance.InGameUIFlower, uiFlowerParent);
+                GUIRef flowerGUIRef = uiFlower.GetComponent<GUIRef>();
+                m_collectedFlowers.FlowersText[flowerType] = flowerGUIRef.GetTextGUI("Count");
+                m_collectedFlowers.FlowersText[flowerType].text = "";
                 flowerGUIRef.GetImage("Flower").sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
-                go.SetActive(false);
-                m_collectedFlowers[flowerType] = go;
+                uiFlower.SetActive(false);
+                m_collectedFlowers.FlowersUI[flowerType] = uiFlower;
+                m_collectedFlowers.FlowersAnim[flowerType] = flowerGUIRef.GetAnimation("Grow");
             }
 
-            GUIRef receeiptGUIRef = guiRef.GetGameObject("Invoice").GetComponent<GUIRef>();
-            m_totalCostText = receeiptGUIRef.GetTextGUI("Total");
-            m_currentCoinText = receeiptGUIRef.GetTextGUI("Cash");
-            m_changeText = receeiptGUIRef.GetTextGUI("Change");
-            m_changeAnimation = receeiptGUIRef.GetAnimation("Change");
+            m_inoviceGUI.InoviceGO = guiRef.GetGameObject("Invoice");
+            m_invoiceAnimation = m_inoviceGUI.InoviceGO.GetComponent<InvoiceAnimation>();
+            GUIRef receeiptGUIRef = m_inoviceGUI.InoviceGO.GetComponent<GUIRef>();
+            Transform flowerLineParent = receeiptGUIRef.GetGameObject("InvoiceItems").transform;
+            m_inoviceGUI.TotalSellValueText = receeiptGUIRef.GetTextGUI("Total");
+            m_inoviceGUI.CurrentCoinText = receeiptGUIRef.GetTextGUI("Cash");
+            m_inoviceGUI.BalanceText = receeiptGUIRef.GetTextGUI("Change");
+            m_inoviceGUI.ChangeAnimation = receeiptGUIRef.GetAnimation("Change");
+            m_invoiceLines = new InvoiceLineGUI[balance.NumFlowers];
+            m_invoiceAnimation.Init(balance);
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+            {
+                InvoiceLineGUI invoiceLine = new InvoiceLineGUI();
+                GameObject invoiceLineGO = GameObject.Instantiate(AssetManager.Instance.ShopReceiptItem, flowerLineParent);
+                GUIRef receiptGUIRef = invoiceLineGO.GetComponent<GUIRef>();
+                invoiceLine.GO = invoiceLineGO;
+                invoiceLine.Item = receiptGUIRef.GetTextGUI("Name");
+                invoiceLine.Value = receiptGUIRef.GetTextGUI("Value");
+                invoiceLine.GO.transform.SetSiblingIndex(m_invoiceAnimation.ItemLineIndexStart + flowerType);
+                m_invoiceLines[flowerType] = invoiceLine;
+                invoiceLine.GO.SetActive(false);
+                m_invoiceAnimation.InvoiceLines[m_invoiceAnimation.ItemLineIndexStart + flowerType] = invoiceLine.GO;
+            }
 
             UI.SetActive(false);
 
@@ -114,7 +165,7 @@ namespace QwertyGarden
 
             m_spinningCoinPool = new SpinningCoin[MaxSpinningCoins];
             m_spinningCoinTime = new float[MaxSpinningCoins];
-            m_spinningCoinOriginIndex = new Vector3[MaxSpinningCoins];
+            m_spinningCoinOrigin = new Vector3[MaxSpinningCoins];
             for (int i = 0; i < MaxSpinningCoins; i++)
             {
                 SpinningCoin spinningCoin = Instantiate(SpinningCoinPrefab);
@@ -124,23 +175,6 @@ namespace QwertyGarden
             }
 
             SpriteParent.gameObject.SetActive(false);
-        }
-
-        void LoadTextFile()
-        {
-            TextAsset textFile = Resources.Load<TextAsset>("words_3000");
-            string allWords = textFile.text;
-            string[] words = allWords.Split();
-            Debug.Log("words.length " + words.Length);
-            Span<int> wordCount = stackalloc int[128];
-            for (int i = 0; i < 128; i++)
-                wordCount[i] = 0;
-            for (int i = 0; i < words.Length; i++)
-                wordCount[words[i].Length]++;
-
-            for (int i = 0; i < 128; i++)
-                if (wordCount[i] > 0)
-                    Debug.Log("word length " + i + " = " + wordCount[i]);
         }
 
         public void PlayLesson(KeyboardData keyboardData)
@@ -161,6 +195,9 @@ namespace QwertyGarden
         {
             this.keyboardData = keyboardData;
 
+            m_showInvoice = false;
+            m_inoviceGUI.InoviceGO.SetActive(false);
+
             m_keyboardRef = Instantiate(AssetManager.Instance.KeyboardRefs[keyboardData.KeyboardType], SpriteParent);
             for (int i = 0; i < m_flowerKeys.Length; i++)
             {
@@ -176,7 +213,7 @@ namespace QwertyGarden
                 int flowerType = keyboardData.FlowerType[keyIndex];
                 Flower flower = AssetManager.Instance.LoadFlowerPrefab(balance.FlowerPrefab[flowerType], m_keyboardRef.FlowerParent);
                 m_flowers[keyIndex] = flower;
-                m_flowers[keyIndex].ResetFlower(balance.NumFlowerFrames);
+                m_flowers[keyIndex].ResetFlower(balance.MaxFlowerFrames);
 
                 int progress = keyboardData.FlowerProgress[keyIndex];
                 flower.GrowFlower(progress);
@@ -195,6 +232,16 @@ namespace QwertyGarden
                 position.x += UnityEngine.Random.value * 0.1f + -0.05f;
                 position.y += UnityEngine.Random.value * 0.1f + -0.05f;
                 m_flowers[i].transform.localPosition = position;
+            }
+
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+            {
+                if (keyboardData.FlowerCount[flowerType] > 0)
+                {
+                    m_collectedFlowers.FlowersText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
+                    if (!m_collectedFlowers.FlowersUI[flowerType].activeSelf)
+                        m_collectedFlowers.FlowersUI[flowerType].SetActive(true);
+                }
             }
 
             m_localCoinCount = m_targetCoinCount = metaData.Coins;
@@ -223,61 +270,100 @@ namespace QwertyGarden
 
         public void Tick(float dt)
         {
+            resizeKeyboardForResolution();
+
+            if (m_showInvoice)
+            {
+                if (Keyboard.current.enterKey.wasReleasedThisFrame)
+                {
+                    Game.Instance.SetMenuState(MENU_STATE.GARDEN_SELECTION);
+                }
+                else if (Keyboard.current.escapeKey.wasReleasedThisFrame)
+                {
+                    m_showInvoice = false;
+                    m_inoviceGUI.InoviceGO.SetActive(false);
+                }
+            }
+            else
+            {
+                if (WordState == WORD_STATE.SLIDE_IN)
+                {
+                    Vector3 wordPos = m_wordText.transform.localPosition;
+                    wordPos.x -= dt * WordSlideSpeed;
+                    if (wordPos.x <= 0.0f)
+                    {
+                        wordPos.x = 0.0f;
+                        WordState = WORD_STATE.READY;
+                    }
+                    m_wordText.transform.localPosition = wordPos;
+                }
+                else if (WordState == WORD_STATE.SLIDE_OUT)
+                {
+                    Vector3 wordPos = m_wordText.transform.localPosition;
+                    wordPos.x -= dt * WordSlideSpeed;
+                    if (wordPos.x <= -WordSlideLimit)
+                    {
+                        wordPos.x = WordSlideLimit;
+                        WordState = WORD_STATE.SLIDE_IN;
+                        if (metaData.GameType == GAME_TYPE.COZY)
+                            m_wordText.text = balance.Words[keyboardData.WordIndex];
+                        else if (metaData.GameType == GAME_TYPE.LESSON)
+                            m_wordText.text = balance.LessonWords[lessonData.LessonWordIndex];
+                        m_wordText.color = WordColor;
+                    }
+                    m_wordText.transform.localPosition = wordPos;
+                }
+                else if (WordState == WORD_STATE.READY)
+                {
+                    char c;
+                    int keyIndex = KeyboardLogic.GetTypedKeyIndex(out c);
+                    if (keyIndex > -1)
+                    {
+                        if (metaData.GameType == GAME_TYPE.LESSON)
+                            lessonTextInput(keyIndex, Char.ToUpper(c));
+                        else if (metaData.GameType == GAME_TYPE.COZY)
+                            gameTextInput(keyIndex, Char.ToUpper(c));
+                    }
+                    else if (Keyboard.current.escapeKey.wasReleasedThisFrame)
+                    {
+                        m_showInvoice = true;
+                        m_inoviceGUI.InoviceGO.SetActive(true);
+
+                        int totalSellValue = 0;
+                        for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                        {
+                            int totalCoinsForThisFlower = balance.FlowerSeedCost[flowerType] * keyboardData.FlowerCount[flowerType];
+                            totalSellValue += totalCoinsForThisFlower;
+                            m_invoiceLines[flowerType].Item.text = balance.FlowerName[flowerType] + " x" + keyboardData.FlowerCount[flowerType];
+                            m_invoiceLines[flowerType].Value.text = totalCoinsForThisFlower + " <sprite name=\"coin\">";
+                            m_invoiceAnimation.ShowInvoiceLIne[flowerType + m_invoiceAnimation.ItemLineIndexStart] = keyboardData.FlowerCount[flowerType] > 0;
+                        }
+                        m_inoviceGUI.TotalSellValueText.text = totalSellValue + " <sprite name=\"coin\">";
+                        m_inoviceGUI.CurrentCoinText.text = metaData.Coins + " <sprite name=\"coin\">";
+
+                        MetaLogic.SellCollectedFlowers(metaData, keyboardData, balance);
+
+                        m_inoviceGUI.BalanceText.text = metaData.Coins + " <sprite name=\"coin\">";
+
+                        m_invoiceAnimation.StartAnimation();
+                    }
+                }
+            }
+
+            flyCoins(dt);
+        }
+
+        private void resizeKeyboardForResolution()
+        {
             float keyboardScale = 0.9f;
             float ratio = (float)Screen.width / (float)Screen.height;
             if (ratio < 1.7)
                 keyboardScale = 0.9f - (1.0f / ratio) * 0.3f;
             m_keyboardRef.transform.localScale = new Vector3(keyboardScale, keyboardScale, 1.0f);
+        }
 
-            if (WordState == WORD_STATE.SLIDE_IN)
-            {
-                Vector3 wordPos = m_wordText.transform.localPosition;
-                wordPos.x -= dt * WordSlideSpeed;
-                if (wordPos.x <= 0.0f)
-                {
-                    wordPos.x = 0.0f;
-                    WordState = WORD_STATE.READY;
-                }
-                m_wordText.transform.localPosition = wordPos;
-            }
-            else if (WordState == WORD_STATE.SLIDE_OUT)
-            {
-                Vector3 wordPos = m_wordText.transform.localPosition;
-                wordPos.x -= dt * WordSlideSpeed;
-                if (wordPos.x <= -WordSlideLimit)
-                {
-                    wordPos.x = WordSlideLimit;
-                    WordState = WORD_STATE.SLIDE_IN;
-                    if (metaData.GameType == GAME_TYPE.COZY)
-                        m_wordText.text = balance.Words[keyboardData.WordIndex];
-                    else if (metaData.GameType == GAME_TYPE.LESSON)
-                        m_wordText.text = balance.LessonWords[lessonData.LessonWordIndex];
-                    m_wordText.color = WordColor;
-                }
-                m_wordText.transform.localPosition = wordPos;
-            }
-            else if (WordState == WORD_STATE.READY)
-            {
-                char c;
-                int keyIndex = KeyboardLogic.GetTypedKeyIndex(out c);
-                if (keyIndex > -1)
-                {
-                    if (metaData.GameType == GAME_TYPE.LESSON)
-                        lessonTextInput(keyIndex, Char.ToUpper(c));
-                    else if (metaData.GameType == GAME_TYPE.COZY)
-                        gameTextInput(keyIndex, Char.ToUpper(c));
-                }
-                if (Keyboard.current.escapeKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(MENU_STATE.GARDEN_SELECTION);
-                }
-            }
-
-            // Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(null, m_coinTarget.position);
-            // Vector3 worldPos = mainCamera.ScreenToWorldPoint(
-            //     new Vector3(screenPos.x, screenPos.y, mainCamera.nearClipPlane)
-            // );
-            // Vector3 targetPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+        private void flyCoins(float dt)
+        {
 
             m_coinTarget.GetWorldCorners(m_coinTargetCorners);
             // 0=BL, 1=TL, 2=TR, 3=BR
@@ -288,7 +374,6 @@ namespace QwertyGarden
             );
 
             Vector3 targetPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
-
 
             for (int coinIdx = 0; coinIdx < MaxSpinningCoins; coinIdx++)
             {
@@ -308,7 +393,7 @@ namespace QwertyGarden
                         float y = SpinningCoinY.Evaluate(m_spinningCoinTime[coinIdx]);
                         float scale = SpinningCoinScale.Evaluate(m_spinningCoinTime[coinIdx]);
                         Debug.Log("m_spinningCoinTime[" + coinIdx + "] " + m_spinningCoinTime[coinIdx] + " scale " + scale);
-                        Vector3 originPos = m_spinningCoinOriginIndex[coinIdx];
+                        Vector3 originPos = m_spinningCoinOrigin[coinIdx];
                         Vector3 pos = (targetPos - originPos) * speed + originPos;
                         pos.z = -90.0f;
                         // pos.y += y;
@@ -339,14 +424,22 @@ namespace QwertyGarden
             {
                 if (m_spinningCoinTime[coinIdx] >= 1.0f)
                 {
-                    m_spinningCoinOriginIndex[coinIdx] = m_flowerKeys[letterIndex].transform.position;
-                    m_spinningCoinOriginIndex[coinIdx].x += UnityEngine.Random.value * 1.0f - 0.5f;
-                    m_spinningCoinOriginIndex[coinIdx].y += UnityEngine.Random.value * 1.0f - 0.5f;
+                    m_spinningCoinOrigin[coinIdx] = m_flowerKeys[letterIndex].transform.position;
+                    m_spinningCoinOrigin[coinIdx].x += UnityEngine.Random.value * 1.0f - 0.5f;
+                    m_spinningCoinOrigin[coinIdx].y += UnityEngine.Random.value * 1.0f - 0.5f;
                     m_spinningCoinTime[coinIdx] = 0.0f;
                     m_spinningCoinPool[coinIdx].gameObject.SetActive(true);
                     break;
                 }
             }
+        }
+
+        void flyFlower(int keyIndex, int flowerType)
+        {
+            // get origin key index
+            // get target (maybe only the flower type)
+            // set time to 0
+            // turn on game object
         }
 
         private void gameTextInput(int keyIndex, char c)
@@ -364,7 +457,7 @@ namespace QwertyGarden
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
                 for (int i = 0; i < 26; i++)
-                    if (keyboardData.FlowerProgress[i] >= balance.NumFlowerFrames)
+                    if (keyboardData.FlowerProgress[i] >= balance.MaxFlowerFrames)
                         Debug.LogError("keyboardData.FlowerProgress[" + i + "] " + keyboardData.FlowerProgress[i]);
                 KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
@@ -376,7 +469,7 @@ namespace QwertyGarden
                 // if (keyboardData.FlowerProgress[keyIndex] > prevProgress)
                 m_flowers[keyIndex].GrowFlower(keyboardData.FlowerProgress[keyIndex]);
 
-                if (!incorrectCharacter && prevProgress >= balance.NumFlowerFrames - 1)
+                if (!incorrectCharacter && prevProgress >= balance.MaxFlowerFrames - 1)
                 {
                     int flowerType = keyboardData.FlowerType[keyIndex];
                     // int numCoins = balance.FlowerSellValue[flowerType];
@@ -385,9 +478,10 @@ namespace QwertyGarden
                     // for (int i = 0; i < numCoins; i++)
                     //     flyCoin(keyIndex);
 
-                    m_collectdFlowerText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
-                    if (!m_collectedFlowers[flowerType].activeSelf)
-                        m_collectedFlowers[flowerType].SetActive(true);
+                    m_collectedFlowers.FlowersText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
+                    if (!m_collectedFlowers.FlowersUI[flowerType].activeSelf)
+                        m_collectedFlowers.FlowersUI[flowerType].SetActive(true);
+                    m_collectedFlowers.FlowersAnim[flowerType].Play("Grow");
                 }
             }
 
@@ -425,7 +519,7 @@ namespace QwertyGarden
                         m_flowers[keyIndex].GrowFlower(keyboardData.FlowerProgress[keyIndex]);
 
                 }
-                if (!incorrectCharacter && keyboardData.FlowerProgress[keyIndex] >= balance.NumFlowerFrames - 1)
+                if (!incorrectCharacter && keyboardData.FlowerProgress[keyIndex] >= balance.MaxFlowerFrames - 1)
                 {
                     flyCoin(keyIndex);
                 }

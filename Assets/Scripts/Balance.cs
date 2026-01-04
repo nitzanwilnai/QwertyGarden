@@ -29,7 +29,7 @@ namespace QwertyGarden
         public string[][] FlowerFrames;
 
 
-        public int NumFlowerFrames = 10;
+        public int MaxFlowerFrames = 10;
         public int MaxKeyboards = 128;
         public int StartingCoins;
         public string[] LessonWords;

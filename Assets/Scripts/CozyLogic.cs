@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace QwertyGarden
 {
@@ -20,17 +21,46 @@ namespace QwertyGarden
 
             if (totalCost <= metaData.Coins)
             {
-                metaData.Coins -= totalCost;
-                KeyboardLogic.StartGame(keyboardData);
-
-                int randomIndex = Mathf.FloorToInt(UnityEngine.Random.value * balance.Words.Length);
-                keyboardData.WordIndex = randomIndex;
-
-                assignNextGameWord(keyboardData, balance);
+                commonStartCozy(metaData, keyboardData, balance, totalCost);
 
                 return true;
             }
             return false;
+        }
+
+        public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance, int[] newFlowerType)
+        {
+            decimal totalCost = 0;
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                if (newFlowerType[keyIdx] != keyboardData.FlowerType[keyIdx])
+                {
+                    int flowerType = newFlowerType[keyIdx];
+                    totalCost += balance.FlowerSeedCost[flowerType];
+                }
+            }
+
+            if (totalCost <= metaData.Coins)
+            {
+                for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                    keyboardData.FlowerType[keyIdx] = newFlowerType[keyIdx];
+
+                commonStartCozy(metaData, keyboardData, balance, totalCost);
+
+                return true;
+            }
+            return false;
+        }
+
+        static void commonStartCozy(MetaData metaData, KeyboardData keyboardData, Balance balance, decimal totalCost)
+        {
+            metaData.Coins -= totalCost;
+            KeyboardLogic.StartGame(keyboardData);
+
+            int randomIndex = Mathf.FloorToInt(UnityEngine.Random.value * balance.Words.Length);
+            keyboardData.WordIndex = randomIndex;
+
+            assignNextGameWord(keyboardData, balance);
         }
 
         public static void GameTyping(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter)
@@ -53,7 +83,7 @@ namespace QwertyGarden
 
             for (int letterIdx = 25; letterIdx >= 0; letterIdx--)
             {
-                if (keyboardData.FlowerProgress[letterIdx] < balance.NumFlowerFrames - 1 && keyboardData.FlowerProgress[letterIdx] < lowestValue)
+                if (keyboardData.FlowerProgress[letterIdx] < balance.MaxFlowerFrames - 1 && keyboardData.FlowerProgress[letterIdx] < lowestValue)
                 {
                     lowestUsedLetter = letterIdx;
                     lowestValue = keyboardData.CharacterCount[letterIdx];

@@ -6,15 +6,16 @@ using UnityEngine.InputSystem;
 using System;
 using TMPro;
 
-public class ReceiptLine
-{
-    public GameObject GO;
-    public TextMeshProUGUI Item;
-    public TextMeshProUGUI Value;
-}
 
 public class FlowerSelectionVisual
 {
+    public class ReceiptLineGUI
+    {
+        public GameObject GO;
+        public TextMeshProUGUI Item;
+        public TextMeshProUGUI Value;
+    }
+
     float m_flowerCardOffset = 270.0f;
     float m_slideVelocity = 2000.0f;
 
@@ -26,7 +27,7 @@ public class FlowerSelectionVisual
 
     GameObject[] m_flowerCards;
     Image[] m_flowerCardOutlines;
-    ReceiptLine[] m_receiptItems;
+    ReceiptLineGUI[] m_receiptItems;
 
     Transform m_flowerCardParent;
 
@@ -40,14 +41,12 @@ public class FlowerSelectionVisual
     int m_flowerType = 0;
 
     KeyboardData keyboardData;
-    GameData gameData;
     MetaData metaData;
     Balance balance;
 
-    public void Init(GameObject UI, MetaData metaData, GameData gameData, Balance balance)
+    public void Init(GameObject UI, MetaData metaData, Balance balance)
     {
         this.metaData = metaData;
-        this.gameData = gameData;
         this.balance = balance;
 
         m_UI = UI;
@@ -64,39 +63,23 @@ public class FlowerSelectionVisual
 
         int numFlowers = balance.NumFlowers;
         m_flowerCardParent = guiRef.GetGameObject("CardsParent").transform;
-        Transform flowerReceipt = guiRef.GetGameObject("ReceiptItems").transform;
+        Transform flowerReceipt = receeiptGUIRef.GetGameObject("ReceiptItems").transform;
         m_flowerCards = new GameObject[numFlowers];
         m_flowerCardOutlines = new Image[numFlowers];
-        m_receiptItems = new ReceiptLine[numFlowers];
+        m_receiptItems = new ReceiptLineGUI[numFlowers];
         for (int flowerType = 0; flowerType < numFlowers; flowerType++)
         {
             GameObject flowerCard = GameObject.Instantiate(AssetManager.Instance.ShopCardPrefab, m_flowerCardParent);
-            GUIRef flowerCardGUIRef = flowerCard.GetComponent<GUIRef>();
-            flowerCardGUIRef.GetTextGUI("FlowerName").text = balance.FlowerName[flowerType];
-            flowerCardGUIRef.GetTextGUI("Cost").text = balance.FlowerSeedCost[flowerType].ToString("N0");
-            flowerCardGUIRef.GetTextGUI("Sell").text = balance.FlowerSellValue[flowerType].ToString("N0");
-            float seconds = balance.FlowerGrowTime[flowerType];
-            TimeSpan t = TimeSpan.FromSeconds(seconds);
-            string growString = "";
-            if (t.Hours > 0)
-                growString += t.Hours + "h ";
-            if (t.Minutes > 0)
-                growString += t.Minutes + "m ";
-            if (t.Seconds > 0)
-                growString += t.Seconds + "s ";
-            flowerCardGUIRef.GetTextGUI("Time").text = balance.FlowerGrowTime[flowerType].ToString(growString);
-            flowerCard.transform.localPosition = new Vector3(flowerType * 272.0f, 0.0f, 0.0f);
-            m_flowerCardOutlines[flowerType] = flowerCardGUIRef.GetImage("Outline");
-            m_flowerCardOutlines[flowerType].color = flowerType > 0 ? AssetManager.Instance.FlowerCardUnselected : AssetManager.Instance.FlowerCardSelected;
+            CommonFlowerVisual.AddFlowerCard(balance, flowerType, flowerCard, m_flowerCardOutlines);
             m_flowerCards[flowerType] = flowerCard;
 
-            ReceiptLine receiptLine = new ReceiptLine();
+            ReceiptLineGUI receiptLine = new ReceiptLineGUI();
             GameObject receiptLineGO = GameObject.Instantiate(AssetManager.Instance.ShopReceiptItem, flowerReceipt);
             GUIRef receiptGUIRef = receiptLineGO.GetComponent<GUIRef>();
             receiptLine.GO = receiptLineGO;
             receiptLine.Item = receiptGUIRef.GetTextGUI("Name");
             receiptLine.Value = receiptGUIRef.GetTextGUI("Value");
-            receiptLine.GO.transform.SetSiblingIndex(8 + flowerType);
+            receiptLine.GO.transform.SetSiblingIndex(7 + flowerType);
             m_receiptItems[flowerType] = receiptLine;
             receiptLine.GO.SetActive(false);
         }
@@ -127,7 +110,7 @@ public class FlowerSelectionVisual
     public void Hide()
     {
         m_UI.SetActive(false);
-        GameObject.Destroy(m_keyboardImage);
+        GameObject.Destroy(m_keyboardImage.gameObject);
     }
 
     void updateReceiptItems()
@@ -136,6 +119,8 @@ public class FlowerSelectionVisual
             m_receiptItems[i].GO.SetActive(false);
 
         Span<int> flowerCount = stackalloc int[balance.NumFlowers];
+        for (int keyIdx = 0; keyIdx < balance.NumFlowers; keyIdx++)
+            flowerCount[keyIdx] = 0;
         for (int keyIdx = 0; keyIdx < 26; keyIdx++)
         {
             int flowerType = keyboardData.FlowerType[keyIdx];
@@ -146,28 +131,27 @@ public class FlowerSelectionVisual
         int itemCount = 0;
         for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
         {
-            if (flowerCount[flowerType] > 0)
-            {
-                int itemCost = balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
-                totalCost += itemCost;
-                m_receiptItems[itemCount].Item.text = balance.FlowerName[flowerType] + " x " + flowerCount[flowerType];
-                m_receiptItems[itemCount].Value.text = "$" + itemCost.ToString();
-                m_receiptItems[itemCount].GO.SetActive(true);
-                itemCount++;
-            }
+            int itemCost = balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
+            totalCost += itemCost;
+            m_receiptItems[itemCount].Item.text = balance.FlowerName[flowerType] + " x " + flowerCount[flowerType];
+            m_receiptItems[itemCount].Value.text = itemCost.ToString() + " <sprite name=\"coin\">";
+            m_receiptItems[itemCount].GO.SetActive(flowerCount[flowerType] > 0);
+            itemCount++;
         }
 
-        m_totalCostText.text = "$" + totalCost.ToString("N0");
-        m_currentCoinText.text = "$" + metaData.Coins.ToString("N0");
+        m_totalCostText.text = totalCost.ToString("N0") + " <sprite name=\"coin\">";
+        m_currentCoinText.text = metaData.Coins.ToString("N0") + " <sprite name=\"coin\">";
         decimal change = metaData.Coins - totalCost;
         string symbol = change < 0 ? "-" : "";
         decimal changeAbs = change < 0 ? -change : change;
-        m_changeText.text = symbol + "$" + changeAbs.ToString("N0");
+        m_changeText.text = symbol + changeAbs.ToString("N0") + " <sprite name=\"coin\">";
         m_changeText.color = change >= 0 ? AssetManager.Instance.ReceiptChangePositive : AssetManager.Instance.ReceiptChangeNegative;
     }
 
     public void Tick(float dt)
     {
+        CommonFlowerVisual.PositionKeyboardForResolution(m_keyboardImage);
+
         if (m_currentX < m_targetX)
         {
             m_currentX += dt * m_slideVelocity;
@@ -207,7 +191,7 @@ public class FlowerSelectionVisual
                 {
                     m_flowerType--;
                     m_targetX = m_flowerType * -m_flowerCardOffset;
-                    updateCardOutline();
+                    CommonFlowerVisual.UpdateCardOutline(m_flowerCardOutlines, m_flowerType);
                 }
             }
             if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
@@ -216,7 +200,7 @@ public class FlowerSelectionVisual
                 {
                     m_flowerType++;
                     m_targetX = m_flowerType * -m_flowerCardOffset;
-                    updateCardOutline();
+                    CommonFlowerVisual.UpdateCardOutline(m_flowerCardOutlines, m_flowerType);
                 }
             }
 
@@ -231,11 +215,4 @@ public class FlowerSelectionVisual
             }
         }
     }
-
-    void updateCardOutline()
-    {
-        for (int i = 0; i < m_flowerCardOutlines.Length; i++)
-            m_flowerCardOutlines[i].color = i != m_flowerType ? AssetManager.Instance.FlowerCardUnselected : AssetManager.Instance.FlowerCardSelected;
-    }
-
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace QwertyGarden
 {
-    public enum MENU_STATE { MAIN_MENU, GARDEN_SELECTION, KEYBOARD_SELECTION, FLOWER_SELECTION, IN_GAME };
+    public enum MENU_STATE { MAIN_MENU, GARDEN_SELECTION, KEYBOARD_SELECTION, FLOWER_SELECTION, EDIT_GARDEN, IN_GAME };
     public enum GAME_TYPE { LESSON, COZY };
     public class MetaData
     {

@@ -73,7 +73,7 @@ public class KeyboardSelectionVisual
         m_UI.SetActive(false);
 
         for (int keyboardIdx = 0; keyboardIdx < AssetManager.Instance.KeyboardImages.Length; keyboardIdx++)
-            GameObject.Destroy(m_keyboardImages[keyboardIdx]);
+            GameObject.Destroy(m_keyboardImages[keyboardIdx].gameObject);
     }
 
     public void Tick(float dt)

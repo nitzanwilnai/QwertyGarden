@@ -15,15 +15,16 @@ namespace QwertyGarden
         public GameObject UIFlowerSelection;
         public GameObject UIGardenSelection;
         public GameObject UIKeyboardSelection;
+        public GameObject UIEditFlowers;
 
         MainMenuVisual m_mainMenuVisual = new();
         KeyboardSelectionVisual m_keyboardSelectionVisual = new();
-        FlowerSelectionVisual m_flowerSlipSelectionVisual = new();
+        FlowerSelectionVisual m_flowerSelectionVisual = new();
         GardenSelectionVisual m_gardenSelectionVisual = new();
+        EditFlowersVisual m_editFlowersVisual = new();
 
         Balance m_balance = new Balance();
         LessonData m_lessonData = new LessonData();
-        GameData m_gameData = new GameData();
         MetaData m_metaData = new MetaData();
 
         KeyboardData m_keyboardData = new KeyboardData();
@@ -34,7 +35,7 @@ namespace QwertyGarden
             AssetManager.Instance.LoadCommonAssetBundle();
 
             m_balance.LoadBalance();
-            Board.Init(m_metaData, m_lessonData, m_gameData, m_balance, Camera);
+            Board.Init(m_metaData, m_lessonData, m_balance, Camera);
             MetaLogic.Init(m_metaData, m_balance);
             KeyboardLogic.InitKeyboardData(m_keyboardData);
             LessonLogic.InitLessonData(m_lessonData, m_balance);
@@ -42,8 +43,9 @@ namespace QwertyGarden
             m_mainMenuVisual.Init(UIMainMenu);
             m_keyboardSelectionVisual.Init(UIKeyboadSelection, m_balance);
             m_gardenSelectionVisual.Init(UIGardenSelection, m_balance, m_metaData);
-            m_flowerSlipSelectionVisual.Init(UIFlowerSelection, m_metaData, m_gameData, m_balance);
+            m_flowerSelectionVisual.Init(UIFlowerSelection, m_metaData, m_balance);
             m_keyboardSelectionVisual.Init(UIKeyboardSelection, m_balance);
+            m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_balance);
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -84,7 +86,9 @@ namespace QwertyGarden
             else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
                 m_keyboardSelectionVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSlipSelectionVisual.Hide();
+                m_flowerSelectionVisual.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+                m_editFlowersVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Hide();
 
@@ -99,7 +103,9 @@ namespace QwertyGarden
             else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
                 m_keyboardSelectionVisual.Show(m_keyboardData, m_metaData);
             else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSlipSelectionVisual.Show(m_keyboardData);
+                m_flowerSelectionVisual.Show(m_keyboardData);
+            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+                m_editFlowersVisual.Show(m_keyboardData);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.PlayCozy(m_keyboardData);
         }
@@ -116,7 +122,9 @@ namespace QwertyGarden
             else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
                 m_keyboardSelectionVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSlipSelectionVisual.Tick(dt);
+                m_flowerSelectionVisual.Tick(dt);
+            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+                m_editFlowersVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Tick(dt);
 
