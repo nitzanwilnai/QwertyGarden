@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,34 +64,87 @@ namespace QwertyGarden
             assignNextGameWord(keyboardData, balance);
         }
 
-        public static void GameTyping(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter)
+        public static void GameTyping(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter, ref float startTime)
         {
             wordComplete = false;
             incorrectCharacter = false;
 
             string currentWord = balance.Words[keyboardData.WordIndex];
 
-            KeyboardLogic.TryAddCharacter(metaData, keyboardData, balance, c, ref wordComplete, ref incorrectCharacter, currentWord);
+            KeyboardLogic.TryAddCharacter(metaData, keyboardData, balance, c, ref wordComplete, ref incorrectCharacter, currentWord, ref startTime);
 
             if (wordComplete)
                 assignNextGameWord(keyboardData, balance);
         }
 
-        static void assignNextGameWord(KeyboardData keyboardData, Balance balance)
+        static void assignedNextWordWeighted(KeyboardData keyboardData, Balance balance)
         {
-            int lowestValue = int.MaxValue;
-            int lowestUsedLetter = -1;
-
-            for (int letterIdx = 25; letterIdx >= 0; letterIdx--)
+            int largestCount = 0;
+            int totalWeight = 0;
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
-                if (keyboardData.FlowerProgress[letterIdx] < balance.MaxFlowerFrames - 1 && keyboardData.FlowerProgress[letterIdx] < lowestValue)
+                if (largestCount < keyboardData.CharacterCount[keyIdx])
+                    largestCount = keyboardData.CharacterCount[keyIdx];
+            }
+
+            // reverse character count to use as weights
+            Span<int> weights = stackalloc int[26];
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                weights[keyIdx] = largestCount - keyboardData.CharacterCount[keyIdx];
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                weights[keyIdx] = weights[keyIdx] * 10000;
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                totalWeight += keyboardData.CharacterCount[keyIdx];
+
+            int randomWeight = Mathf.FloorToInt(UnityEngine.Random.value * totalWeight);
+            int randomIndex = 0;
+            totalWeight = 0;
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                totalWeight += weights[keyIdx];
+                if (totalWeight > randomWeight)
                 {
-                    lowestUsedLetter = letterIdx;
-                    lowestValue = keyboardData.CharacterCount[letterIdx];
+                    randomIndex = keyIdx;
+                    break;
                 }
             }
 
-            if (lowestUsedLetter == -1)
+            string s1 = "Character count: ";
+            string s2 = "Weights ";
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                s1 += (char)(keyIdx + 65) + " " + keyboardData.CharacterCount[keyIdx] + "\t";
+                s2 += (char)(keyIdx + 65) + " " + weights[keyIdx] + "\t";
+            }
+
+            Debug.Log(s1);
+            Debug.Log(s2);
+
+            int randomWord = Mathf.FloorToInt(UnityEngine.Random.value * balance.WordsForLetters[randomIndex].Length);
+            keyboardData.WordIndex = balance.WordsForLetters[randomIndex][randomWord];
+            keyboardData.TypedWord = "";
+            Debug.Log("balance.WordsForLetters[" + randomIndex + "][" + randomWord + "] " + balance.WordsForLetters[randomIndex][randomWord]);
+            Debug.Log("assignNextGameWord() lowestUsedLetter = " + (char)(randomIndex + 65) + " new word " + balance.Words[keyboardData.WordIndex]);
+        }
+
+        static void assignNextGameWord(KeyboardData keyboardData, Balance balance)
+        {
+            int lowestValue = int.MaxValue;
+            int lowestUsedLetter = 0;
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                if (keyboardData.CharacterCount[keyIdx] < lowestValue)
+                {
+                    lowestValue = keyboardData.CharacterCount[keyIdx];
+                    lowestUsedLetter = keyIdx;
+                }
+
+            }
+
+            // if (lowestUsedLetter == -1)
             {
                 lowestValue = int.MaxValue;
                 // search backwards because rare letters are at the end (WXYZ)
@@ -104,7 +158,10 @@ namespace QwertyGarden
                 }
             }
 
-            keyboardData.WrongCount = 0;
+            string s1 = "Character count: ";
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                s1 += (char)(keyIdx + 65) + " " + keyboardData.CharacterCount[keyIdx] + "\t";
+            Debug.Log(s1);
 
             // assign random word for lowest used letter
             int randomWord = Mathf.FloorToInt(UnityEngine.Random.value * balance.WordsForLetters[lowestUsedLetter].Length);

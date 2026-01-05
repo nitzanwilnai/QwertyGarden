@@ -23,14 +23,14 @@ namespace QwertyGarden
         }
 
 
-        public static void LessonTyping(MetaData metaData, KeyboardData keyboardData, LessonData lessonData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter)
+        public static void LessonTyping(MetaData metaData, KeyboardData keyboardData, LessonData lessonData, Balance balance, char c, out bool wordComplete, out bool incorrectCharacter, ref float startTime)
         {
             wordComplete = false;
             incorrectCharacter = false;
 
             string currentWord = balance.LessonWords[lessonData.LessonWordIndex];
 
-            KeyboardLogic.TryAddCharacter(metaData, keyboardData, balance, c, ref wordComplete, ref incorrectCharacter, currentWord);
+            KeyboardLogic.TryAddCharacter(metaData, keyboardData, balance, c, ref wordComplete, ref incorrectCharacter, currentWord, ref startTime);
 
             if (incorrectCharacter)
             {

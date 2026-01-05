@@ -570,7 +570,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b>arrow keys:</b> change flower
+  m_text: '<b>arrow keys:</b> pick flower
 
     <b>a-z:</b> plant seeds
 

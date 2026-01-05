@@ -17,7 +17,7 @@ MonoBehaviour:
   FlowerIcon: {fileID: 21300000, guid: acdc1d56c93144b6e8d32e0cdfa9957a, type: 3}
   FlowerName: Daisy
   SeedCost: 2
-  SellValue: 5
+  SellValue: 1
   GrowTime: 300
   FlowerFrames:
   - {fileID: 21300000, guid: 9a0f9e98bbfa14fb9a9bd16be10dbf22, type: 3}

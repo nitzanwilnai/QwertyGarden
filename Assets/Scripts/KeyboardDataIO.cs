@@ -31,7 +31,12 @@ namespace QwertyGarden
                     bw.Write(keyboardData.GrowTime[i]);
 
                 bw.Write(keyboardData.TypedWord);
-                bw.Write(keyboardData.WrongCount);
+
+                bw.Write(keyboardData.WrongLetter);
+                bw.Write(keyboardData.WordCount);
+                bw.Write(keyboardData.WordTime);
+                bw.Write(keyboardData.CorrectCount);
+                bw.Write(keyboardData.MistakeCount);
 
                 bw.Write(1234567);
             }
@@ -72,7 +77,12 @@ namespace QwertyGarden
                             keyboardData.GrowTime[i] = br.ReadSingle();
 
                         keyboardData.TypedWord = br.ReadString();
-                        keyboardData.WrongCount = br.ReadInt32();
+
+                        keyboardData.WrongLetter = br.ReadInt32();
+                        keyboardData.WordCount = br.ReadInt32();
+                        keyboardData.WordTime = br.ReadSingle();
+                        keyboardData.CorrectCount = br.ReadInt32();
+                        keyboardData.MistakeCount = br.ReadInt32();
 
                         int magic = br.ReadInt32();
                         Debug.Log("LoadKeyboard(" + index + ") magic " + magic);

@@ -40,6 +40,8 @@ namespace QwertyGarden
             KeyboardLogic.InitKeyboardData(m_keyboardData);
             LessonLogic.InitLessonData(m_lessonData, m_balance);
 
+            MetaDataIO.LoadMeta(m_metaData);
+
             m_mainMenuVisual.Init(UIMainMenu);
             m_keyboardSelectionVisual.Init(UIKeyboadSelection, m_balance);
             m_gardenSelectionVisual.Init(UIGardenSelection, m_balance, m_metaData);
@@ -52,8 +54,8 @@ namespace QwertyGarden
         void Start()
         {
             m_metaData.GameType = GAME_TYPE.COZY;
+            m_metaData.MenuState = MENU_STATE.MAIN_MENU;
             MetaDataIO.SaveMeta(m_metaData);
-
 
             SetMenuState(MENU_STATE.MAIN_MENU);
 

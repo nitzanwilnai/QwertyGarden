@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,7 +30,35 @@ namespace QwertyGarden
             for (int i = 0; i < 26; i++)
                 keyboardData.GrowTime[i] = 0.0f;
 
-            keyboardData.WrongCount = 0;
+            keyboardData.WrongLetter = 0;
+        }
+
+        public static int GetWPM(KeyboardData keyboardData)
+        {
+            return Mathf.RoundToInt(keyboardData.WordCount / (keyboardData.WordTime / 60.0f));
+        }
+
+        public static int GetAccuracy(KeyboardData keyboardData)
+        {
+            return Mathf.FloorToInt((keyboardData.CorrectCount - keyboardData.MistakeCount) / (float)keyboardData.CorrectCount * 100.0f);
+        }
+
+        public static float GetWPMBonus(KeyboardData keyboardData)
+        {
+            return 1.0f + keyboardData.WordCount / (keyboardData.WordTime / 60.0f) / 100.0f;
+        }
+
+        public static float GetAccuracyBonus(KeyboardData keyboardData)
+        {
+            return 1.0f + (keyboardData.CorrectCount - keyboardData.MistakeCount) / (float)keyboardData.CorrectCount;
+        }
+
+        public static void ResetWPMAndAccuracy(KeyboardData keyboardData)
+        {
+            keyboardData.WordCount = 0;
+            keyboardData.WordTime = 0.0f;
+            keyboardData.CorrectCount = 0;
+            keyboardData.MistakeCount = 0;
         }
 
         public static void IncrementCharacterCount(MetaData metaData, KeyboardData keyboardData, Balance balance, char c)
@@ -46,11 +75,19 @@ namespace QwertyGarden
             }
         }
 
-        public static void TryAddCharacter(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, ref bool wordComplete, ref bool incorrectCharacter, string currentWord)
+        public static void TryAddCharacter(MetaData metaData, KeyboardData keyboardData, Balance balance, char c, ref bool wordComplete, ref bool incorrectCharacter, string currentWord, ref float startTime)
         {
+            if (keyboardData.TypedWord.Length == 0)
+                startTime = Time.realtimeSinceStartup;
+
             if (currentWord[keyboardData.TypedWord.Length] != c)
             {
                 incorrectCharacter = true;
+
+                if (keyboardData.WrongLetter == 0)
+                {
+                    keyboardData.MistakeCount++;
+                }
 
                 // decrease flower
                 // if (keyboardData.WrongCount == 0)
@@ -60,18 +97,23 @@ namespace QwertyGarden
                 //     if (keyboardData.FlowerProgress[index] < 0)
                 //         keyboardData.FlowerProgress[index] = 0;
                 // }
-                keyboardData.WrongCount++;
+                keyboardData.WrongLetter++;
             }
             else
             {
                 IncrementCharacterCount(metaData, keyboardData, balance, c);
                 keyboardData.TypedWord += c;
-                keyboardData.WrongCount = 0;
+                keyboardData.WrongLetter = 0;
+
+                keyboardData.CorrectCount++;
 
                 if (string.Compare(keyboardData.TypedWord, currentWord) == 0)
                 {
                     wordComplete = true;
-                    keyboardData.WrongCount = 0;
+                    keyboardData.WrongLetter = 0;
+
+                    keyboardData.WordCount++;
+                    keyboardData.WordTime += Time.realtimeSinceStartup - startTime;
                 }
             }
         }

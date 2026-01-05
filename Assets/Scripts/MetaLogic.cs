@@ -21,7 +21,12 @@ namespace QwertyGarden
         {
             int totalSellValue = 0;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
-                totalSellValue += balance.FlowerSeedCost[flowerType] * keyboardData.FlowerCount[flowerType];
+                totalSellValue += balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
+
+            float accuracyBonus = KeyboardLogic.GetAccuracyBonus(keyboardData);
+            float wpmBonus = KeyboardLogic.GetWPMBonus(keyboardData);
+            totalSellValue = Mathf.FloorToInt(totalSellValue * accuracyBonus * wpmBonus);
+
             metaData.Coins += totalSellValue;
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)

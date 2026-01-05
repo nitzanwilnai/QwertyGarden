@@ -16,8 +16,8 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 2f0d3c038730e4e83a51adfe3985f308, type: 3}
   FlowerIcon: {fileID: 21300000, guid: df875859cd48848b49d36ef95a76b3bb, type: 3}
   FlowerName: Buttercup
-  SeedCost: 18
-  SellValue: 25
+  SeedCost: 2000
+  SellValue: 30
   GrowTime: 300
   FlowerFrames:
   - {fileID: 21300000, guid: 44542702491c24cfc949fec8270a4a30, type: 3}
