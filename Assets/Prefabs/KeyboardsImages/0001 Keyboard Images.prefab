@@ -1313,7 +1313,7 @@ GameObject:
   - component: {fileID: 4327311637543791227}
   - component: {fileID: 1834265101945943977}
   m_Layer: 5
-  m_Name: 0001 Keyboard
+  m_Name: 0001 Keyboard Images
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

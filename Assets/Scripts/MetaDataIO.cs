@@ -20,9 +20,14 @@ namespace QwertyGarden
                 bw.Write(metaData.Coins);
                 bw.Write((int)metaData.GameType);
                 bw.Write((int)metaData.MenuState);
+                bw.Write((int)metaData.PrevMenuState);
                 bw.Write(metaData.KeyboardIndex);
                 bw.Write(metaData.LastTimeStamp);
                 bw.Write(metaData.GrowTime);
+                bw.Write(metaData.TutorialFlags);
+
+                bw.Write(metaData.SFX);
+                bw.Write(metaData.Music);
             }
         }
 
@@ -35,12 +40,17 @@ namespace QwertyGarden
                 {
                     using (BinaryReader br = new BinaryReader(stream))
                     {
-                        metaData.Coins = br.ReadDecimal();
+                        metaData.Coins = br.ReadDouble();
                         metaData.GameType = (GAME_TYPE)br.ReadInt32();
                         metaData.MenuState = (MENU_STATE)br.ReadInt32();
+                        metaData.PrevMenuState = (MENU_STATE)br.ReadInt32();
                         metaData.KeyboardIndex = br.ReadInt32();
                         metaData.LastTimeStamp = br.ReadSingle();
                         metaData.GrowTime = br.ReadSingle();
+                        metaData.TutorialFlags = br.ReadInt32();
+
+                        metaData.SFX = br.ReadBoolean();
+                        metaData.Music = br.ReadBoolean();
                     }
                 }
             }

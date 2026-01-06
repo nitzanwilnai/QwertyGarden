@@ -16,12 +16,14 @@ namespace QwertyGarden
         public GameObject ShopCardPrefab;
         public GameObject ShopReceiptItem;
         public GameObject InGameUIFlower;
+        public GameObject UIFlowerPopup;
 
         public Color FlowerCardSelected;
         public Color FlowerCardUnselected;
         public Color ReceiptChangePositive;
         public Color ReceiptChangeNegative;
-
+        public Color FlowerPopupGreen;
+        public Color FlowerPopupRed;
         public static bool UseAssetBundles = false;
         AssetBundle m_commonBundle;
 

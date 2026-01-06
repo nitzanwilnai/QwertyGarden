@@ -16,6 +16,16 @@ public class FlowerSelectionVisual
         public TextMeshProUGUI Value;
     }
 
+    public class FlowerPopupGUI
+    {
+        public GameObject GO;
+        public TextMeshProUGUI FlowerName;
+        public TextMeshProUGUI SeedCost;
+        public TextMeshProUGUI SellValue;
+        public Image Outline;
+        public Image Flower;
+    }
+
     float m_flowerCardOffset = 270.0f;
     float m_slideVelocity = 2000.0f;
 
@@ -28,6 +38,8 @@ public class FlowerSelectionVisual
     GameObject[] m_flowerCards;
     Image[] m_flowerCardOutlines;
     ReceiptLineGUI[] m_receiptItems;
+
+    FlowerPopupGUI[] m_flowerPopups;
 
     Transform m_flowerCardParent;
 
@@ -54,6 +66,7 @@ public class FlowerSelectionVisual
 
         GUIRef guiRef = m_UI.GetComponent<GUIRef>();
         m_keyboardParent = guiRef.GetGameObject("Keyboard").transform;
+        Transform flowerPopupParent = guiRef.GetGameObject("FlowerPopup").transform;
 
         GUIRef receeiptGUIRef = guiRef.GetGameObject("Receipt").GetComponent<GUIRef>();
         m_totalCostText = receeiptGUIRef.GetTextGUI("Total");
@@ -83,6 +96,21 @@ public class FlowerSelectionVisual
             m_receiptItems[flowerType] = receiptLine;
             receiptLine.GO.SetActive(false);
         }
+
+        m_flowerPopups = new FlowerPopupGUI[26];
+        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+        {
+            m_flowerPopups[keyIdx] = new FlowerPopupGUI();
+            GameObject flowerPopupGO = GameObject.Instantiate(AssetManager.Instance.UIFlowerPopup, flowerPopupParent);
+            GUIRef popupGUIRef = flowerPopupGO.GetComponent<GUIRef>();
+            m_flowerPopups[keyIdx].GO = flowerPopupGO;
+            m_flowerPopups[keyIdx].SellValue = popupGUIRef.GetTextGUI("Sell");
+            m_flowerPopups[keyIdx].SeedCost = popupGUIRef.GetTextGUI("Cost");
+            m_flowerPopups[keyIdx].FlowerName = popupGUIRef.GetTextGUI("FlowerName");
+            m_flowerPopups[keyIdx].Flower = popupGUIRef.GetImage("Flower");
+            m_flowerPopups[keyIdx].Outline = popupGUIRef.GetImage("Outline");
+            m_flowerPopups[keyIdx].GO.SetActive(false);
+        }
     }
 
     public void Show(KeyboardData keyboardData)
@@ -94,10 +122,15 @@ public class FlowerSelectionVisual
         m_keyboardImage.transform.localPosition = Vector3.zero;
         m_keyboardImage.transform.SetAsFirstSibling();
 
-        for (int keyIndex = 0; keyIndex < 26; keyIndex++)
+        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
         {
-            int flowerType = keyboardData.FlowerType[keyIndex];
-            m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
+            int flowerType = keyboardData.FlowerType[keyIdx];
+            m_keyboardImage.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
+
+            m_flowerPopups[keyIdx].SellValue.text = balance.FlowerSellValue[flowerType].ToString("N0");
+            m_flowerPopups[keyIdx].SeedCost.text = balance.FlowerSeedCost[flowerType].ToString("N0");
+            m_flowerPopups[keyIdx].FlowerName.text = balance.FlowerName[flowerType];
+            m_flowerPopups[keyIdx].Flower.sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
         }
 
         updateReceiptItems();
@@ -127,7 +160,7 @@ public class FlowerSelectionVisual
             flowerCount[flowerType]++;
         }
 
-        decimal totalCost = 0;
+        double totalCost = 0;
         int itemCount = 0;
         for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
         {
@@ -141,9 +174,9 @@ public class FlowerSelectionVisual
 
         m_totalCostText.text = totalCost.ToString("N0") + " <sprite name=\"coin\">";
         m_currentCoinText.text = metaData.Coins.ToString("N0") + " <sprite name=\"coin\">";
-        decimal change = metaData.Coins - totalCost;
+        double change = metaData.Coins - totalCost;
         string symbol = change < 0 ? "-" : "";
-        decimal changeAbs = change < 0 ? -change : change;
+        double changeAbs = change < 0 ? -change : change;
         m_changeText.text = symbol + changeAbs.ToString("N0") + " <sprite name=\"coin\">";
         m_changeText.color = change >= 0 ? AssetManager.Instance.ReceiptChangePositive : AssetManager.Instance.ReceiptChangeNegative;
     }
@@ -213,6 +246,9 @@ public class FlowerSelectionVisual
 
                 updateReceiptItems();
             }
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                m_flowerPopups[keyIdx].GO.SetActive(keyIdx == keyIndex);
         }
     }
 }

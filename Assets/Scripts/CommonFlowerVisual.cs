@@ -26,27 +26,27 @@ namespace QwertyGarden
                 m_flowerCardOutlines[i].color = i != m_flowerType ? AssetManager.Instance.FlowerCardUnselected : AssetManager.Instance.FlowerCardSelected;
         }
 
-    public static void AddFlowerCard(Balance balance, int flowerType, GameObject flowerCard, Image[] flowerCardOutlines)
-    {
-        GUIRef flowerCardGUIRef = flowerCard.GetComponent<GUIRef>();
-        flowerCardGUIRef.GetTextGUI("FlowerName").text = balance.FlowerName[flowerType];
-        flowerCardGUIRef.GetTextGUI("Cost").text = balance.FlowerSeedCost[flowerType].ToString("N0") + " <sprite name=\"coin\">";
-        flowerCardGUIRef.GetTextGUI("Sell").text = balance.FlowerSellValue[flowerType].ToString("N0") + " <sprite name=\"coin\">";
-        float seconds = balance.FlowerGrowTime[flowerType];
-        TimeSpan t = TimeSpan.FromSeconds(seconds);
-        string growString = "";
-        if (t.Hours > 0)
-            growString += t.Hours + "h ";
-        if (t.Minutes > 0)
-            growString += t.Minutes + "m ";
-        if (t.Seconds > 0)
-            growString += t.Seconds + "s ";
-        flowerCardGUIRef.GetTextGUI("Time").text = balance.FlowerGrowTime[flowerType].ToString(growString);
-        flowerCardGUIRef.GetImage("Flower").sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
-        flowerCard.transform.localPosition = new Vector3(flowerType * 272.0f, 0.0f, 0.0f);
-        flowerCardOutlines[flowerType] = flowerCardGUIRef.GetImage("Outline");
-        flowerCardOutlines[flowerType].color = flowerType > 0 ? AssetManager.Instance.FlowerCardUnselected : AssetManager.Instance.FlowerCardSelected;
-    }
+        public static void AddFlowerCard(Balance balance, int flowerType, GameObject flowerCard, Image[] flowerCardOutlines)
+        {
+            GUIRef flowerCardGUIRef = flowerCard.GetComponent<GUIRef>();
+            flowerCardGUIRef.GetTextGUI("FlowerName").text = balance.FlowerName[flowerType];
+            flowerCardGUIRef.GetTextGUI("Cost").text = MetaLogic.ToShortScale(balance.FlowerSeedCost[flowerType]) + " <sprite name=\"coin\">";
+            flowerCardGUIRef.GetTextGUI("Sell").text = MetaLogic.ToShortScale(balance.FlowerSellValue[flowerType]) + " <sprite name=\"coin\">";
+            float seconds = balance.FlowerGrowTime[flowerType];
+            TimeSpan t = TimeSpan.FromSeconds(seconds);
+            string growString = "";
+            if (t.Hours > 0)
+                growString += t.Hours + "h ";
+            if (t.Minutes > 0)
+                growString += t.Minutes + "m ";
+            if (t.Seconds > 0)
+                growString += t.Seconds + "s ";
+            flowerCardGUIRef.GetTextGUI("Time").text = balance.FlowerGrowTime[flowerType].ToString(growString);
+            flowerCardGUIRef.GetImage("Flower").sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
+            flowerCard.transform.localPosition = new Vector3(flowerType * 272.0f, 0.0f, 0.0f);
+            flowerCardOutlines[flowerType] = flowerCardGUIRef.GetImage("Outline");
+            flowerCardOutlines[flowerType].color = flowerType > 0 ? AssetManager.Instance.FlowerCardUnselected : AssetManager.Instance.FlowerCardSelected;
+        }
 
     }
 }

@@ -45,11 +45,15 @@ namespace QwertyGarden
 
         public static float GetWPMBonus(KeyboardData keyboardData)
         {
+            if (keyboardData.WordTime <= 0.0f)
+                return 0.0f;
             return 1.0f + keyboardData.WordCount / (keyboardData.WordTime / 60.0f) / 100.0f;
         }
 
         public static float GetAccuracyBonus(KeyboardData keyboardData)
         {
+            if (keyboardData.CorrectCount == 0)
+                return 0.0f;
             return 1.0f + (keyboardData.CorrectCount - keyboardData.MistakeCount) / (float)keyboardData.CorrectCount;
         }
 

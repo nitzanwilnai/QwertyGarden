@@ -16,12 +16,14 @@ namespace QwertyGarden
         public GameObject UIGardenSelection;
         public GameObject UIKeyboardSelection;
         public GameObject UIEditFlowers;
+        public GameObject UISettings;
 
         MainMenuVisual m_mainMenuVisual = new();
         KeyboardSelectionVisual m_keyboardSelectionVisual = new();
         FlowerSelectionVisual m_flowerSelectionVisual = new();
         GardenSelectionVisual m_gardenSelectionVisual = new();
         EditFlowersVisual m_editFlowersVisual = new();
+        SettingsVisual m_settingsVisual = new();
 
         Balance m_balance = new Balance();
         LessonData m_lessonData = new LessonData();
@@ -42,12 +44,21 @@ namespace QwertyGarden
 
             MetaDataIO.LoadMeta(m_metaData);
 
-            m_mainMenuVisual.Init(UIMainMenu);
+            if (KeyboardDataIO.KeyboardDataExists(0))
+                LoadKeyboard(0);
+            else
+            {
+                LoadNewKeyboard(0);
+            }
+            MetaDataIO.SaveMeta(m_metaData);
+
+            m_mainMenuVisual.Init(UIMainMenu, m_metaData, m_keyboardData, m_balance);
             m_keyboardSelectionVisual.Init(UIKeyboadSelection, m_balance);
             m_gardenSelectionVisual.Init(UIGardenSelection, m_balance, m_metaData);
             m_flowerSelectionVisual.Init(UIFlowerSelection, m_metaData, m_balance);
             m_keyboardSelectionVisual.Init(UIKeyboardSelection, m_balance);
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_balance);
+            m_settingsVisual.Init(UISettings, m_metaData);
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -77,6 +88,8 @@ namespace QwertyGarden
             m_metaData.KeyboardIndex = keyboardIndex;
             MetaDataIO.SaveMeta(m_metaData);
             KeyboardLogic.InitKeyboardData(m_keyboardData);
+            CozyLogic.StartCozy(m_keyboardData, m_metaData, m_balance);
+            KeyboardDataIO.SaveKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
         }
 
         public void SetMenuState(MENU_STATE newMenuState)
@@ -93,7 +106,10 @@ namespace QwertyGarden
                 m_editFlowersVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
+                m_settingsVisual.Hide();
 
+            m_metaData.PrevMenuState = m_metaData.MenuState;
             m_metaData.MenuState = newMenuState;
 
             MetaDataIO.SaveMeta(m_metaData);
@@ -110,6 +126,8 @@ namespace QwertyGarden
                 m_editFlowersVisual.Show(m_keyboardData);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.PlayCozy(m_keyboardData);
+            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
+                m_settingsVisual.Show();
         }
 
         // Update is called once per frame
@@ -127,11 +145,18 @@ namespace QwertyGarden
                 m_flowerSelectionVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
                 m_editFlowersVisual.Tick(dt);
+            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
+                m_settingsVisual.Tick();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Tick(dt);
 
-
 #if UNITY_EDITOR
+            if (Keyboard.current.deleteKey.wasPressedThisFrame)
+                Debug.Log("delete key pressed!");
+            if (Keyboard.current.backspaceKey.wasPressedThisFrame)
+                Debug.Log("back space key pressed!");
+
+
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 if (!Directory.Exists("Screenshots"))

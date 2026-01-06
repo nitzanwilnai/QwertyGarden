@@ -143,7 +143,7 @@ public class GardenSelectionVisual
                     Game.Instance.SetMenuState(MENU_STATE.KEYBOARD_SELECTION);
                 }
             }
-            else if (Keyboard.current.escapeKey.wasReleasedThisFrame)
+            else if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
             {
                 Game.Instance.SetMenuState(MENU_STATE.MAIN_MENU);
             }

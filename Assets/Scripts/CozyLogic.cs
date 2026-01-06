@@ -7,6 +7,11 @@ namespace QwertyGarden
 {
     public static class CozyLogic
     {
+        public static void StartCozy(KeyboardData keyboardData, MetaData metaData, Balance balance)
+        {
+            commonStartCozy(metaData, keyboardData, balance, 0);
+        }
+
         public static bool TryStartCozy(KeyboardData keyboardData, MetaData metaData, Balance balance)
         {
             Span<int> flowerCount = stackalloc int[balance.NumFlowers];
@@ -15,7 +20,7 @@ namespace QwertyGarden
                 int flowerType = keyboardData.FlowerType[keyIdx];
                 flowerCount[flowerType]++;
             }
-            decimal totalCost = 0;
+            double totalCost = 0;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
                 if (flowerCount[flowerType] > 0)
                     totalCost += balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
@@ -31,7 +36,7 @@ namespace QwertyGarden
 
         public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance, int[] newFlowerType)
         {
-            decimal totalCost = 0;
+            double totalCost = 0;
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
                 if (newFlowerType[keyIdx] != keyboardData.FlowerType[keyIdx])
@@ -53,7 +58,7 @@ namespace QwertyGarden
             return false;
         }
 
-        static void commonStartCozy(MetaData metaData, KeyboardData keyboardData, Balance balance, decimal totalCost)
+        static void commonStartCozy(MetaData metaData, KeyboardData keyboardData, Balance balance, double totalCost)
         {
             metaData.Coins -= totalCost;
             KeyboardLogic.StartGame(keyboardData);
