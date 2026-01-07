@@ -248,7 +248,7 @@ namespace QwertyGarden
 
             int wpm = KeyboardLogic.GetWPM(keyboardData);
             int accuracy = KeyboardLogic.GetAccuracy(keyboardData);
-            m_WPMText.text = "WPM: " + wpm + " \tAccuracy: " + accuracy + "%";
+            m_WPMText.text = "WPM: " + wpm + "\nAccuracy: " + accuracy + "%";
 
             bool collected = false;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
