@@ -17,6 +17,8 @@ namespace QwertyGarden
 
         TutorialGUI m_tutorialGUI = new TutorialGUI();
 
+        GameObject m_prestigeGO;
+
         MetaData metaData;
         KeyboardData keyboardData;
         Balance balance;
@@ -33,6 +35,7 @@ namespace QwertyGarden
             GUIRef guiRef = m_UI.GetComponent<GUIRef>();
             m_keyboardParent = guiRef.GetGameObject("KeyboardParent").transform;
             CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
+            m_prestigeGO = guiRef.GetGameObject("Prestige");
 
             GameObject topBarGO = guiRef.GetGameObject("TopBar");
             m_coinsText = topBarGO.GetComponent<GUIRef>().GetTextGUI("Coins");
@@ -44,7 +47,7 @@ namespace QwertyGarden
 
             m_keyboardImages = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
             m_keyboardImages.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
-            m_keyboardImages.transform.localPosition = Vector3.zero;
+            m_keyboardImages.transform.localPosition = new Vector3(0.0f, 384.0f, 0.0f);
             m_keyboardImages.transform.SetAsFirstSibling();
 
             for (int keyIndex = 0; keyIndex < 26; keyIndex++)
@@ -52,10 +55,13 @@ namespace QwertyGarden
                 int flowerType = keyboardData.FlowerType[keyIndex];
                 int progress = keyboardData.FlowerProgress[keyIndex];
                 m_keyboardImages.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerProgress(balance.FlowerName[flowerType], balance.FlowerFrames[flowerType][progress]);
+                m_keyboardImages.KeyPct[keyIndex].SetActive(false);
             }
 
             m_coinsText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
             // m_coinsText.text = Decimal.MaxValue.ToString("N0");
+
+            m_prestigeGO.SetActive(metaData.ShowPrestige);
 
             CommonVisual.CheckTutorialFlag(metaData, m_tutorialGUI);
         }
@@ -73,20 +79,25 @@ namespace QwertyGarden
                 {
 
                 }
-                else if (Keyboard.current.enterKey.wasReleasedThisFrame)
+                else if (!m_tutorialGUI.TutorialShown)
                 {
-                    Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                    if (Keyboard.current.enterKey.wasReleasedThisFrame)
+                    {
+                        Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                    }
+                    else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+                    {
+                        Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN);
+                    }
+                    else if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                    {
+                        Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
+                    }
+                    else if (metaData.ShowPrestige && Keyboard.current.backspaceKey.wasReleasedThisFrame)
+                    {
+                        Game.Instance.SetMenuState(MENU_STATE.PRESTIGE);
+                    }
                 }
-                else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN);
-                }
-                else if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
-                }
-
-
             }
         }
     }

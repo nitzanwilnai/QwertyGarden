@@ -26,6 +26,9 @@ namespace QwertyGarden
                 bw.Write(metaData.GrowTime);
                 bw.Write(metaData.TutorialFlags);
 
+                bw.Write(metaData.ShowPrestige);
+                bw.Write(metaData.Prestige);
+
                 bw.Write(metaData.SFX);
                 bw.Write(metaData.Music);
             }
@@ -48,6 +51,9 @@ namespace QwertyGarden
                         metaData.LastTimeStamp = br.ReadSingle();
                         metaData.GrowTime = br.ReadSingle();
                         metaData.TutorialFlags = br.ReadInt32();
+
+                        metaData.ShowPrestige = br.ReadBoolean();
+                        metaData.Prestige = br.ReadInt32();
 
                         metaData.SFX = br.ReadBoolean();
                         metaData.Music = br.ReadBoolean();

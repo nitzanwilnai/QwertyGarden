@@ -28,6 +28,8 @@ namespace QwertyGarden
                 for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.FlowerCount[i]);
                 for (int i = 0; i < 26; i++)
+                    bw.Write(keyboardData.PrestigeCount[i]);
+                for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.GrowTime[i]);
 
                 bw.Write(keyboardData.TypedWord);
@@ -72,6 +74,9 @@ namespace QwertyGarden
 
                         for (int i = 0; i < maxFlowers; i++)
                             keyboardData.FlowerCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.PrestigeCount[i] = br.ReadInt32();
 
                         for (int i = 0; i < maxFlowers; i++)
                             keyboardData.GrowTime[i] = br.ReadSingle();

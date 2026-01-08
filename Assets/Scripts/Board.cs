@@ -92,6 +92,7 @@ namespace QwertyGarden
         float m_wordStartTime;
 
         TutorialGUI m_tutorialGUI = new TutorialGUI();
+        GameObject m_instructionGO;
 
         LessonData lessonData;
         MetaData metaData;
@@ -114,6 +115,7 @@ namespace QwertyGarden
 
             m_collectedGO = guiRef.GetGameObject("Collected");
             m_notCollectedGO = guiRef.GetGameObject("NotCollected");
+            m_instructionGO = guiRef.GetGameObject("Instructions");
 
             CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
 
@@ -193,6 +195,8 @@ namespace QwertyGarden
             KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
             m_showInvoice = false;
+            m_instructionGO.SetActive(true);
+            m_tutorialGUI.GO.SetActive(true);
             m_inoviceGUI.InoviceGO.SetActive(false);
 
             m_keyboardRef = Instantiate(AssetManager.Instance.KeyboardRefs[keyboardData.KeyboardType], SpriteParent);
@@ -291,6 +295,10 @@ namespace QwertyGarden
                     else if (Keyboard.current.enterKey.wasReleasedThisFrame)
                     {
                         m_showInvoice = false;
+
+                        m_instructionGO.SetActive(true);
+                        m_tutorialGUI.GO.SetActive(true);
+
                         m_inoviceGUI.InoviceGO.SetActive(false);
                         m_tutorialGUI.Darken.SetActive(false);
 
@@ -365,6 +373,8 @@ namespace QwertyGarden
                             else if (Keyboard.current.enterKey.wasReleasedThisFrame)
                             {
                                 m_showInvoice = true;
+                                m_instructionGO.SetActive(false);
+                                m_tutorialGUI.GO.SetActive(false);
                                 m_tutorialGUI.Darken.SetActive(true);
                                 m_inoviceGUI.InoviceGO.SetActive(true);
                                 m_newCoinsText.text = "";
@@ -460,9 +470,6 @@ namespace QwertyGarden
                 CozyLogic.GameTyping(metaData, keyboardData, balance, c, out wordComplete, out incorrectCharacter, ref m_wordStartTime);
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
-                for (int i = 0; i < 26; i++)
-                    if (keyboardData.FlowerProgress[i] >= balance.MaxFlowerFrames)
-                        Debug.LogError("keyboardData.FlowerProgress[" + i + "] " + keyboardData.FlowerProgress[i]);
                 KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
                 // int charIndex = incorrectCharacter ? currentWord[keyboardData.TypedWord.Length] - 65 : char.ToUpper(c) - 65;

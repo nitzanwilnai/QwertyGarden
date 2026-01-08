@@ -108,5 +108,16 @@ namespace QwertyGarden
                 return value.ToString("0.0");    // 2 digits + 1 decimal
             return value.ToString("0.00");       // 1 digit + 2 decimals
         }
+
+        public static void TryShowPrestige(MetaData metaData)
+        {
+            if (metaData.Coins >= 1000)
+                metaData.ShowPrestige = true;
+        }
+
+        public static void Prestige(MetaData metaData, KeyboardData keyboardData)
+        {
+            
+        }
     }
 }

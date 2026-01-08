@@ -11,6 +11,7 @@ namespace QwertyGarden
             keyboardData.CharacterCount = new int[26];
             keyboardData.FlowerProgress = new int[26];
             keyboardData.FlowerCount = new int[26];
+            keyboardData.PrestigeCount = new int[26];
             keyboardData.GrowTime = new float[26];
             keyboardData.FlowerType = new int[26];
             keyboardData.TypedWord = "";
@@ -21,6 +22,11 @@ namespace QwertyGarden
             for (int i = 0; i < 26; i++)
                 keyboardData.CharacterCount[i] = 0;
 
+            ContinueGame(keyboardData);
+        }
+
+        public static void ContinueGame(KeyboardData keyboardData)
+        {
             for (int i = 0; i < 26; i++)
                 keyboardData.FlowerProgress[i] = 0;
 
@@ -67,13 +73,22 @@ namespace QwertyGarden
 
         public static void IncrementCharacterCount(MetaData metaData, KeyboardData keyboardData, Balance balance, char c)
         {
-            int index = c - 65;
-            int flowerType = keyboardData.FlowerType[index];
-            keyboardData.CharacterCount[index]++;
-            keyboardData.FlowerProgress[index]++;
-            if (keyboardData.FlowerProgress[index] >= balance.MaxFlowerFrames)
+            int keyIndex = c - 65;
+            int flowerType = keyboardData.FlowerType[keyIndex];
+            keyboardData.CharacterCount[keyIndex]++;
+            keyboardData.FlowerProgress[keyIndex]++;
+            if (keyboardData.FlowerProgress[keyIndex] >= balance.MaxFlowerFrames)
             {
-                keyboardData.FlowerProgress[index] = 0;
+                if (keyboardData.PrestigeCount[keyIndex] >= metaData.Prestige)
+                {
+                    keyboardData.FlowerProgress[keyIndex] = 0;
+                    keyboardData.PrestigeCount[keyIndex] = 0;
+                }
+                else
+                {
+                    keyboardData.FlowerProgress[keyIndex] = balance.MaxFlowerFrames - 1;
+                    keyboardData.PrestigeCount[keyIndex]++;
+                }
                 keyboardData.FlowerCount[flowerType]++;
                 // metaData.Coins += balance.FlowerSellValue[flowerType];
             }

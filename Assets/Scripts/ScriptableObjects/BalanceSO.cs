@@ -7,4 +7,7 @@ public class BalanceSO : ScriptableObject
     public FlowerSO[] Flowers;
     public int KeyboardStartingPrice = 10;
     public float KeyboardPriceIncrease = 2.5f;
+
+    public double PrestigeCost;
+    public double PrestigeMultiplier;
 }

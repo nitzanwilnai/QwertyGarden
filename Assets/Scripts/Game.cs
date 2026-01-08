@@ -17,6 +17,7 @@ namespace QwertyGarden
         public GameObject UIKeyboardSelection;
         public GameObject UIEditFlowers;
         public GameObject UISettings;
+        public GameObject UIPrestige;
 
         MainMenuVisual m_mainMenuVisual = new();
         KeyboardSelectionVisual m_keyboardSelectionVisual = new();
@@ -24,6 +25,7 @@ namespace QwertyGarden
         GardenSelectionVisual m_gardenSelectionVisual = new();
         EditFlowersVisual m_editFlowersVisual = new();
         SettingsVisual m_settingsVisual = new();
+        PrestigeVisual m_prestigeVisual = new();
 
         Balance m_balance = new Balance();
         LessonData m_lessonData = new LessonData();
@@ -44,6 +46,8 @@ namespace QwertyGarden
 
             MetaDataIO.LoadMeta(m_metaData);
 
+            m_metaData.Prestige = 15;
+
             if (KeyboardDataIO.KeyboardDataExists(0))
                 LoadKeyboard(0);
             else
@@ -59,6 +63,7 @@ namespace QwertyGarden
             m_keyboardSelectionVisual.Init(UIKeyboardSelection, m_balance);
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_balance);
             m_settingsVisual.Init(UISettings, m_metaData);
+            m_prestigeVisual.Init(UIPrestige, m_metaData, m_keyboardData, m_balance);
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -108,6 +113,8 @@ namespace QwertyGarden
                 Board.Hide();
             else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
                 m_settingsVisual.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
+                m_prestigeVisual.Hide();
 
             m_metaData.PrevMenuState = m_metaData.MenuState;
             m_metaData.MenuState = newMenuState;
@@ -128,6 +135,8 @@ namespace QwertyGarden
                 Board.PlayCozy(m_keyboardData);
             else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
                 m_settingsVisual.Show();
+            else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
+                m_prestigeVisual.Show();
         }
 
         // Update is called once per frame
@@ -147,6 +156,8 @@ namespace QwertyGarden
                 m_editFlowersVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
                 m_settingsVisual.Tick();
+            else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
+                m_prestigeVisual.Tick();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Tick(dt);
 
