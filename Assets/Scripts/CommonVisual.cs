@@ -1,4 +1,5 @@
 using CommonTools;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -70,6 +71,13 @@ namespace QwertyGarden
                 }
             }
             return false;
+        }
+
+        public static void UpdateSettingsText(MetaData metaData, TextMeshProUGUI SettingsText)
+        {
+            string sfxOn = metaData.SFX ? "on" : "off";
+            string musicOn = metaData.Music ? "on" : "off";
+            SettingsText.text = "<b>1</b> sfx " + sfxOn + "\n<b>2</b> music " + musicOn;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace QwertyGarden
 
             MetaDataIO.LoadMeta(m_metaData);
 
-            m_metaData.Prestige = 15;
+            // m_metaData.Prestige = 15;
 
             if (KeyboardDataIO.KeyboardDataExists(0))
                 LoadKeyboard(0);

@@ -278,7 +278,7 @@ namespace QwertyGarden
 
         public void Tick(float dt)
         {
-            // resizeKeyboardForResolution();
+            resizeKeyboardForResolution();
 
             if (m_showInvoice)
             {
@@ -370,7 +370,7 @@ namespace QwertyGarden
                                 else if (metaData.GameType == GAME_TYPE.COZY)
                                     gameTextInput(keyIndex, Char.ToUpper(c));
                             }
-                            else if (Keyboard.current.enterKey.wasReleasedThisFrame)
+                            else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
                             {
                                 m_showInvoice = true;
                                 m_instructionGO.SetActive(false);
@@ -444,7 +444,7 @@ namespace QwertyGarden
             // float keyboardScale = 0.9f;
             float ratio = (float)Screen.width / (float)Screen.height;
             // float defaultRatio = 16.0f / 9.0f;
-            float keyboardScale = 0.9f - Mathf.Clamp01((1.78f - ratio) / 0.78f) * 0.3f;
+            float keyboardScale = 1.0f - Mathf.Clamp01((1.78f - ratio) / 0.78f) * 0.4f;
             m_keyboardRef.transform.localScale = new Vector3(keyboardScale, keyboardScale, 1.0f);
         }
 
