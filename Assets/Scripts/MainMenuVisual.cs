@@ -15,11 +15,13 @@ namespace QwertyGarden
 
         TextMeshProUGUI m_coinsText;
         TextMeshProUGUI m_settingsText;
+        TextMeshProUGUI m_prestigeTotal;
         GameObject m_spaceGO;
 
         TutorialGUI m_tutorialGUI = new TutorialGUI();
 
         GameObject m_prestigeGO;
+        TextMeshProUGUI m_poststigeText;
 
         MetaData metaData;
         KeyboardData keyboardData;
@@ -38,8 +40,10 @@ namespace QwertyGarden
             m_keyboardParent = guiRef.GetGameObject("KeyboardParent").transform;
             CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
             m_prestigeGO = guiRef.GetGameObject("Prestige");
+            m_poststigeText = guiRef.GetTextGUI("Prestige");
             m_settingsText = guiRef.GetTextGUI("Settings");
             m_spaceGO = guiRef.GetGameObject("Space");
+            m_prestigeTotal = guiRef.GetTextGUI("PrestigeTotal");
 
             GameObject topBarGO = guiRef.GetGameObject("TopBar");
             m_coinsText = topBarGO.GetComponent<GUIRef>().GetTextGUI("Coins");
@@ -65,8 +69,13 @@ namespace QwertyGarden
             m_coinsText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
             // m_coinsText.text = Decimal.MaxValue.ToString("N0");
 
+            m_poststigeText.text = "<color=#C0392B><b>backspace</b> prestige! " + MetaLogic.ToShortScale(MetaLogic.GetPrestigeCost(metaData, balance)) + " </color><sprite name=coin>";
+
+            m_prestigeTotal.text = metaData.Prestige > 0 ? ("prestige +" + metaData.Prestige) : "";
+
             m_spaceGO.SetActive(metaData.Coins > 0);
 
+            MetaLogic.TryShowPrestige(metaData);
             m_prestigeGO.SetActive(metaData.ShowPrestige);
 
             CommonVisual.CheckTutorialFlag(metaData, m_tutorialGUI);

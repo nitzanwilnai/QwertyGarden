@@ -50,7 +50,12 @@ namespace QwertyGarden
                     }
                     m_lineIndex++;
                     if (m_lineIndex >= InvoiceLines.Length)
+                    {
+                        SoundManager.Instance.PlaySFXReceiptTotal();
                         m_playAnimation = false;
+                    }
+                    else
+                        SoundManager.Instance.PlaySFXReceiptLine();
                 }
             }
         }

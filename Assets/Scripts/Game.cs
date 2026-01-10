@@ -46,6 +46,9 @@ namespace QwertyGarden
 
             MetaDataIO.LoadMeta(m_metaData);
 
+            SoundManager.Instance.Init(m_metaData);
+            MusicManager.Instance.Init(m_metaData);
+
             // m_metaData.Prestige = 15;
 
             if (KeyboardDataIO.KeyboardDataExists(0))
@@ -176,6 +179,12 @@ namespace QwertyGarden
                 DateTimeOffset now = DateTime.UtcNow;
                 string name = "Screenshots/" + Screen.width + "x" + Screen.height + "_" + now.ToString("yyyy-MM-dd HH.mm.ss") + ".png";
                 ScreenCapture.CaptureScreenshot(name);
+            }
+
+            if (Keyboard.current.equalsKey.wasPressedThisFrame)
+            {
+                m_metaData.Coins += 1000;
+                SoundManager.Instance.PlaySFXMoney();
             }
 #endif
         }

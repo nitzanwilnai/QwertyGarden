@@ -57,6 +57,9 @@ namespace QwertyGarden
 
                         metaData.SFX = br.ReadBoolean();
                         metaData.Music = br.ReadBoolean();
+
+                        //TEST
+                        metaData.TutorialFlags = 0;
                     }
                 }
             }

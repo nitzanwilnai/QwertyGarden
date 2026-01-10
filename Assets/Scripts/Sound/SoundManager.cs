@@ -6,20 +6,13 @@ namespace QwertyGarden
     public class SoundManager : Singleton<SoundManager>
     {
         AudioSource m_audioSource;
-        public AudioClip SFXMarbleMarble;
-        public AudioClip SFXMarbleSlot;
-        public AudioClip SFXMarbleInSlot;
-        public AudioClip SFXScoring;
-        public AudioClip SFXScoringTotal;
         public AudioClip SFXMoney;
-        public AudioClip SFXWheelSpin;
-        public AudioClip SFXButtonOK;
+        public AudioClip SFXFlowerCollected;
         public AudioClip SFXButtonCancel;
-        public AudioClip SFXGameOver;
-        public AudioClip SFXWinRound;
-        public AudioClip SFXWinGame;
-        public AudioClip SFXGateOpen;
-
+        public AudioClip SFXPrestige;
+        public AudioClip SFXReceiptLine;
+        public AudioClip SFXReceiptTotal;
+        
         bool m_sfxExists;
 
         MetaData metaData;
@@ -29,7 +22,7 @@ namespace QwertyGarden
         {
             base.Awake();
 
-            if (SFXMarbleMarble == null)
+            if (SFXMoney == null)
                 m_sfxExists = false;
             else
                 m_sfxExists = true;
@@ -42,10 +35,40 @@ namespace QwertyGarden
             this.metaData = metaData;
         }
 
-        public void PlaySFXMarbleMarble()
+        public void PlaySFXMoney()
         {
             if (m_sfxExists && metaData.SFX)
-                m_audioSource.PlayOneShot(SFXMarbleMarble);
+                m_audioSource.PlayOneShot(SFXMoney);
+        }
+
+        public void PlaySFXFlowerCollected()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXFlowerCollected);
+        }
+
+        public void PlaySFXFButtonCancel()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXButtonCancel);
+        }
+
+        public void PlaySFXFPrestige()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXPrestige);
+        }
+
+        public void PlaySFXReceiptLine()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXReceiptLine);
+        }
+
+        public void PlaySFXReceiptTotal()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXReceiptTotal);
         }
     }
 }

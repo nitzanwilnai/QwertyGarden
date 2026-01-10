@@ -4,8 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.MPE;
+using System.Collections;
 
 namespace QwertyGarden
 {
@@ -37,6 +36,7 @@ namespace QwertyGarden
 
         Transform m_keyboardParent;
         Transform m_cardsParent;
+        float m_cardsParentTargetX;
 
         ReceiptLineGUI[] m_receiptItems;
 
@@ -46,11 +46,17 @@ namespace QwertyGarden
         TextMeshProUGUI m_changeText;
         TextMeshProUGUI m_currentCoinText;
         Animation m_changeAnimation;
+        TextMeshProUGUI m_settingsText;
 
         float m_currentX;
         float m_targetX;
+        float[] m_currentScale;
+        float[] m_targetScale;
+        int m_keyIdx;
+        int m_flowerType;
 
-        int[] m_newFlowerType = new int[26];
+
+        int[] m_newFlowerTypes = new int[26];
 
         TutorialGUI m_tutorialGUI = new TutorialGUI();
 
@@ -73,6 +79,7 @@ namespace QwertyGarden
             GUIRef guiRef = m_UI.GetComponent<GUIRef>();
             m_keyboardParent = guiRef.GetGameObject("Keyboard").transform;
             m_line = guiRef.GetGameObject("Line").GetComponent<RectTransform>();
+            m_settingsText = guiRef.GetTextGUI("Settings");
 
             CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
 
@@ -110,7 +117,7 @@ namespace QwertyGarden
                 m_flowerPopupGUI[flowerType].FlowerName = popupGUIRef.GetTextGUI("FlowerName");
                 m_flowerPopupGUI[flowerType].Flower = popupGUIRef.GetImage("Flower");
                 m_flowerPopupGUI[flowerType].Outline = popupGUIRef.GetImage("Outline");
-                m_flowerPopupGUI[flowerType].GO.SetActive(true);
+                m_flowerPopupGUI[flowerType].GO.SetActive(false);
                 m_flowerPopupGUI[flowerType].GO.transform.localScale = Vector3.one;
                 m_flowerPopupGUI[flowerType].GO.transform.localPosition = new Vector3(288.0f * flowerType, 0.0f, 0.0f);
 
@@ -119,6 +126,9 @@ namespace QwertyGarden
                 m_flowerPopupGUI[flowerType].FlowerName.text = balance.FlowerName[flowerType];
                 m_flowerPopupGUI[flowerType].Flower.sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
             }
+
+            m_currentScale = new float[balance.NumFlowers];
+            m_targetScale = new float[balance.NumFlowers];
         }
 
         public void Show(KeyboardData keyboardData)
@@ -136,10 +146,19 @@ namespace QwertyGarden
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
                 int flowerType = keyboardData.FlowerType[keyIdx];
-                m_newFlowerType[keyIdx] = flowerType;
+                m_newFlowerTypes[keyIdx] = flowerType;
                 m_keyboardImage.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
                 m_keyboardImage.KeyPct[keyIdx].SetActive(false);
                 m_keyboardImage.KeyPctText[keyIdx] = m_keyboardImage.KeyPct[keyIdx].GetComponentInChildren<TextMeshProUGUI>();
+            }
+
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                m_flowerPopupGUI[flowerType].GO.SetActive(false);
+
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+            {
+                m_currentScale[flowerType] = 1.0f;
+                m_targetScale[flowerType] = 1.0f;
             }
 
             updateReceiptItems();
@@ -156,30 +175,6 @@ namespace QwertyGarden
             GameObject.Destroy(m_keyboardImage.gameObject);
         }
 
-        double calculateChange()
-        {
-            Span<int> flowerCount = stackalloc int[balance.NumFlowers];
-            for (int keyIdx = 0; keyIdx < balance.NumFlowers; keyIdx++)
-                flowerCount[keyIdx] = 0;
-
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                if (m_newFlowerType[keyIdx] != keyboardData.FlowerType[keyIdx])
-                    flowerCount[m_newFlowerType[keyIdx]]++;
-
-            double totalCost = 0;
-            int itemCount = 0;
-            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
-            {
-                int itemCost = balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
-                totalCost += itemCost;
-                m_receiptItems[itemCount].Item.text = balance.FlowerName[flowerType] + " x " + flowerCount[flowerType];
-                m_receiptItems[itemCount].Value.text = MetaLogic.ToShortScale(itemCost) + " <sprite name=\"coin\">";
-                m_receiptItems[itemCount].GO.SetActive(flowerCount[flowerType] > 0);
-                itemCount++;
-            }
-            return metaData.Coins - totalCost;
-        }
-
         void updateReceiptItems()
         {
             for (int i = 0; i < m_receiptItems.Length; i++)
@@ -189,21 +184,31 @@ namespace QwertyGarden
             for (int keyIdx = 0; keyIdx < balance.NumFlowers; keyIdx++)
                 flowerCount[keyIdx] = 0;
 
+            Span<int> flowerCost = stackalloc int[balance.NumFlowers];
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                if (m_newFlowerType[keyIdx] != keyboardData.FlowerType[keyIdx])
-                    flowerCount[m_newFlowerType[keyIdx]]++;
+            {
+                int newFlowerType = m_newFlowerTypes[keyIdx];
+                int oldFlowerType = keyboardData.FlowerType[keyIdx];
+                if (newFlowerType != oldFlowerType)
+                {
+                    flowerCost[newFlowerType] += balance.FlowerSeedCost[newFlowerType];
+                    flowerCount[newFlowerType]++;
+                    // flowerCost[oldFlowerType] -= balance.FlowerSeedCost[oldFlowerType];
+                    // flowerCount[oldFlowerType]--;
+                }
+            }
 
-            double totalCost = 0;
             int itemCount = 0;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                int itemCost = balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
-                totalCost += itemCost;
+                int itemCost = flowerCost[flowerType];
                 m_receiptItems[itemCount].Item.text = balance.FlowerName[flowerType] + " x " + flowerCount[flowerType];
                 m_receiptItems[itemCount].Value.text = MetaLogic.ToShortScale(itemCost) + " <sprite name=\"coin\">";
                 m_receiptItems[itemCount].GO.SetActive(flowerCount[flowerType] > 0);
                 itemCount++;
             }
+
+            double totalCost = CozyLogic.CalculateCurrentGardenCost(keyboardData, balance, m_newFlowerTypes);
             double change = metaData.Coins - totalCost;
 
             m_totalCostText.text = MetaLogic.ToShortScale(totalCost) + " <sprite name=\"coin\">";
@@ -216,107 +221,166 @@ namespace QwertyGarden
 
         public void Tick(float dt)
         {
+            bool moveCards = false;
             if (m_currentX < m_targetX)
             {
                 m_currentX += dt * m_slideVelocity;
                 if (m_currentX >= m_targetX)
                     m_currentX = m_targetX;
+                moveCards = true;
             }
             if (m_currentX > m_targetX)
             {
                 m_currentX -= dt * m_slideVelocity;
                 if (m_currentX <= m_targetX)
                     m_currentX = m_targetX;
+                moveCards = true;
             }
+
+            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+            {
+                if (m_currentScale[flowerType] < m_targetScale[flowerType])
+                {
+                    m_currentScale[flowerType] += dt;
+                    if (m_currentScale[flowerType] > m_targetScale[flowerType])
+                        m_currentScale[flowerType] = m_targetScale[flowerType];
+                }
+                if (m_currentScale[flowerType] > m_targetScale[flowerType])
+                {
+                    m_currentScale[flowerType] -= dt;
+                    if (m_currentScale[flowerType] < m_targetScale[flowerType])
+                        m_currentScale[flowerType] = m_targetScale[flowerType];
+                }
+                m_flowerPopupGUI[flowerType].GO.transform.localScale = new Vector3(m_currentScale[flowerType], m_currentScale[flowerType], 1.0f);
+            }
+
+            // if (moveCards)
+            {
+                Vector3 cardPosition = m_flowerPopupGUI[m_flowerType].GO.transform.position;
+                cardPosition.y -= m_flowerPopupGUI[m_flowerType].GO.GetComponent<RectTransform>().rect.height / 2.0f;
+                SetLine(m_line, WorldToCanvas(m_canvas.GetComponent<RectTransform>(), cardPosition), WorldToCanvas(m_canvas.GetComponent<RectTransform>(), m_keyboardImage.KeyImages[m_keyIdx].transform.position));
+                m_cardsParent.transform.localPosition = new Vector3(m_currentX, -192.0f, 0.0f);
+            }
+
+
             if (Keyboard.current != null)
             {
                 if (CommonVisual.CheckTutorialKey(m_tutorialGUI))
                 {
 
                 }
-                else if (Keyboard.current.enterKey.wasReleasedThisFrame)
+                else if (!m_tutorialGUI.TutorialShown)
                 {
-                    if (CozyLogic.TryEditCozy(keyboardData, metaData, balance, m_newFlowerType))
+                    if (Keyboard.current.enterKey.wasReleasedThisFrame)
                     {
-                        MetaDataIO.SaveMeta(metaData);
-                        KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
-                        Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                        if (CozyLogic.TryEditCozy(keyboardData, metaData, balance, m_newFlowerTypes))
+                        {
+                            SoundManager.Instance.PlaySFXMoney();
+                            MetaDataIO.SaveMeta(metaData);
+                            KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
+                            Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlaySFXFButtonCancel();
+                            m_changeAnimation.Play("Grow");
+                        }
                     }
-                    else
+                    else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                     {
-                        m_changeAnimation.Play("Grow");
+                        metaData.SFX = !metaData.SFX;
+                        CommonVisual.UpdateSettingsText(metaData, m_settingsText);
                     }
-                }
-                else if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
-                }
-                else if (Keyboard.current.tabKey.wasPressedThisFrame)
-                {
-                    int totalCharCount = 0;
-                    for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                        totalCharCount += keyboardData.CharacterCount[keyIdx];
+                    else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                    {
+                        metaData.Music = !metaData.Music;
+                        CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                    }
+                    else if (Keyboard.current.tabKey.wasPressedThisFrame)
+                    {
+                        int totalCharCount = 0;
+                        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                            totalCharCount += keyboardData.CharacterCount[keyIdx];
 
-                    for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                    {
-                        float pct = Mathf.FloorToInt((float)keyboardData.CharacterCount[keyIdx] / (float)totalCharCount * 100.0f);
-                        m_keyboardImage.KeyPctText[keyIdx].text = (char)(keyIdx+65) + "\n" + pct.ToString("N0") + "%";
-                        m_keyboardImage.KeyPct[keyIdx].SetActive(true);
+                        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                        {
+                            float pct = Mathf.FloorToInt((float)keyboardData.CharacterCount[keyIdx] / (float)totalCharCount * 100.0f);
+                            m_keyboardImage.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + "\n" + pct.ToString("N0") + "%";
+                            m_keyboardImage.KeyPct[keyIdx].SetActive(true);
+                        }
                     }
-                }
-                else if (Keyboard.current.tabKey.wasReleasedThisFrame)
-                {
-                    for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                    else if (Keyboard.current.tabKey.wasReleasedThisFrame)
                     {
-                        m_keyboardImage.KeyPct[keyIdx].SetActive(false);
-                    }
-                }
-
-
-                double change = calculateChange();
-                char c;
-                int keyIndex = KeyboardLogic.GetTypedKeyIndex(out c);
-                if (keyIndex > -1)
-                {
-                    int flowerType = m_newFlowerType[keyIndex];
-                    int newFlowerType = (flowerType + 1) % balance.NumFlowers;
-                    m_newFlowerType[keyIndex] = newFlowerType;
-                    if (change < balance.FlowerSeedCost[newFlowerType])
-                    {
-                        newFlowerType = 0;
-                        m_changeAnimation.Play("Grow");
+                        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                        {
+                            m_keyboardImage.KeyPct[keyIdx].SetActive(false);
+                        }
                     }
 
-                    m_newFlowerType[keyIndex] = newFlowerType;
 
-                    updateReceiptItems();
-                    for (int i = 0; i < balance.NumFlowers; i++)
+                    char c;
+                    int keyIndex = KeyboardLogic.GetTypedKeyIndex(out c);
+                    if (keyIndex > -1)
                     {
-                        m_flowerPopupGUI[i].Outline.color = change >= balance.FlowerSeedCost[i] ? AssetManager.Instance.FlowerPopupGreen : AssetManager.Instance.FlowerPopupRed;
+                        if (!m_line.gameObject.activeSelf)
+                            m_line.gameObject.SetActive(true);
+
+                        Span<int> tempGardenFlowers = stackalloc int[26];
+                        for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                            if (keyIdx != keyIndex)
+                                tempGardenFlowers[keyIdx] = m_newFlowerTypes[keyIdx];
+                            else
+                                tempGardenFlowers[keyIdx] = keyboardData.FlowerType[keyIdx];
+                        double currentGardenCost = CozyLogic.CalculateGardenCost(keyboardData, balance, tempGardenFlowers);
+                        double moneyLeftOver = metaData.Coins - currentGardenCost;
+
+                        int oldFlowerType = keyboardData.FlowerType[keyIndex];
+                        int currentFlowerType = m_newFlowerTypes[keyIndex];
+                        int newFlowerType = (currentFlowerType + 1) % balance.NumFlowers;
+                        if (newFlowerType > oldFlowerType && balance.FlowerSeedCost[newFlowerType] > moneyLeftOver)
+                        {
+                            newFlowerType = 0;
+                            m_changeAnimation.Play("Grow");
+                        }
+                        else if (newFlowerType < oldFlowerType && balance.FlowerSeedCost[newFlowerType] > moneyLeftOver)
+                        {
+                            newFlowerType = oldFlowerType;
+                        }
+
+                        for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                        {
+                            if (!m_flowerPopupGUI[flowerType].GO.activeSelf)
+                                m_flowerPopupGUI[flowerType].GO.SetActive(true);
+
+                            bool flowerChangeOK = (balance.FlowerSeedCost[flowerType] <= moneyLeftOver) || flowerType == oldFlowerType;
+
+                            m_flowerPopupGUI[flowerType].Outline.color = flowerChangeOK ? AssetManager.Instance.FlowerPopupGreen : AssetManager.Instance.FlowerPopupRed;
+
+                            m_targetScale[flowerType] = flowerType == newFlowerType ? 1.0f : 0.8f;
+                        }
+
+                        m_newFlowerTypes[keyIndex] = newFlowerType;
+
+                        updateReceiptItems();
+
+                        m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
+
+                        m_currentX = m_cardsParent.transform.localPosition.x;
+                        m_targetX = -288.0f * newFlowerType;
+                        m_keyIdx = keyIndex;
+                        m_flowerType = newFlowerType;
                     }
-
-                    m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
-
-                    m_cardsParent.transform.localPosition = new Vector3(-288.0f * newFlowerType, -192.0f, 0.0f);
-
-                    Vector3 cardPosition = m_flowerPopupGUI[newFlowerType].GO.transform.position;
-                    cardPosition.y -= m_flowerPopupGUI[newFlowerType].GO.GetComponent<RectTransform>().rect.height / 2.0f;
-                    SetLine(newFlowerType, m_line, WorldToCanvas(m_canvas.GetComponent<RectTransform>(), cardPosition), WorldToCanvas(m_canvas.GetComponent<RectTransform>(), m_keyboardImage.KeyImages[keyIndex].transform.position));
                 }
 
             }
 
-            void SetLine(int flowerType, RectTransform line, Vector2 start, Vector2 end)
+            void SetLine(RectTransform line, Vector2 start, Vector2 end)
             {
-                m_flowerPopupGUI[flowerType].GO.SetActive(true);
-
                 Vector2 dir = end - start;
                 line.sizeDelta = new Vector2(dir.magnitude, line.sizeDelta.y);
                 line.anchoredPosition = start + dir * 0.5f;
                 line.localRotation = Quaternion.Euler(0, 0,
                     Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
-
-                m_line.gameObject.SetActive(true);
             }
 
             Vector2 WorldToCanvas(RectTransform canvas, Vector3 worldPos)

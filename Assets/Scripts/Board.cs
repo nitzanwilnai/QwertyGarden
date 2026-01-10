@@ -75,6 +75,7 @@ namespace QwertyGarden
         TextMeshProUGUI m_coinsText;
         TextMeshProUGUI m_newCoinsText;
         TextMeshProUGUI m_WPMText;
+        TextMeshProUGUI m_settingsText;
 
         double m_localCoinCount;
         double m_targetCoinCount;
@@ -116,6 +117,7 @@ namespace QwertyGarden
             m_collectedGO = guiRef.GetGameObject("Collected");
             m_notCollectedGO = guiRef.GetGameObject("NotCollected");
             m_instructionGO = guiRef.GetGameObject("Instructions");
+            m_settingsText = guiRef.GetTextGUI("Settings");
 
             CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
 
@@ -361,7 +363,7 @@ namespace QwertyGarden
                         {
 
                         }
-                        else if (!m_tutorialGUI.TutorialShown)
+                        else if(!m_tutorialGUI.TutorialShown)
                         {
                             if (keyIndex > -1)
                             {
@@ -396,6 +398,7 @@ namespace QwertyGarden
                                 m_inoviceGUI.CurrentCoinText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
 
                                 MetaLogic.SellCollectedFlowers(metaData, keyboardData, balance);
+                                SoundManager.Instance.PlaySFXMoney();
                                 KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
                                 MetaDataIO.SaveMeta(metaData);
 
@@ -406,37 +409,42 @@ namespace QwertyGarden
 
                                 m_invoiceAnimation.StartAnimation();
                             }
-                            else if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                            else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                             {
-                                Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
+                                metaData.SFX = !metaData.SFX;
+                                CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                            }
+                            else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                            {
+                                metaData.Music = !metaData.Music;
+                                CommonVisual.UpdateSettingsText(metaData, m_settingsText);
                             }
                         }
                     }
                 }
-            }
-
 #if UNITY_EDITOR
-            if (Keyboard.current.digit1Key.wasReleasedThisFrame)
-            {
-                keyboardData.FlowerCount[0]++;
-                updateUI();
-            }
-            if (Keyboard.current.digit2Key.wasReleasedThisFrame)
-            {
-                keyboardData.FlowerCount[1]++;
-                updateUI();
-            }
-            if (Keyboard.current.digit3Key.wasReleasedThisFrame)
-            {
-                keyboardData.FlowerCount[2]++;
-                updateUI();
-            }
-            if (Keyboard.current.digit4Key.wasReleasedThisFrame)
-            {
-                keyboardData.FlowerCount[3]++;
-                updateUI();
-            }
+                if (Keyboard.current.f1Key.wasReleasedThisFrame)
+                {
+                    keyboardData.FlowerCount[0]++;
+                    updateUI();
+                }
+                if (Keyboard.current.f2Key.wasReleasedThisFrame)
+                {
+                    keyboardData.FlowerCount[1]++;
+                    updateUI();
+                }
+                if (Keyboard.current.f3Key.wasReleasedThisFrame)
+                {
+                    keyboardData.FlowerCount[2]++;
+                    updateUI();
+                }
+                if (Keyboard.current.f4Key.wasReleasedThisFrame)
+                {
+                    keyboardData.FlowerCount[3]++;
+                    updateUI();
+                }
 #endif
+            }
         }
 
         private void resizeKeyboardForResolution()
@@ -488,6 +496,8 @@ namespace QwertyGarden
                     //     numCoins = 10;
                     // for (int i = 0; i < numCoins; i++)
                     //     flyCoin(keyIndex);
+
+                    SoundManager.Instance.PlaySFXFlowerCollected();
 
                     m_collectedFlowers.FlowersText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
                     if (!m_collectedFlowers.FlowersUI[flowerType].activeSelf)

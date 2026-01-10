@@ -35,17 +35,41 @@ namespace QwertyGarden
             return false;
         }
 
-        public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance, int[] newFlowerType)
+        public static double CalculateGardenCost(KeyboardData keyboardData, Balance balance, Span<int> newFlowerTypes)
         {
             double totalCost = 0;
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
-                if (newFlowerType[keyIdx] != keyboardData.FlowerType[keyIdx])
+                int oldFlowerType = keyboardData.FlowerType[keyIdx];
+                int newFlowerType = newFlowerTypes[keyIdx];
+                if (newFlowerType != oldFlowerType)
                 {
-                    int flowerType = newFlowerType[keyIdx];
-                    totalCost += balance.FlowerSeedCost[flowerType];
+                    int newCost = balance.FlowerSeedCost[newFlowerType];
+                    totalCost += newCost;
                 }
             }
+            return totalCost;
+        }
+
+        public static double CalculateCurrentGardenCost(KeyboardData keyboardData, Balance balance, int[] newFlowerTypes)
+        {
+            double totalCost = 0;
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                int oldFlowerType = keyboardData.FlowerType[keyIdx];
+                int newFlowerType = newFlowerTypes[keyIdx];
+                if (newFlowerType != oldFlowerType)
+                {
+                    int newCost = balance.FlowerSeedCost[newFlowerType];
+                    totalCost += newCost;
+                }
+            }
+            return totalCost;
+        }
+
+        public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance, int[] newFlowerType)
+        {
+            double totalCost = CalculateCurrentGardenCost(keyboardData, balance, newFlowerType);
 
             if (totalCost <= metaData.Coins)
             {

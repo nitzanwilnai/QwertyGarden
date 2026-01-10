@@ -37,6 +37,9 @@ namespace QwertyGarden
         public int[][] WordsForLetters;
         public int[] LetterMultiplier;
 
+        public double PrestigeCost;
+        public double PrestigeMultiplier;
+
         public void LoadBalance()
         {
             TextAsset asset = Resources.Load("balance") as TextAsset;
@@ -51,6 +54,10 @@ namespace QwertyGarden
                 int version = br.ReadInt32();
 
                 StartingCoins = br.ReadInt32();
+
+                PrestigeCost = br.ReadDouble();
+                PrestigeMultiplier = br.ReadDouble();
+
                 NumFlowers = br.ReadInt32();
                 FlowerPrefab = new string[NumFlowers];
                 FlowerCard = new string[NumFlowers];

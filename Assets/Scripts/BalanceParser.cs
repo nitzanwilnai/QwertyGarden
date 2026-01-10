@@ -55,6 +55,9 @@ namespace QwertyGarden
 
                     BalanceSO balanceSO = (BalanceSO)AssetDatabase.LoadAssetAtPath("Assets/Data/BalanceSO.asset", typeof(BalanceSO));
                     bw.Write(balanceSO.StartingCoins);
+                    bw.Write(balanceSO.PrestigeCost);
+                    bw.Write(balanceSO.PrestigeMultiplier);
+                    
                     bw.Write(balanceSO.Flowers.Length);
                     for (int flowerType = 0; flowerType < balanceSO.Flowers.Length; flowerType++)
                     {

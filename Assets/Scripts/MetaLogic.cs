@@ -1,8 +1,3 @@
-using QwertyGarden;
-using Unity.Android.Gradle.Manifest;
-using UnityEngine;
-using UnityEngine.InputSystem;
-
 namespace QwertyGarden
 {
     public static class MetaLogic
@@ -115,9 +110,39 @@ namespace QwertyGarden
                 metaData.ShowPrestige = true;
         }
 
-        public static void Prestige(MetaData metaData, KeyboardData keyboardData)
+        public static double GetPrestigeCost(MetaData metaData, Balance balance)
         {
-            
+            double prestigeCost = balance.PrestigeCost;
+
+            for (int i = 0; i < metaData.Prestige; i++)
+                prestigeCost *= balance.PrestigeMultiplier;
+
+            return prestigeCost;
+        }
+
+        public static bool TryPrestige(MetaData metaData, KeyboardData keyboardData, Balance balance)
+        {
+            double prestigeCost = GetPrestigeCost(metaData, balance);
+            if (prestigeCost < metaData.Coins)
+            {
+                metaData.Coins -= prestigeCost;
+                metaData.Prestige++;
+
+                for (int i = 0; i < 26; i++)
+                    keyboardData.FlowerType[i] = 0;
+
+                for (int i = 0; i < 26; i++)
+                    keyboardData.FlowerProgress[i] = 0;
+
+                for (int i = 0; i < 26; i++)
+                    keyboardData.FlowerCount[i] = 0;
+
+                for (int i = 0; i < 26; i++)
+                    keyboardData.GrowTime[i] = 0.0f;
+
+                return true;
+            }
+            return false;
         }
     }
 }
