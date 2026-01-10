@@ -73,7 +73,6 @@ namespace QwertyGarden
         public Color WrongParticleColor;
 
         TextMeshProUGUI m_coinsText;
-        TextMeshProUGUI m_newCoinsText;
         TextMeshProUGUI m_WPMText;
         TextMeshProUGUI m_settingsText;
 
@@ -95,6 +94,8 @@ namespace QwertyGarden
         TutorialGUI m_tutorialGUI = new TutorialGUI();
         GameObject m_instructionGO;
 
+        double m_pressedKeyTimer;
+
         LessonData lessonData;
         MetaData metaData;
         Balance balance;
@@ -111,7 +112,6 @@ namespace QwertyGarden
 
             GUIRef guiRef = UI.GetComponent<GUIRef>();
             m_coinsText = guiRef.GetTextGUI("Coin");
-            m_newCoinsText = guiRef.GetTextGUI("NewCoin");
             m_WPMText = guiRef.GetTextGUI("WPM");
 
             m_collectedGO = guiRef.GetGameObject("Collected");
@@ -248,9 +248,8 @@ namespace QwertyGarden
         void updateUI()
         {
             m_localCoinCount = m_targetCoinCount = metaData.Coins;
-            m_coinsText.text = MetaLogic.ToShortScale(m_localCoinCount) + " <sprite name=\"coin\">";
             double totalSellValue = MetaLogic.GetSellValue(keyboardData, balance);
-            m_newCoinsText.text = "+" + MetaLogic.ToShortScale(totalSellValue) + " <sprite name=\"coin\">";
+            m_coinsText.text = MetaLogic.ToShortScale(m_localCoinCount + totalSellValue) + " <sprite name=\"coin\">";
 
             int wpm = KeyboardLogic.GetWPM(keyboardData);
             int accuracy = KeyboardLogic.GetAccuracy(keyboardData);
@@ -363,10 +362,12 @@ namespace QwertyGarden
                         {
 
                         }
-                        else if(!m_tutorialGUI.TutorialShown)
+                        else if (!m_tutorialGUI.TutorialShown)
                         {
                             if (keyIndex > -1)
                             {
+                                m_pressedKeyTimer = Time.realtimeSinceStartupAsDouble;
+
                                 if (metaData.GameType == GAME_TYPE.LESSON)
                                     lessonTextInput(keyIndex, Char.ToUpper(c));
                                 else if (metaData.GameType == GAME_TYPE.COZY)
@@ -374,51 +375,55 @@ namespace QwertyGarden
                             }
                             else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
                             {
-                                m_showInvoice = true;
-                                m_instructionGO.SetActive(false);
-                                m_tutorialGUI.GO.SetActive(false);
-                                m_tutorialGUI.Darken.SetActive(true);
-                                m_inoviceGUI.InoviceGO.SetActive(true);
-                                m_newCoinsText.text = "";
-
-                                for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                                double timeSinceLastPressedKey = Time.realtimeSinceStartupAsDouble - m_pressedKeyTimer;
+                                if (timeSinceLastPressedKey > 1.0d)
                                 {
-                                    int totalCoinsForThisFlower = balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
-                                    m_invoiceLines[flowerType].Item.text = balance.FlowerName[flowerType] + " x" + keyboardData.FlowerCount[flowerType];
-                                    m_invoiceLines[flowerType].Value.text = MetaLogic.ToShortScale(totalCoinsForThisFlower) + " <sprite name=\"coin\">";
-                                    m_invoiceAnimation.ShowInvoiceLIne[flowerType + m_invoiceAnimation.ItemLineIndexStart] = keyboardData.FlowerCount[flowerType] > 0;
+                                    m_showInvoice = true;
+                                    m_instructionGO.SetActive(false);
+                                    m_tutorialGUI.GO.SetActive(false);
+                                    m_tutorialGUI.Darken.SetActive(true);
+                                    m_inoviceGUI.InoviceGO.SetActive(true);
+
+                                    for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
+                                    {
+                                        int totalCoinsForThisFlower = balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
+                                        m_invoiceLines[flowerType].Item.text = balance.FlowerName[flowerType] + " x" + keyboardData.FlowerCount[flowerType];
+                                        m_invoiceLines[flowerType].Value.text = MetaLogic.ToShortScale(totalCoinsForThisFlower) + " <sprite name=\"coin\">";
+                                        m_invoiceAnimation.ShowInvoiceLIne[flowerType + m_invoiceAnimation.ItemLineIndexStart] = keyboardData.FlowerCount[flowerType] > 0;
+                                    }
+                                    float accuracyBonus = KeyboardLogic.GetAccuracyBonus(keyboardData);
+                                    float wpmBonus = KeyboardLogic.GetWPMBonus(keyboardData);
+                                    double totalSellValue = MetaLogic.GetSellValue(keyboardData, balance);
+                                    m_inoviceGUI.AccuracyBonus.text = "x" + accuracyBonus.ToString("N2");
+                                    m_inoviceGUI.WPMBonus.text = "x" + wpmBonus.ToString("N2");
+                                    m_inoviceGUI.SubTotal.text = MetaLogic.ToShortScale(totalSellValue) + " <sprite name=\"coin\">";
+
+                                    m_inoviceGUI.CurrentCoinText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
+
+                                    MetaLogic.SellCollectedFlowers(metaData, keyboardData, balance);
+                                    SoundManager.Instance.PlaySFXMoney();
+                                    KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
+                                    MetaDataIO.SaveMeta(metaData);
+
+                                    m_targetCoinCount = metaData.Coins;
+
+
+                                    m_inoviceGUI.BalanceText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
+
+                                    m_invoiceAnimation.StartAnimation();
                                 }
-                                float accuracyBonus = KeyboardLogic.GetAccuracyBonus(keyboardData);
-                                float wpmBonus = KeyboardLogic.GetWPMBonus(keyboardData);
-                                double totalSellValue = MetaLogic.GetSellValue(keyboardData, balance);
-                                m_inoviceGUI.AccuracyBonus.text = "x" + accuracyBonus.ToString("N2");
-                                m_inoviceGUI.WPMBonus.text = "x" + wpmBonus.ToString("N2");
-                                m_inoviceGUI.SubTotal.text = MetaLogic.ToShortScale(totalSellValue) + " <sprite name=\"coin\">";
-
-                                m_inoviceGUI.CurrentCoinText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
-
-                                MetaLogic.SellCollectedFlowers(metaData, keyboardData, balance);
-                                SoundManager.Instance.PlaySFXMoney();
-                                KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
-                                MetaDataIO.SaveMeta(metaData);
-
-                                m_targetCoinCount = metaData.Coins;
-
-
-                                m_inoviceGUI.BalanceText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
-
-                                m_invoiceAnimation.StartAnimation();
                             }
                             else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                             {
-                                metaData.SFX = !metaData.SFX;
-                                CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                                Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
+                                // metaData.SFX = !metaData.SFX;
+                                // CommonVisual.UpdateSettingsText(metaData, m_settingsText);
                             }
-                            else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
-                            {
-                                metaData.Music = !metaData.Music;
-                                CommonVisual.UpdateSettingsText(metaData, m_settingsText);
-                            }
+                            // else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                            // {
+                            //     metaData.Music = !metaData.Music;
+                            //     CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                            // }
                         }
                     }
                 }

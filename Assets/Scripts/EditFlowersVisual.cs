@@ -288,14 +288,16 @@ namespace QwertyGarden
                     }
                     else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                     {
-                        metaData.SFX = !metaData.SFX;
-                        CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                        Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
+
+                        // metaData.SFX = !metaData.SFX;
+                        // CommonVisual.UpdateSettingsText(metaData, m_settingsText);
                     }
-                    else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
-                    {
-                        metaData.Music = !metaData.Music;
-                        CommonVisual.UpdateSettingsText(metaData, m_settingsText);
-                    }
+                    // else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                    // {
+                    //     metaData.Music = !metaData.Music;
+                    //     CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                    // }
                     else if (Keyboard.current.tabKey.wasPressedThisFrame)
                     {
                         int totalCharCount = 0;

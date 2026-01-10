@@ -171,16 +171,22 @@ namespace QwertyGarden
                 Debug.Log("back space key pressed!");
 
 
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
             {
                 if (!Directory.Exists("Screenshots"))
                     Directory.CreateDirectory("Screenshots");
 
                 DateTimeOffset now = DateTime.UtcNow;
                 string name = "Screenshots/" + Screen.width + "x" + Screen.height + "_" + now.ToString("yyyy-MM-dd HH.mm.ss") + ".png";
+                Debug.Log("Screenshot " + name + " taken!");
                 ScreenCapture.CaptureScreenshot(name);
             }
 
+            if (Keyboard.current.digit0Key.wasPressedThisFrame)
+            {
+                m_metaData.Coins *= 2.0d;
+                SoundManager.Instance.PlaySFXMoney();
+            }
             if (Keyboard.current.equalsKey.wasPressedThisFrame)
             {
                 m_metaData.Coins += 1000;

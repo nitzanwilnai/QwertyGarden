@@ -107,13 +107,18 @@ namespace QwertyGarden
                 }
                 else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                 {
-                    metaData.SFX = !metaData.SFX;
-                    CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                    Game.Instance.SetMenuState(MENU_STATE.SETTINGS);
+                    // metaData.SFX = !metaData.SFX;
+                    // CommonVisual.UpdateSettingsText(metaData, m_settingsText);
                 }
-                else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                // else if (Keyboard.current.digit2Key.wasReleasedThisFrame)
+                // {
+                //     metaData.Music = !metaData.Music;
+                //     CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                // }
+                else if (Keyboard.current.qKey.wasReleasedThisFrame)
                 {
-                    metaData.Music = !metaData.Music;
-                    CommonVisual.UpdateSettingsText(metaData, m_settingsText);
+                    Application.Quit();
                 }
                 else if (metaData.ShowPrestige && Keyboard.current.backspaceKey.wasReleasedThisFrame)
                 {

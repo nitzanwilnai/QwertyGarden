@@ -74,7 +74,7 @@ namespace QwertyGarden
                 (1e12, "trillion"),
                 (1e9,  "billion"),
                 (1e6,  "million"),
-                (1e3,  "thousand"),
+                // (1e3,  "thousand"),
             };
 
         public static string ToShortScale(double number)
@@ -90,7 +90,7 @@ namespace QwertyGarden
                 }
             }
 
-            return number.ToString("0");
+            return number.ToString("N0");
         }
 
         private static string formatThreeDigits(double value)

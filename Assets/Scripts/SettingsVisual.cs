@@ -64,7 +64,7 @@ namespace QwertyGarden
                     metaData.Music = !metaData.Music;
                     updateUI();
                 }
-                else if (Keyboard.current.escapeKey.wasReleasedThisFrame || Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                else if (Keyboard.current.anyKey.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(metaData.PrevMenuState);
                 }
