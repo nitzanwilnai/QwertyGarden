@@ -32,7 +32,7 @@ namespace QwertyGarden
 
         GameObject m_UI;
 
-        KeyboardImages m_keyboardImage;
+        KeyboardImages m_keyboardImages;
 
         Transform m_keyboardParent;
         Transform m_cardsParent;
@@ -133,23 +133,25 @@ namespace QwertyGarden
 
         public void Show(KeyboardData keyboardData)
         {
+            CommonVisual.AutoCanvasScaler(m_UI);
+
             m_line.gameObject.SetActive(false);
 
             this.keyboardData = keyboardData;
             m_UI.SetActive(true);
-            m_keyboardImage = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
-            m_keyboardImage.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
-            m_keyboardImage.transform.localPosition = Vector3.zero;
-            m_keyboardImage.transform.SetAsFirstSibling();
+            m_keyboardImages = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
+            m_keyboardImages.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
+            m_keyboardImages.transform.localPosition = Vector3.zero;
+            m_keyboardImages.transform.SetAsFirstSibling();
 
-            m_keyboardImage.KeyPctText = new TextMeshProUGUI[26];
+            m_keyboardImages.KeyPctText = new TextMeshProUGUI[26];
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
                 int flowerType = keyboardData.FlowerType[keyIdx];
                 m_newFlowerTypes[keyIdx] = flowerType;
-                m_keyboardImage.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
-                m_keyboardImage.KeyPct[keyIdx].SetActive(false);
-                m_keyboardImage.KeyPctText[keyIdx] = m_keyboardImage.KeyPct[keyIdx].GetComponentInChildren<TextMeshProUGUI>();
+                m_keyboardImages.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
+                m_keyboardImages.KeyPct[keyIdx].SetActive(false);
+                m_keyboardImages.KeyPctText[keyIdx] = m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<TextMeshProUGUI>();
             }
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
@@ -172,7 +174,7 @@ namespace QwertyGarden
         public void Hide()
         {
             m_UI.SetActive(false);
-            GameObject.Destroy(m_keyboardImage.gameObject);
+            GameObject.Destroy(m_keyboardImages.gameObject);
         }
 
         void updateReceiptItems()
@@ -258,7 +260,7 @@ namespace QwertyGarden
             {
                 Vector3 cardPosition = m_flowerPopupGUI[m_flowerType].GO.transform.position;
                 cardPosition.y -= m_flowerPopupGUI[m_flowerType].GO.GetComponent<RectTransform>().rect.height / 2.0f;
-                SetLine(m_line, WorldToCanvas(m_canvas.GetComponent<RectTransform>(), cardPosition), WorldToCanvas(m_canvas.GetComponent<RectTransform>(), m_keyboardImage.KeyImages[m_keyIdx].transform.position));
+                SetLine(m_line, WorldToCanvas(m_canvas.GetComponent<RectTransform>(), cardPosition), WorldToCanvas(m_canvas.GetComponent<RectTransform>(), m_keyboardImages.KeyImages[m_keyIdx].transform.position));
                 m_cardsParent.transform.localPosition = new Vector3(m_currentX, -192.0f, 0.0f);
             }
 
@@ -307,15 +309,15 @@ namespace QwertyGarden
                         for (int keyIdx = 0; keyIdx < 26; keyIdx++)
                         {
                             float pct = Mathf.FloorToInt((float)keyboardData.CharacterCount[keyIdx] / (float)totalCharCount * 100.0f);
-                            m_keyboardImage.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + "\n" + pct.ToString("N0") + "%";
-                            m_keyboardImage.KeyPct[keyIdx].SetActive(true);
+                            m_keyboardImages.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + "\n" + pct.ToString("N0") + "%";
+                            m_keyboardImages.KeyPct[keyIdx].SetActive(true);
                         }
                     }
                     else if (Keyboard.current.tabKey.wasReleasedThisFrame)
                     {
                         for (int keyIdx = 0; keyIdx < 26; keyIdx++)
                         {
-                            m_keyboardImage.KeyPct[keyIdx].SetActive(false);
+                            m_keyboardImages.KeyPct[keyIdx].SetActive(false);
                         }
                     }
 
@@ -371,7 +373,7 @@ namespace QwertyGarden
 
                         updateReceiptItems();
 
-                        m_keyboardImage.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
+                        m_keyboardImages.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
 
                         m_currentX = m_cardsParent.transform.localPosition.x;
                         m_targetX = -288.0f * newFlowerType;

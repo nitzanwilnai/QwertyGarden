@@ -31,6 +31,8 @@ namespace QwertyGarden
 
         public void Show()
         {
+            CommonVisual.AutoCanvasScaler(m_UI);
+
             m_UI.SetActive(true);
 
             updateUI();
@@ -67,6 +69,10 @@ namespace QwertyGarden
                 else if (Keyboard.current.anyKey.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(metaData.PrevMenuState);
+                }
+                else if (Keyboard.current.qKey.wasReleasedThisFrame)
+                {
+                    Application.Quit();
                 }
             }
         }

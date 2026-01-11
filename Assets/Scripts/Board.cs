@@ -53,7 +53,7 @@ namespace QwertyGarden
         PlantKey[] m_flowerKeys;
         KeyboardRef m_keyboardRef;
 
-        public GameObject UI;
+        public GameObject m_UI;
 
         GameObject m_collectedGO;
         GameObject m_notCollectedGO;
@@ -110,7 +110,7 @@ namespace QwertyGarden
 
             worldCamera = camera;
 
-            GUIRef guiRef = UI.GetComponent<GUIRef>();
+            GUIRef guiRef = m_UI.GetComponent<GUIRef>();
             m_coinsText = guiRef.GetTextGUI("Coin");
             m_WPMText = guiRef.GetTextGUI("WPM");
 
@@ -165,7 +165,7 @@ namespace QwertyGarden
                 m_invoiceAnimation.InvoiceLines[m_invoiceAnimation.ItemLineIndexStart + flowerType] = invoiceLine.GO;
             }
 
-            UI.SetActive(false);
+            m_UI.SetActive(false);
 
             m_flowerKeys = new PlantKey[26];
             m_flowers = new Flower[26];
@@ -191,6 +191,8 @@ namespace QwertyGarden
 
         void Show(KeyboardData keyboardData)
         {
+            CommonVisual.AutoCanvasScaler(m_UI);
+
             this.keyboardData = keyboardData;
 
             KeyboardLogic.ResetWPMAndAccuracy(keyboardData);
@@ -237,7 +239,7 @@ namespace QwertyGarden
             updateUI();
 
             SpriteParent.gameObject.SetActive(true);
-            UI.SetActive(true);
+            m_UI.SetActive(true);
 
             WordState = WORD_STATE.SLIDE_IN;
             m_wordText.transform.localPosition = new Vector3(WordSlideLimit, 0.0f, 0.0f);
@@ -268,7 +270,7 @@ namespace QwertyGarden
 
         public void Hide()
         {
-            UI.SetActive(false);
+            m_UI.SetActive(false);
             SpriteParent.gameObject.SetActive(false);
 
             for (int i = 0; i < 26; i++)

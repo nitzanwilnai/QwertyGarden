@@ -2,6 +2,7 @@ using CommonTools;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace QwertyGarden
 {
@@ -78,6 +79,18 @@ namespace QwertyGarden
             string sfxOn = metaData.SFX ? "on" : "off";
             string musicOn = metaData.Music ? "on" : "off";
             SettingsText.text = "<b>1</b> sfx " + sfxOn + "\n<b>2</b> music " + musicOn;
+        }
+
+        public static void AutoCanvasScaler(GameObject UI)
+        {
+            float ratio = (float)Screen.width / (float)Screen.height;
+
+            CanvasScaler canvasScaler = UI.GetComponent<CanvasScaler>();
+
+            if (ratio >= 16.0f / 9.0f)
+                canvasScaler.matchWidthOrHeight = 1.0f;
+            else
+                canvasScaler.matchWidthOrHeight = 0.0f;
         }
     }
 }

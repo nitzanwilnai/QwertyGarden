@@ -16,6 +16,7 @@ namespace QwertyGarden
         TextMeshProUGUI m_coinsText;
         TextMeshProUGUI m_settingsText;
         TextMeshProUGUI m_prestigeTotal;
+        TextMeshProUGUI m_versionText;
         GameObject m_spaceGO;
 
         TutorialGUI m_tutorialGUI = new TutorialGUI();
@@ -47,6 +48,7 @@ namespace QwertyGarden
             m_spaceGO = guiRef.GetGameObject("Space");
             m_prestigeTotal = guiRef.GetTextGUI("PrestigeTotal");
             m_wishlistGO = guiRef.GetGameObject("Wishlist");
+            m_versionText = guiRef.GetTextGUI("Version");
 
             GameObject topBarGO = guiRef.GetGameObject("TopBar");
             m_coinsText = topBarGO.GetComponent<GUIRef>().GetTextGUI("Coins");
@@ -54,6 +56,8 @@ namespace QwertyGarden
 
         public void Show()
         {
+            CommonVisual.AutoCanvasScaler(m_UI);
+
             m_UI.SetActive(true);
 
             m_keyboardImages = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
@@ -66,6 +70,7 @@ namespace QwertyGarden
                 int flowerType = keyboardData.FlowerType[keyIndex];
                 int progress = keyboardData.FlowerProgress[keyIndex];
                 m_keyboardImages.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerProgress(balance.FlowerName[flowerType], balance.FlowerFrames[flowerType][progress]);
+                m_keyboardImages.KeyPct[keyIndex].SetActive(false);
                 m_keyboardImages.KeyPct[keyIndex].SetActive(false);
             }
 
@@ -87,6 +92,9 @@ namespace QwertyGarden
 #if DEMO
             m_wishlistGO.SetActive(true);
 #endif            
+
+            TextAsset versionText = (TextAsset)Resources.Load("Version");
+            m_versionText.text = "VERSION: " + versionText.text.ToUpper();
         }
 
         public void Hide()
