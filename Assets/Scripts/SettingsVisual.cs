@@ -66,13 +66,13 @@ namespace QwertyGarden
                     metaData.Music = !metaData.Music;
                     updateUI();
                 }
-                else if (Keyboard.current.anyKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(metaData.PrevMenuState);
-                }
                 else if (Keyboard.current.qKey.wasReleasedThisFrame)
                 {
                     Application.Quit();
+                }
+                else if (Keyboard.current.anyKey.wasReleasedThisFrame)
+                {
+                    Game.Instance.SetMenuState(metaData.PrevMenuState);
                 }
             }
         }
