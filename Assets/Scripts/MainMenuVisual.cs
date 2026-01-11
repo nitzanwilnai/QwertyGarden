@@ -23,6 +23,8 @@ namespace QwertyGarden
         GameObject m_prestigeGO;
         TextMeshProUGUI m_poststigeText;
 
+        GameObject m_wishlistGO;
+
         MetaData metaData;
         KeyboardData keyboardData;
         Balance balance;
@@ -44,6 +46,7 @@ namespace QwertyGarden
             m_settingsText = guiRef.GetTextGUI("Settings");
             m_spaceGO = guiRef.GetGameObject("Space");
             m_prestigeTotal = guiRef.GetTextGUI("PrestigeTotal");
+            m_wishlistGO = guiRef.GetGameObject("Wishlist");
 
             GameObject topBarGO = guiRef.GetGameObject("TopBar");
             m_coinsText = topBarGO.GetComponent<GUIRef>().GetTextGUI("Coins");
@@ -79,6 +82,11 @@ namespace QwertyGarden
             m_prestigeGO.SetActive(metaData.ShowPrestige);
 
             CommonVisual.CheckTutorialFlag(metaData, m_tutorialGUI);
+
+            m_wishlistGO.SetActive(false);
+#if DEMO
+            m_wishlistGO.SetActive(true);
+#endif            
         }
 
         public void Hide()
@@ -105,6 +113,12 @@ namespace QwertyGarden
                 {
                     Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN);
                 }
+#if DEMO
+                else if (Keyboard.current.wKey.wasReleasedThisFrame)
+                {
+                    Application.OpenURL("steam://openurl/https://store.steampowered.com/app/4047130/Cardwheel/");
+                }
+#endif
                 else if (Keyboard.current.digit1Key.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(MENU_STATE.SETTINGS);

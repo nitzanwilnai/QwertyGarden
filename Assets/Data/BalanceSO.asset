@@ -18,6 +18,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: afe9325c394bb48e3bc0e81a392df5d9, type: 2}
   - {fileID: 11400000, guid: 0a1a78a3bc07e42d7a519cf3e36d46a3, type: 2}
   - {fileID: 11400000, guid: 9e3095e673f8942319baa688f4ef1703, type: 2}
+  - {fileID: 11400000, guid: ad753e87273e146eda3f037c0717596f, type: 2}
+  - {fileID: 11400000, guid: def7872ddfac4447f8d77bb9ce960d24, type: 2}
+  - {fileID: 11400000, guid: 2f1a12246441f4848a6f4d680507cbc7, type: 2}
+  - {fileID: 11400000, guid: 30cbc6031676045969e2f08d34e2966e, type: 2}
   KeyboardStartingPrice: 10
   KeyboardPriceIncrease: 2.5
   PrestigeCost: 5000

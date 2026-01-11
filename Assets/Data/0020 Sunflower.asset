@@ -16,7 +16,16 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: edfa73e36e21245fe82a355ceb65fba1, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 99e721de6712e419684b102de74b89a6, type: 3}
   FlowerName: Sunflower
-  SeedCost: 1
-  SellValue: 1
+  SeedCost: 20000000
+  SellValue: 78125
   GrowTime: 300
-  FlowerFrames: []
+  FlowerFrames:
+  - {fileID: 21300000, guid: 1398e683820b54fc3ac20831661e6e6c, type: 3}
+  - {fileID: 21300000, guid: e4fc8e51a361049458261e0c7b659533, type: 3}
+  - {fileID: 21300000, guid: c048cc899d3d44da29a3538d08eb184b, type: 3}
+  - {fileID: 21300000, guid: 521888afd270b4c39961501bc1f24c53, type: 3}
+  - {fileID: 21300000, guid: 2eda459f07c844dd992b16ade8c2799d, type: 3}
+  - {fileID: 21300000, guid: bd4f6c5b02470423dbdedbd59348b298, type: 3}
+  - {fileID: 21300000, guid: d1f8c817ca54746c5839983498098d44, type: 3}
+  - {fileID: 21300000, guid: d13dbbff5232d49bfa60ff7fb75a135a, type: 3}
+  - {fileID: 21300000, guid: dbfbe22eaaa12433c9b60a5e55e543b7, type: 3}

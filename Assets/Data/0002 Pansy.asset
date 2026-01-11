@@ -17,7 +17,7 @@ MonoBehaviour:
   FlowerIcon: {fileID: 21300000, guid: ef3823d86dd6441a0975cc0d7b64bc56, type: 3}
   FlowerName: Pansy
   SeedCost: 200
-  SellValue: 15
+  SellValue: 25
   GrowTime: 300
   FlowerFrames:
   - {fileID: 21300000, guid: 393d794bcea8d449b8a60770ff1645ae, type: 3}

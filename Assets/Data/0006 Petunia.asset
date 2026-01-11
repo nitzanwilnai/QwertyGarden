@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0006 Petunia
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 79c63ab5f35d44d28bc80021b5191ea0, type: 3}
+  FlowerCard: {fileID: 21300000, guid: 7be6309af459c42b8af01e1330653007, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: 1885b0566d23e480992958971eab2497, type: 3}
+  FlowerName: Petunia
+  SeedCost: 200000
+  SellValue: 3125
+  GrowTime: 300
+  FlowerFrames:
+  - {fileID: 21300000, guid: 3b1c132cad6c649cabe5c65cf7b6b7c0, type: 3}
+  - {fileID: 21300000, guid: 89bd8949cea3841d990b19790db3a308, type: 3}
+  - {fileID: 21300000, guid: 652ca302fc6914f98be31dacd2ea1ed1, type: 3}
+  - {fileID: 21300000, guid: 51b3834f2a2e14545a035feefd02565f, type: 3}
+  - {fileID: 21300000, guid: 27904d2da58d74f959c4c81a391b7152, type: 3}
+  - {fileID: 21300000, guid: 2e12b2df8bf7d4f81ae90b7fd70bd367, type: 3}
+  - {fileID: 21300000, guid: c1fa789d5f79d4603b0e5131bde05b55, type: 3}
+  - {fileID: 21300000, guid: 6dd1bab3a381442be820a818caa84495, type: 3}
+  - {fileID: 21300000, guid: c64dcb06e0bf94286a2ffe03ede0b657, type: 3}
+  - {fileID: 21300000, guid: 47b84220e317f44deb6ef400b6b5d381, type: 3}

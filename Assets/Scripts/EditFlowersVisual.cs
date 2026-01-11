@@ -339,6 +339,12 @@ namespace QwertyGarden
                         int oldFlowerType = keyboardData.FlowerType[keyIndex];
                         int currentFlowerType = m_newFlowerTypes[keyIndex];
                         int newFlowerType = (currentFlowerType + 1) % balance.NumFlowers;
+
+#if DEMO
+                        if(newFlowerType > 1)
+                            newFlowerType = 0;
+#endif
+
                         if (newFlowerType > oldFlowerType && balance.FlowerSeedCost[newFlowerType] > moneyLeftOver)
                         {
                             newFlowerType = 0;

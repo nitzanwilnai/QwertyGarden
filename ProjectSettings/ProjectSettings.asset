@@ -771,7 +771,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: 
+    Standalone: DEMO
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

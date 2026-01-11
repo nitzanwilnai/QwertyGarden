@@ -59,7 +59,7 @@ namespace QwertyGarden
                         metaData.Music = br.ReadBoolean();
 
                         //TEST
-                        metaData.TutorialFlags = 0;
+                        // metaData.TutorialFlags = 0;
                     }
                 }
             }

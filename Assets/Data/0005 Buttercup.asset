@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
-  m_Name: 0004 Buttercup
+  m_Name: 0005 Buttercup
   m_EditorClassIdentifier: 
   FlowerPrefab: {fileID: 2269548641135264188, guid: bbe123cecc61f47729eeb7dfd0ce5222, type: 3}
   FlowerCard: {fileID: 21300000, guid: 2f0d3c038730e4e83a51adfe3985f308, type: 3}
   FlowerIcon: {fileID: 21300000, guid: df875859cd48848b49d36ef95a76b3bb, type: 3}
   FlowerName: Buttercup
-  SeedCost: 2000
-  SellValue: 30
+  SeedCost: 20000
+  SellValue: 625
   GrowTime: 300
   FlowerFrames:
   - {fileID: 21300000, guid: 44542702491c24cfc949fec8270a4a30, type: 3}

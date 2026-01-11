@@ -18,6 +18,8 @@ namespace QwertyGarden
         public GameObject UIEditFlowers;
         public GameObject UISettings;
         public GameObject UIPrestige;
+        public GameObject UINoKeyboard;
+        public GameObject UIDemo;
 
         MainMenuVisual m_mainMenuVisual = new();
         KeyboardSelectionVisual m_keyboardSelectionVisual = new();
@@ -67,6 +69,11 @@ namespace QwertyGarden
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_balance);
             m_settingsVisual.Init(UISettings, m_metaData);
             m_prestigeVisual.Init(UIPrestige, m_metaData, m_keyboardData, m_balance);
+
+            UIDemo.SetActive(false);
+#if DEMO
+            UIDemo.SetActive(true);
+#endif
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -146,6 +153,10 @@ namespace QwertyGarden
         void Update()
         {
             float dt = Time.deltaTime;
+
+            bool noKeyboard = Keyboard.current == null;
+            if (UINoKeyboard.activeSelf != noKeyboard)
+                UINoKeyboard.SetActive(noKeyboard);
 
             if (m_metaData.MenuState == MENU_STATE.MAIN_MENU)
                 m_mainMenuVisual.Tick();

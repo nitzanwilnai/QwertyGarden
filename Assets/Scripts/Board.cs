@@ -317,7 +317,7 @@ namespace QwertyGarden
                     {
                         double diff = System.Math.Floor(m_targetCoinCount - m_localCoinCount);
                         m_localCoinCount += MetaLogic.PowerOf10(diff);
-                        m_coinsText.text = MetaLogic.ToShortScale(m_localCoinCount) + " <sprite name=\"coin\">";
+                        m_coinsText.text = MetaLogic.ToShortScale(m_localCoinCount) + " <sprite name=coin>";
                         m_coinCountTime = CoinCountTime;
                     }
                 }
