@@ -41,9 +41,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Amplitude: 0.1
+    - _Amplitude: 0.2
     - _EnableExternalAlpha: 0
-    - _Speed: 2
+    - _PhaseOffset: 0
+    - _Speed: 4
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
