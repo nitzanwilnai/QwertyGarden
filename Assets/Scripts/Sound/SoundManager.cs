@@ -12,6 +12,10 @@ namespace QwertyGarden
         public AudioClip SFXPrestige;
         public AudioClip SFXReceiptLine;
         public AudioClip SFXReceiptTotal;
+        public AudioClip SFXWordComplete;
+        public AudioClip SFXKeyClick;
+        public AudioClip SFXKeyError;
+        public AudioClip SFXHintBubble;
         
         bool m_sfxExists;
 
@@ -69,6 +73,30 @@ namespace QwertyGarden
         {
             if (m_sfxExists && metaData.SFX)
                 m_audioSource.PlayOneShot(SFXReceiptTotal);
+        }
+
+        public void PlaySFXWordComplete()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXWordComplete);
+        }
+
+        public void PlaySFXKeyClick()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXKeyClick);
+        }
+
+        public void PlaySFXKeyError()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXKeyError);
+        }
+
+        public void PlaySFXHitBubble()
+        {
+            if (m_sfxExists && metaData.SFX)
+                m_audioSource.PlayOneShot(SFXHintBubble);
         }
     }
 }

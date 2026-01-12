@@ -326,6 +326,8 @@ namespace QwertyGarden
                     int keyIndex = KeyboardLogic.GetTypedKeyIndex(out c);
                     if (keyIndex > -1)
                     {
+                        SoundManager.Instance.PlaySFXKeyClick();
+
                         if (!m_line.gameObject.activeSelf)
                             m_line.gameObject.SetActive(true);
 

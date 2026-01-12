@@ -485,6 +485,15 @@ namespace QwertyGarden
                 CozyLogic.GameTyping(metaData, keyboardData, balance, c, out wordComplete, out incorrectCharacter, ref m_wordStartTime);
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
+                if(incorrectCharacter)
+                {
+                    SoundManager.Instance.PlaySFXKeyError();
+                }
+                else
+                {
+                    SoundManager.Instance.PlaySFXKeyClick();
+                }
+
                 KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
                 // int charIndex = incorrectCharacter ? currentWord[keyboardData.TypedWord.Length] - 65 : char.ToUpper(c) - 65;
@@ -559,6 +568,7 @@ namespace QwertyGarden
             if (wordComplete)
             {
                 WordState = WORD_STATE.SLIDE_OUT;
+                SoundManager.Instance.PlaySFXWordComplete();
             }
             else if (incorrectCharacter)
             {

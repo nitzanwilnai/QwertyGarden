@@ -116,15 +116,17 @@ namespace QwertyGarden
                 if (Keyboard.current.enterKey.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+                    SoundManager.Instance.PlaySFXKeyClick();
                 }
                 else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN);
+                    SoundManager.Instance.PlaySFXKeyClick();
                 }
 #if DEMO
                 else if (Keyboard.current.wKey.wasReleasedThisFrame)
                 {
-                    Application.OpenURL("steam://openurl/https://store.steampowered.com/app/4047130/Cardwheel/");
+                    Application.OpenURL("steam://openurl/https://store.steampowered.com/app/4255650/QwertyGarden/");
                 }
 #endif
                 else if (Keyboard.current.digit1Key.wasReleasedThisFrame)

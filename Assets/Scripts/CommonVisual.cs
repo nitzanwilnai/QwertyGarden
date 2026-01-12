@@ -62,12 +62,14 @@ namespace QwertyGarden
                 {
                     tutorialGUI.TutorialShown = true;
                     ShowTutorial(tutorialGUI);
+                    SoundManager.Instance.PlaySFXHitBubble();
                     return true;
                 }
                 else
                 {
                     tutorialGUI.TutorialShown = false;
                     HideTutorial(tutorialGUI);
+                    SoundManager.Instance.PlaySFXHitBubble();
                     return true;
                 }
             }

@@ -85,6 +85,8 @@ namespace QwertyGarden
 
             SetMenuState(MENU_STATE.MAIN_MENU);
 
+            MusicManager.Instance.PlayMusic();
+
             // if (m_metaData.GameType == GAME_TYPE.LESSON)
             //     Board.StartLesson();
             // else if (m_metaData.GameType == GAME_TYPE.COZY)
