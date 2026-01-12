@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdee3f6f576944a748ab86e274111018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MusicClip: {fileID: 0}
+  MusicClip: {fileID: 8300000, guid: c3302a5189efd4b91b00ce55287f9a37, type: 3}
 --- !u!4 &44975939
 Transform:
   m_ObjectHideFlags: 0
@@ -4913,6 +4913,10 @@ MonoBehaviour:
   SFXPrestige: {fileID: 8300000, guid: 79d67bb12a5e14648bbd0ee36eac470e, type: 3}
   SFXReceiptLine: {fileID: 8300000, guid: 3757711b476f44264af08483841e8d90, type: 3}
   SFXReceiptTotal: {fileID: 8300000, guid: 6165d53f1883543a7a6b50117a4f454a, type: 3}
+  SFXWordComplete: {fileID: 8300000, guid: ca0e08a76284a487e8b60aa9a8d7735e, type: 3}
+  SFXKeyClick: {fileID: 8300000, guid: 6c3f38b2b28bd462a9ab0a01c50ea92d, type: 3}
+  SFXKeyError: {fileID: 8300000, guid: 2d2583b36f21b44619c5d9880181a262, type: 3}
+  SFXHintBubble: {fileID: 8300000, guid: 5dfce1a3ec4484d54b5b96cd61527be2, type: 3}
 --- !u!4 &1925670792
 Transform:
   m_ObjectHideFlags: 0

@@ -64,6 +64,7 @@ namespace QwertyGarden
                 else if (Keyboard.current.mKey.wasReleasedThisFrame)
                 {
                     metaData.Music = !metaData.Music;
+                    MusicManager.Instance.Mute();
                     updateUI();
                 }
                 else if (Keyboard.current.qKey.wasReleasedThisFrame)
