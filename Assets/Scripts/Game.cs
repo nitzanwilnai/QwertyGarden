@@ -195,6 +195,7 @@ namespace QwertyGarden
                 ScreenCapture.CaptureScreenshot(name);
             }
 
+#endif
             if (Keyboard.current.digit0Key.wasPressedThisFrame)
             {
                 m_metaData.Coins *= 2.0d;
@@ -205,7 +206,6 @@ namespace QwertyGarden
                 m_metaData.Coins += 1000;
                 SoundManager.Instance.PlaySFXMoney();
             }
-#endif
         }
     }
 }

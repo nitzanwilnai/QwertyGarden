@@ -159,7 +159,7 @@ namespace QwertyGarden
             Debug.Log("assignNextGameWord() lowestUsedLetter = " + (char)(randomIndex + 65) + " new word " + balance.Words[keyboardData.WordIndex]);
         }
 
-        static void assignNextGameWord(KeyboardData keyboardData, Balance balance)
+        public static void assignNextGameWord(KeyboardData keyboardData, Balance balance)
         {
             int lowestValue = int.MaxValue;
             int lowestUsedLetter = 0;

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using CommonTools;
 using NUnit.Framework.Constraints;
 using ParticleSystemDOD;
@@ -96,6 +97,10 @@ namespace QwertyGarden
 
         double m_pressedKeyTimer;
 
+        bool m_showVideoWord = false;
+        int m_videoWordIndex;
+        string[] m_videoLines;
+
         LessonData lessonData;
         MetaData metaData;
         Balance balance;
@@ -173,6 +178,10 @@ namespace QwertyGarden
             // ParticleSystemBoard.Init(ParticleParent);
 
             SpriteParent.gameObject.SetActive(false);
+
+            var path = Path.Combine(Application.streamingAssetsPath, "videowords.txt");
+            string videoText = File.ReadAllText(path).ToUpper();
+            m_videoLines = videoText.Split('\n');
         }
 
         public void PlayLesson(KeyboardData keyboardData)
@@ -187,6 +196,9 @@ namespace QwertyGarden
         {
             Show(keyboardData);
             m_wordText.text = balance.Words[keyboardData.WordIndex];
+
+            for (int i = 0; i < m_videoLines.Length; i++)
+                balance.Words[i] = m_videoLines[i];
         }
 
         void Show(KeyboardData keyboardData)
@@ -451,6 +463,24 @@ namespace QwertyGarden
                     updateUI();
                 }
 #endif
+                if (Keyboard.current.digit5Key.wasReleasedThisFrame)
+                {
+                    if (!m_showVideoWord)
+                    {
+                        m_showVideoWord = true;
+                        m_videoWordIndex = 0;
+                    }
+                    else
+                    {
+                        m_videoWordIndex = (m_videoWordIndex + 1) % m_videoLines.Length;
+                    }
+                    CozyLogic.assignNextGameWord(keyboardData, balance);
+                    keyboardData.WordIndex = m_videoWordIndex;
+
+                    WordState = WORD_STATE.SLIDE_OUT;
+                    // m_versionText.text = "VERSION: " + versionText.text.ToUpper();
+
+                }
             }
         }
 
@@ -485,7 +515,7 @@ namespace QwertyGarden
                 CozyLogic.GameTyping(metaData, keyboardData, balance, c, out wordComplete, out incorrectCharacter, ref m_wordStartTime);
                 updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
-                if(incorrectCharacter)
+                if (incorrectCharacter)
                 {
                     SoundManager.Instance.PlaySFXKeyError();
                 }
