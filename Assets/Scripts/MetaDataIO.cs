@@ -9,7 +9,7 @@ namespace QwertyGarden
 {
     public static class MetaDataIO
     {
-        public static int VERSION = 1;
+        public static int VERSION = 2;
 
         public static void SaveMeta(MetaData metaData)
         {
