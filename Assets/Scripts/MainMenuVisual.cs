@@ -95,6 +95,9 @@ namespace QwertyGarden
 
             TextAsset versionText = (TextAsset)Resources.Load("Version");
             m_versionText.text = "VERSION: " + versionText.text.ToUpper();
+
+            // string fileName = Application.persistentDataPath + "/";
+            // m_versionText.text = fileName;
         }
 
         public void Hide()

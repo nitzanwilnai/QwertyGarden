@@ -21,5 +21,6 @@ namespace QwertyGarden
 
         public bool SFX;
         public bool Music;
+        public bool WPM;
     }
 }

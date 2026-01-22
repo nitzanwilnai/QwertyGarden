@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0009 Tulip 3
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 93d254d6d64ba4011bf21d966e1e04d4, type: 3}
+  FlowerCard: {fileID: 21300000, guid: 3890846b429e041e5867dd862c94b6f1, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: 7e0f8f63bf78b41cb89d05e62045ec8e, type: 3}
+  FlowerName: Tulip
+  SeedCost: 2000000
+  SellValue: 13841
+  GrowTime: 300
+  FlowerFrames:
+  - {fileID: 21300000, guid: 0c969fbcb652b4aea99104f909f30ae8, type: 3}
+  - {fileID: 21300000, guid: d25411638f3a4492c93cb0d7fd1b9250, type: 3}
+  - {fileID: 21300000, guid: 069a6e00b63e94baa8b6b8225b8d873f, type: 3}
+  - {fileID: 21300000, guid: 92cb534a244954a6aada32ec861e172b, type: 3}
+  - {fileID: 21300000, guid: 28078bb0b258a4975a7c69cddeae5bc5, type: 3}
+  - {fileID: 21300000, guid: dff9f87615e74437fa814cbbdc4f3860, type: 3}
+  - {fileID: 21300000, guid: 24697461f5f25412aa4b768ac5ae51ef, type: 3}
+  - {fileID: 21300000, guid: b6b92cd60445d485a9a91a507ff4be84, type: 3}
+  - {fileID: 21300000, guid: cfb4c834434004614be2025a9b5e4397, type: 3}
+  - {fileID: 21300000, guid: 496afdabab23a4274a9209c8588191b5, type: 3}

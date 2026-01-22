@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0014 Carnation 3
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 93d254d6d64ba4011bf21d966e1e04d4, type: 3}
+  FlowerCard: {fileID: 21300000, guid: b24736183c9e34e8c9ce9d292ed3242e, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: 77d47b6412ec74287851de2578a3ecf8, type: 3}
+  FlowerName: Carnation
+  SeedCost: 20000000
+  SellValue: 67822
+  GrowTime: 300
+  FlowerFrames:
+  - {fileID: 21300000, guid: 637657c43993a4f95acd84ddcd569962, type: 3}
+  - {fileID: 21300000, guid: 51da8bf640ab84e7e90d8bbef2d99f49, type: 3}
+  - {fileID: 21300000, guid: c8335ec4c9c22462ea2a13ef7e98ba6e, type: 3}
+  - {fileID: 21300000, guid: 4d37f52fc37d7493eafa5c2012faeb48, type: 3}
+  - {fileID: 21300000, guid: 70ccf83fca0b04ce8a8554da86b026c3, type: 3}
+  - {fileID: 21300000, guid: 439ddcc0d06cc42889f37ac796504c89, type: 3}
+  - {fileID: 21300000, guid: 135ab0b4f82db481c8aff59764c5c409, type: 3}
+  - {fileID: 21300000, guid: 42fe1b0bbe49a448fb1ccb8929fe8cae, type: 3}
+  - {fileID: 21300000, guid: c81f3a6ba83774e2a859f759a80af6f2, type: 3}
+  - {fileID: 21300000, guid: 881f07267bcf249408e650ec919f0301, type: 3}

@@ -96,15 +96,16 @@ namespace QwertyGarden
         GameObject m_instructionGO;
 
         double m_pressedKeyTimer;
-
+#if VIDEO
         bool m_showVideoWord = false;
         int m_videoWordIndex;
         string[] m_videoLines;
-
+#endif
         LessonData lessonData;
         MetaData metaData;
         Balance balance;
         KeyboardData keyboardData;
+        SettingsData settingsData;
         Camera worldCamera;
 
         public void Init(MetaData metaData, LessonData lessonData, Balance balance, Camera camera)
@@ -112,6 +113,7 @@ namespace QwertyGarden
             this.lessonData = lessonData;
             this.balance = balance;
             this.metaData = metaData;
+            this.settingsData = settingsData;
 
             worldCamera = camera;
 
@@ -179,9 +181,11 @@ namespace QwertyGarden
 
             SpriteParent.gameObject.SetActive(false);
 
+#if VIDEO
             var path = Path.Combine(Application.streamingAssetsPath, "videowords.txt");
             string videoText = File.ReadAllText(path).ToUpper();
             m_videoLines = videoText.Split('\n');
+#endif
         }
 
         public void PlayLesson(KeyboardData keyboardData)
@@ -197,8 +201,10 @@ namespace QwertyGarden
             Show(keyboardData);
             m_wordText.text = balance.Words[keyboardData.WordIndex];
 
+#if VIDEO
             for (int i = 0; i < m_videoLines.Length; i++)
                 balance.Words[i] = m_videoLines[i];
+#endif
         }
 
         void Show(KeyboardData keyboardData)
@@ -231,6 +237,12 @@ namespace QwertyGarden
                 Flower flower = AssetManager.Instance.LoadFlowerPrefab(balance.FlowerPrefab[flowerType], m_keyboardRef.FlowerParent);
                 m_flowers[keyIndex] = flower;
                 m_flowers[keyIndex].ResetFlower(balance.MaxFlowerFrames);
+
+                for (int frameIdx = 0; frameIdx < balance.MaxFlowerFrames; frameIdx++)
+                {
+                    Debug.Log("keyIndex " + keyIndex + " frameIdx " + frameIdx + " flowerType " + flowerType);
+                    m_flowers[keyIndex].Sprites[frameIdx] = AssetManager.Instance.LoadFlowerProgress(balance.FlowerName[flowerType], balance.FlowerFrames[flowerType][frameIdx]);
+                }
 
                 int progress = keyboardData.FlowerProgress[keyIndex];
                 flower.GrowFlower(progress);
@@ -267,7 +279,7 @@ namespace QwertyGarden
 
             int wpm = KeyboardLogic.GetWPM(keyboardData);
             int accuracy = KeyboardLogic.GetAccuracy(keyboardData);
-            m_WPMText.text = "WPM: " + wpm + "\nAccuracy: " + accuracy + "%";
+            m_WPMText.text = metaData.WPM ? "WPM: " + wpm + "\nAccuracy: " + accuracy + "%" : "";
 
             bool collected = false;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
@@ -463,6 +475,8 @@ namespace QwertyGarden
                     updateUI();
                 }
 #endif
+#if VIDEO
+
                 if (Keyboard.current.digit5Key.wasReleasedThisFrame)
                 {
                     if (!m_showVideoWord)
@@ -481,6 +495,7 @@ namespace QwertyGarden
                     // m_versionText.text = "VERSION: " + versionText.text.ToUpper();
 
                 }
+#endif
             }
         }
 

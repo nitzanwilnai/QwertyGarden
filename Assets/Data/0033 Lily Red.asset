@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
+  m_Name: 0033 Lily Red
+  m_EditorClassIdentifier: 
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 93d254d6d64ba4011bf21d966e1e04d4, type: 3}
+  FlowerCard: {fileID: 21300000, guid: 1ce878b64f82f42538e97075cb48f73a, type: 3}
+  FlowerIcon: {fileID: 21300000, guid: 3ba6293cf67c14b6cafa39521d71375b, type: 3}
+  FlowerName: Lily
+  SeedCost: 200000000
+  SellValue: 332329
+  GrowTime: 900
+  FlowerFrames:
+  - {fileID: 21300000, guid: 7e4da12aaa28f467d8901eeb07268771, type: 3}
+  - {fileID: 21300000, guid: c09482e674b5c44b4b72c855f935c556, type: 3}
+  - {fileID: 21300000, guid: 183a34bab8977433db3103462119d4d3, type: 3}
+  - {fileID: 21300000, guid: d62e60a0566994ed68181ac2169a1915, type: 3}
+  - {fileID: 21300000, guid: 14acb0fdfd8754d06b2e33730e8adf3f, type: 3}
+  - {fileID: 21300000, guid: 2069138a122fb4707a9acd644c234a1e, type: 3}
+  - {fileID: 21300000, guid: fe5a482b1c83442b6b4e02dd1976091f, type: 3}
+  - {fileID: 21300000, guid: faa1dc6f5d63f4cc8b13dc9f896d60cb, type: 3}
+  - {fileID: 21300000, guid: 204d6001dd881489390d48a8cd1987bd, type: 3}
+  - {fileID: 21300000, guid: f4d2b0d4c49674b97a9d8da168be30a7, type: 3}

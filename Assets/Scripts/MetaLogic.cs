@@ -7,6 +7,7 @@ namespace QwertyGarden
             metaData.Coins = balance.StartingCoins;
             metaData.SFX = true;
             metaData.Music = true;
+            metaData.WPM = true;
         }
 
         public static void SetMenuState(MetaData metaData, MENU_STATE newMenuState)

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c47c60de8d3b404ab773711ea6ca6f4, type: 3}
   m_Name: 0002 Pansy
   m_EditorClassIdentifier: 
-  FlowerPrefab: {fileID: 2269548641135264188, guid: 0636ad91de2774d1fa77ac5daa4abf49, type: 3}
+  FlowerPrefab: {fileID: 2269548641135264188, guid: 93d254d6d64ba4011bf21d966e1e04d4, type: 3}
   FlowerCard: {fileID: 21300000, guid: ac57bee739a3845f1a4ec8df8e07136c, type: 3}
   FlowerIcon: {fileID: 21300000, guid: ef3823d86dd6441a0975cc0d7b64bc56, type: 3}
   FlowerName: Pansy
   SeedCost: 200
-  SellValue: 25
+  SellValue: 24
   GrowTime: 300
   FlowerFrames:
   - {fileID: 21300000, guid: 393d794bcea8d449b8a60770ff1645ae, type: 3}

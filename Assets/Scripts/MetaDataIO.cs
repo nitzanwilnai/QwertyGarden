@@ -31,6 +31,7 @@ namespace QwertyGarden
 
                 bw.Write(metaData.SFX);
                 bw.Write(metaData.Music);
+                bw.Write(metaData.WPM);
             }
         }
 
@@ -57,6 +58,7 @@ namespace QwertyGarden
 
                         metaData.SFX = br.ReadBoolean();
                         metaData.Music = br.ReadBoolean();
+                        metaData.WPM = br.ReadBoolean();
 
                         //TEST
                         // metaData.TutorialFlags = 0;

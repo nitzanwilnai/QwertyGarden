@@ -14,6 +14,8 @@ namespace QwertyGarden
         GameObject m_musicOff;
         GameObject m_sfxOn;
         GameObject m_sfxOff;
+        GameObject m_wpmOn;
+        GameObject m_wpmOff;
 
         public void Init(GameObject UI, MetaData metaData)
         {
@@ -25,6 +27,8 @@ namespace QwertyGarden
             m_musicOff = guiRef.GetGameObject("MusicOff");
             m_sfxOn = guiRef.GetGameObject("SFXOn");
             m_sfxOff = guiRef.GetGameObject("SFXOff");
+            m_wpmOn = guiRef.GetGameObject("WPMOn");
+            m_wpmOff = guiRef.GetGameObject("WPMOff");
 
             Hide();
         }
@@ -45,6 +49,9 @@ namespace QwertyGarden
 
             m_sfxOn.SetActive(metaData.SFX);
             m_sfxOff.SetActive(!metaData.SFX);
+
+            m_wpmOn.SetActive(metaData.WPM);
+            m_wpmOff.SetActive(!metaData.WPM);
         }
 
         public void Hide()
@@ -65,6 +72,11 @@ namespace QwertyGarden
                 {
                     metaData.Music = !metaData.Music;
                     MusicManager.Instance.Mute();
+                    updateUI();
+                }
+                else if (Keyboard.current.wKey.wasReleasedThisFrame)
+                {
+                    metaData.WPM = !metaData.WPM;
                     updateUI();
                 }
                 else if (Keyboard.current.qKey.wasReleasedThisFrame)
