@@ -20,13 +20,13 @@ MonoBehaviour:
   SellValue: 24
   GrowTime: 300
   FlowerFrames:
-  - {fileID: 21300000, guid: 393d794bcea8d449b8a60770ff1645ae, type: 3}
-  - {fileID: 21300000, guid: cd57e2746ed384f69abc9d4e89a7000d, type: 3}
-  - {fileID: 21300000, guid: eff1b3350bf9a4db188260c6457635aa, type: 3}
-  - {fileID: 21300000, guid: 272124a57215244b9b3a5e1c67d5f77a, type: 3}
-  - {fileID: 21300000, guid: afe1233ee71fd401bba628029d448ed3, type: 3}
-  - {fileID: 21300000, guid: af473d5dd76c64bea834bd6ebd565ec2, type: 3}
-  - {fileID: 21300000, guid: e51b8f435d8c74ba780fac7d7fe95e13, type: 3}
-  - {fileID: 21300000, guid: a1496aac06d6149f8a4a517d448b4e11, type: 3}
-  - {fileID: 21300000, guid: 04fc79afeb1b24f389888b8ca55bf2e7, type: 3}
-  - {fileID: 21300000, guid: 9b9332c0bb388442293ceb4e2749414b, type: 3}
+  - {fileID: 21300000, guid: e240667ed10584ab9a5aed055771a45a, type: 3}
+  - {fileID: 21300000, guid: bc6a7d50c65fd46e0b708059691d3727, type: 3}
+  - {fileID: 21300000, guid: 617faef26f7074cff9f509fbef04e923, type: 3}
+  - {fileID: 21300000, guid: edd35f0a9a98e4fbaa9671b98d198115, type: 3}
+  - {fileID: 21300000, guid: 68abb60114f6f4c0db0351ac72bc6563, type: 3}
+  - {fileID: 21300000, guid: 216190034f8e24af8862e3c46d205a82, type: 3}
+  - {fileID: 21300000, guid: bb0d3553d53964d808ca2b2288cd3a7f, type: 3}
+  - {fileID: 21300000, guid: 7a36a6ccc2c8a4f2ba3c7cfe4812499d, type: 3}
+  - {fileID: 21300000, guid: 9bf23bb330a454d33a533d294ea416ed, type: 3}
+  - {fileID: 21300000, guid: 6f4d6593d486446ee8fdb8428d3cee26, type: 3}

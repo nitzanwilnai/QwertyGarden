@@ -20,7 +20,7 @@ MonoBehaviour:
   SellValue: 1628413
   GrowTime: 300
   FlowerFrames:
-  - {fileID: 21300000, guid: 7fecb7c5f1bf2476caf480e4662e0938, type: 3}
+  - {fileID: 21300000, guid: 5799a0d6709c448d9b6a5774425125e8, type: 3}
   - {fileID: 21300000, guid: 1398e683820b54fc3ac20831661e6e6c, type: 3}
   - {fileID: 21300000, guid: e4fc8e51a361049458261e0c7b659533, type: 3}
   - {fileID: 21300000, guid: c048cc899d3d44da29a3538d08eb184b, type: 3}

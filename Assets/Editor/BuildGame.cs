@@ -57,6 +57,16 @@ namespace QwertyGarden
             BuildStandaloneCommon(BuildTarget.StandaloneOSX, outputPath, "DEMO");
         }
 
+        [MenuItem("QwertyGarden/Build/Mac VIDEO")]
+        public static void BuildMacVideo()
+        {
+            setMacBuildNumber();
+
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss");
+            string outputPath = Application.dataPath + "/../../Build/QwertyGarden OSX VIDEO " + dateTime + "/QwertyGarden_VIDEO.app";
+            BuildStandaloneCommon(BuildTarget.StandaloneOSX, outputPath, "VIDEO");
+        }
+
         [MenuItem("QwertyGarden/Build/PC DEMO")]
         public static void BuildPCDemo()
         {

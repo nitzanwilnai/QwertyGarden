@@ -252,6 +252,8 @@ namespace QwertyGarden
             {
                 float scaleY = UnityEngine.Random.value * 0.1f + 0.95f;
                 float scaleX = UnityEngine.Random.value < 0.5f ? scaleY : -scaleY;
+                scaleX *= 0.25f;
+                scaleY *= 0.25f;
                 m_flowers[i].transform.localScale = new Vector3(scaleX, scaleY, 1.0f);
 
                 Vector3 position = m_flowerKeys[i].transform.localPosition;
