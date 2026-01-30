@@ -63,27 +63,7 @@ namespace QwertyGarden
         {
             if (Keyboard.current != null)
             {
-                if (Keyboard.current.sKey.wasReleasedThisFrame)
-                {
-                    metaData.SFX = !metaData.SFX;
-                    updateUI();
-                }
-                else if (Keyboard.current.mKey.wasReleasedThisFrame)
-                {
-                    metaData.Music = !metaData.Music;
-                    MusicManager.Instance.Mute();
-                    updateUI();
-                }
-                else if (Keyboard.current.wKey.wasReleasedThisFrame)
-                {
-                    metaData.WPM = !metaData.WPM;
-                    updateUI();
-                }
-                else if (Keyboard.current.qKey.wasReleasedThisFrame)
-                {
-                    Application.Quit();
-                }
-                else if (Keyboard.current.anyKey.wasReleasedThisFrame)
+                if (Keyboard.current.anyKey.wasReleasedThisFrame)
                 {
                     Game.Instance.SetMenuState(metaData.PrevMenuState);
                 }

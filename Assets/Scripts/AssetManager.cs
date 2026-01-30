@@ -17,6 +17,7 @@ namespace QwertyGarden
         public GameObject ShopReceiptItem;
         public GameObject InGameUIFlower;
         public GameObject UIFlowerPopup;
+        public UIFlower TitleFlowerPrefab;
 
         public Color FlowerCardSelected;
         public Color FlowerCardUnselected;
@@ -24,6 +25,8 @@ namespace QwertyGarden
         public Color ReceiptChangeNegative;
         public Color FlowerPopupGreen;
         public Color FlowerPopupRed;
+        public Color PrestigeEnabled;
+        public Color PrestigeDisabled;
         public static bool UseAssetBundles = false;
         AssetBundle m_commonBundle;
 

@@ -51,13 +51,13 @@ namespace QwertyGarden
             return totalCost;
         }
 
-        public static double CalculateCurrentGardenCost(KeyboardData keyboardData, Balance balance, int[] newFlowerTypes)
+        public static double CalculateCurrentGardenCost(KeyboardData keyboardData, Balance balance)
         {
             double totalCost = 0;
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
                 int oldFlowerType = keyboardData.FlowerType[keyIdx];
-                int newFlowerType = newFlowerTypes[keyIdx];
+                int newFlowerType = keyboardData.NewFlowerType[keyIdx];
                 if (newFlowerType != oldFlowerType)
                 {
                     int newCost = balance.FlowerSeedCost[newFlowerType];
@@ -67,14 +67,14 @@ namespace QwertyGarden
             return totalCost;
         }
 
-        public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance, int[] newFlowerType)
+        public static bool TryEditCozy(KeyboardData keyboardData, MetaData metaData, Balance balance)
         {
-            double totalCost = CalculateCurrentGardenCost(keyboardData, balance, newFlowerType);
+            double totalCost = CalculateCurrentGardenCost(keyboardData, balance);
 
             if (totalCost <= metaData.Coins)
             {
                 for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                    keyboardData.FlowerType[keyIdx] = newFlowerType[keyIdx];
+                    keyboardData.FlowerType[keyIdx] = keyboardData.NewFlowerType[keyIdx];
 
                 KeyboardLogic.ContinueGame(keyboardData);
                 commonStartCozy(metaData, keyboardData, balance, totalCost);
@@ -105,58 +105,6 @@ namespace QwertyGarden
 
             if (wordComplete)
                 assignNextGameWord(keyboardData, balance);
-        }
-
-        static void assignedNextWordWeighted(KeyboardData keyboardData, Balance balance)
-        {
-            int largestCount = 0;
-            int totalWeight = 0;
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-            {
-                if (largestCount < keyboardData.CharacterCount[keyIdx])
-                    largestCount = keyboardData.CharacterCount[keyIdx];
-            }
-
-            // reverse character count to use as weights
-            Span<int> weights = stackalloc int[26];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                weights[keyIdx] = largestCount - keyboardData.CharacterCount[keyIdx];
-
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                weights[keyIdx] = weights[keyIdx] * 10000;
-
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                totalWeight += keyboardData.CharacterCount[keyIdx];
-
-            int randomWeight = Mathf.FloorToInt(UnityEngine.Random.value * totalWeight);
-            int randomIndex = 0;
-            totalWeight = 0;
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-            {
-                totalWeight += weights[keyIdx];
-                if (totalWeight > randomWeight)
-                {
-                    randomIndex = keyIdx;
-                    break;
-                }
-            }
-
-            string s1 = "Character count: ";
-            string s2 = "Weights ";
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-            {
-                s1 += (char)(keyIdx + 65) + " " + keyboardData.CharacterCount[keyIdx] + "\t";
-                s2 += (char)(keyIdx + 65) + " " + weights[keyIdx] + "\t";
-            }
-
-            Debug.Log(s1);
-            Debug.Log(s2);
-
-            int randomWord = Mathf.FloorToInt(UnityEngine.Random.value * balance.WordsForLetters[randomIndex].Length);
-            keyboardData.WordIndex = balance.WordsForLetters[randomIndex][randomWord];
-            keyboardData.TypedWord = "";
-            Debug.Log("balance.WordsForLetters[" + randomIndex + "][" + randomWord + "] " + balance.WordsForLetters[randomIndex][randomWord]);
-            Debug.Log("assignNextGameWord() lowestUsedLetter = " + (char)(randomIndex + 65) + " new word " + balance.Words[keyboardData.WordIndex]);
         }
 
         public static void assignNextGameWord(KeyboardData keyboardData, Balance balance)

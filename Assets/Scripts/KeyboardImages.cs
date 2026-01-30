@@ -7,4 +7,5 @@ public class KeyboardImages : MonoBehaviour
     public Image[] KeyImages;
     public GameObject[] KeyPct;
     public TextMeshProUGUI[] KeyPctText;
+    public TextMeshProUGUI MoneyText;
 }

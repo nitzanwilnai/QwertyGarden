@@ -35,7 +35,7 @@ namespace QwertyGarden
             }
         }
 
-        public static void LoadMeta(MetaData metaData)
+        public static void TryLoadMeta(MetaData metaData)
         {
             string fileName = Application.persistentDataPath + "/meta_v" + VERSION + ".dat";
             if (File.Exists(fileName))

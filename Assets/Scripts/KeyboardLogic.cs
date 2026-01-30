@@ -14,6 +14,7 @@ namespace QwertyGarden
             keyboardData.PrestigeCount = new int[26];
             keyboardData.GrowTime = new float[26];
             keyboardData.FlowerType = new int[26];
+            keyboardData.NewFlowerType = new int[26];
             keyboardData.TypedWord = "";
         }
 
@@ -41,7 +42,7 @@ namespace QwertyGarden
 
         public static int GetWPM(KeyboardData keyboardData)
         {
-            return Mathf.RoundToInt(keyboardData.WordCount / (keyboardData.WordTime / 60.0f));
+            return Mathf.RoundToInt(keyboardData.WPMCharacterCount / 5 / (keyboardData.WPMWordTime / 60.0f));
         }
 
         public static int GetAccuracy(KeyboardData keyboardData)
@@ -51,9 +52,9 @@ namespace QwertyGarden
 
         public static float GetWPMBonus(KeyboardData keyboardData)
         {
-            if (keyboardData.WordTime <= 0.0f)
+            if (keyboardData.WPMWordTime <= 0.0f)
                 return 0.0f;
-            return 1.0f + keyboardData.WordCount / (keyboardData.WordTime / 60.0f) / 100.0f;
+            return 1.0f + keyboardData.WPMWordCount / (keyboardData.WPMWordTime / 60.0f) / 100.0f;
         }
 
         public static float GetAccuracyBonus(KeyboardData keyboardData)
@@ -65,8 +66,9 @@ namespace QwertyGarden
 
         public static void ResetWPMAndAccuracy(KeyboardData keyboardData)
         {
-            keyboardData.WordCount = 0;
-            keyboardData.WordTime = 0.0f;
+            keyboardData.WPMWordCount = 0;
+            keyboardData.WPMCharacterCount = 0;
+            keyboardData.WPMWordTime = 0.0f;
             keyboardData.CorrectCount = 0;
             keyboardData.MistakeCount = 0;
         }
@@ -131,8 +133,9 @@ namespace QwertyGarden
                     wordComplete = true;
                     keyboardData.WrongLetter = 0;
 
-                    keyboardData.WordCount++;
-                    keyboardData.WordTime += Time.realtimeSinceStartup - startTime;
+                    keyboardData.WPMWordCount++;
+                    keyboardData.WPMCharacterCount += keyboardData.TypedWord.Length;
+                    keyboardData.WPMWordTime += Time.realtimeSinceStartup - startTime;
                 }
             }
         }

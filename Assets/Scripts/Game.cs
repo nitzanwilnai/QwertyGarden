@@ -10,24 +10,17 @@ namespace QwertyGarden
     {
         public Camera Camera;
         public Board Board;
-        public GameObject UIMainMenu;
-        public GameObject UIKeyboadSelection;
-        public GameObject UIFlowerSelection;
-        public GameObject UIGardenSelection;
-        public GameObject UIKeyboardSelection;
         public GameObject UIEditFlowers;
         public GameObject UISettings;
         public GameObject UIPrestige;
         public GameObject UINoKeyboard;
         public GameObject UIDemo;
+        public GameObject UITitle;
 
-        MainMenuVisual m_mainMenuVisual = new();
-        KeyboardSelectionVisual m_keyboardSelectionVisual = new();
-        FlowerSelectionVisual m_flowerSelectionVisual = new();
-        GardenSelectionVisual m_gardenSelectionVisual = new();
         EditFlowersVisual m_editFlowersVisual = new();
         SettingsVisual m_settingsVisual = new();
         PrestigeVisual m_prestigeVisual = new();
+        TitleVisual m_titleVisual = new();
 
         Balance m_balance = new Balance();
         LessonData m_lessonData = new LessonData();
@@ -46,7 +39,8 @@ namespace QwertyGarden
             KeyboardLogic.InitKeyboardData(m_keyboardData);
             LessonLogic.InitLessonData(m_lessonData, m_balance);
 
-            MetaDataIO.LoadMeta(m_metaData);
+            m_metaData.MenuState = MENU_STATE.TITLE;
+            MetaDataIO.TryLoadMeta(m_metaData);
 
             SoundManager.Instance.Init(m_metaData);
             MusicManager.Instance.Init(m_metaData);
@@ -59,16 +53,12 @@ namespace QwertyGarden
             {
                 LoadNewKeyboard(0);
             }
-            MetaDataIO.SaveMeta(m_metaData);
+            // MetaDataIO.SaveMeta(m_metaData);
 
-            m_mainMenuVisual.Init(UIMainMenu, m_metaData, m_keyboardData, m_balance);
-            m_keyboardSelectionVisual.Init(UIKeyboadSelection, m_balance);
-            m_gardenSelectionVisual.Init(UIGardenSelection, m_balance, m_metaData);
-            m_flowerSelectionVisual.Init(UIFlowerSelection, m_metaData, m_balance);
-            m_keyboardSelectionVisual.Init(UIKeyboardSelection, m_balance);
-            m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_balance);
+            m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_keyboardData, m_balance);
             m_settingsVisual.Init(UISettings, m_metaData);
             m_prestigeVisual.Init(UIPrestige, m_metaData, m_keyboardData, m_balance);
+            m_titleVisual.Init(UITitle, m_balance);
 
             UIDemo.SetActive(false);
 #if DEMO
@@ -80,10 +70,10 @@ namespace QwertyGarden
         void Start()
         {
             m_metaData.GameType = GAME_TYPE.COZY;
-            m_metaData.MenuState = MENU_STATE.MAIN_MENU;
+            // m_metaData.MenuState = MENU_STATE.TITLE;
             MetaDataIO.SaveMeta(m_metaData);
 
-            SetMenuState(MENU_STATE.MAIN_MENU);
+            showNewMenu();
 
             MusicManager.Instance.PlayMusic();
 
@@ -97,7 +87,18 @@ namespace QwertyGarden
         {
             m_metaData.KeyboardIndex = keyboardIndex;
             MetaDataIO.SaveMeta(m_metaData);
-            KeyboardDataIO.LoadKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
+            if (KeyboardDataIO.LoadKeyboard(m_keyboardData, m_metaData.KeyboardIndex))
+            {
+                // v3 loaded
+            }
+            else if (KeyboardDataIO.LoadKeyboardV2(m_keyboardData, m_metaData.KeyboardIndex))
+            {
+                // v2 loaded
+            }
+            else if (KeyboardDataIO.LoadKeyboardV1(m_keyboardData, m_metaData.KeyboardIndex))
+            {
+                // v1 loaded
+            }
         }
 
         public void LoadNewKeyboard(int keyboardIndex)
@@ -111,37 +112,19 @@ namespace QwertyGarden
 
         public void SetMenuState(MENU_STATE newMenuState)
         {
-            if (m_metaData.MenuState == MENU_STATE.MAIN_MENU)
-                m_mainMenuVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.GARDEN_SELECTION)
-                m_gardenSelectionVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
-                m_keyboardSelectionVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSelectionVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
-                m_editFlowersVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
-                Board.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
-                m_settingsVisual.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
-                m_prestigeVisual.Hide();
+            hidePreviousMenu();
 
             m_metaData.PrevMenuState = m_metaData.MenuState;
             m_metaData.MenuState = newMenuState;
 
             MetaDataIO.SaveMeta(m_metaData);
 
-            if (m_metaData.MenuState == MENU_STATE.MAIN_MENU)
-                m_mainMenuVisual.Show();
-            else if (m_metaData.MenuState == MENU_STATE.GARDEN_SELECTION)
-                m_gardenSelectionVisual.Show();
-            else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
-                m_keyboardSelectionVisual.Show(m_keyboardData, m_metaData);
-            else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSelectionVisual.Show(m_keyboardData);
-            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+            showNewMenu();
+        }
+
+        private void showNewMenu()
+        {
+            if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
                 m_editFlowersVisual.Show(m_keyboardData);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.PlayCozy(m_keyboardData);
@@ -149,6 +132,22 @@ namespace QwertyGarden
                 m_settingsVisual.Show();
             else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
                 m_prestigeVisual.Show();
+            else if (m_metaData.MenuState == MENU_STATE.TITLE)
+                m_titleVisual.Show();
+        }
+
+        private void hidePreviousMenu()
+        {
+            if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+                m_editFlowersVisual.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
+                Board.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
+                m_settingsVisual.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
+                m_prestigeVisual.Hide();
+            else if (m_metaData.MenuState == MENU_STATE.TITLE)
+                m_titleVisual.Hide();
         }
 
         // Update is called once per frame
@@ -160,15 +159,7 @@ namespace QwertyGarden
             if (UINoKeyboard.activeSelf != noKeyboard)
                 UINoKeyboard.SetActive(noKeyboard);
 
-            if (m_metaData.MenuState == MENU_STATE.MAIN_MENU)
-                m_mainMenuVisual.Tick();
-            else if (m_metaData.MenuState == MENU_STATE.GARDEN_SELECTION)
-                m_gardenSelectionVisual.Tick(dt);
-            else if (m_metaData.MenuState == MENU_STATE.KEYBOARD_SELECTION)
-                m_keyboardSelectionVisual.Tick(dt);
-            else if (m_metaData.MenuState == MENU_STATE.FLOWER_SELECTION)
-                m_flowerSelectionVisual.Tick(dt);
-            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+            if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
                 m_editFlowersVisual.Tick(dt);
             else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
                 m_settingsVisual.Tick();
@@ -176,6 +167,8 @@ namespace QwertyGarden
                 m_prestigeVisual.Tick();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Tick(dt);
+            else if (m_metaData.MenuState == MENU_STATE.TITLE)
+                m_titleVisual.Tick();
 
 #if UNITY_EDITOR
             if (Keyboard.current.deleteKey.wasPressedThisFrame)
@@ -208,6 +201,71 @@ namespace QwertyGarden
                 SoundManager.Instance.PlaySFXMoney();
             }
 #endif
+        }
+
+        public void ToggleSFX(NavButtonGUI navButtonGUI)
+        {
+            m_metaData.SFX = !m_metaData.SFX;
+
+            CommonVisual.ShowSettings(navButtonGUI, m_metaData);
+        }
+
+        public void ToggleMusic(NavButtonGUI navButtonGUI)
+        {
+            m_metaData.Music = !m_metaData.Music;
+            MusicManager.Instance.Mute();
+
+            CommonVisual.ShowSettings(navButtonGUI, m_metaData);
+        }
+
+        public void ToggleWPM(NavButtonGUI navButtonGUI)
+        {
+            m_metaData.WPM = !m_metaData.WPM;
+            if (m_metaData.MenuState == MENU_STATE.IN_GAME)
+            {
+                Board.UpdateUI();
+            }
+
+            CommonVisual.ShowSettings(navButtonGUI, m_metaData);
+        }
+
+        public void ExitGame()
+        {
+            Application.Quit();
+        }
+
+        public void ToggleShowSettings()
+        {
+            if (m_metaData.MenuState == MENU_STATE.IN_GAME)
+            {
+                Board.ToggleShowSettings();
+            }
+            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+            {
+                m_editFlowersVisual.ToggleShowSettings();
+            }
+        }
+
+        public void ShowTutorial()
+        {
+            if (m_metaData.MenuState == MENU_STATE.IN_GAME)
+            {
+                Board.ShowTutorial();
+            }
+            else if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
+            {
+                m_editFlowersVisual.ShowTutorial();
+            }
+        }
+
+        public void ShowInvoice()
+        {
+            Board.ShowInvoice();
+        }
+
+        public void BuySelectedSeedsAndPlay()
+        {
+            m_editFlowersVisual.BuySelectedSeedsAndPlay();
         }
     }
 }

@@ -133,6 +133,9 @@ namespace QwertyGarden
                     keyboardData.FlowerType[i] = 0;
 
                 for (int i = 0; i < 26; i++)
+                    keyboardData.NewFlowerType[i] = 0;
+
+                for (int i = 0; i < 26; i++)
                     keyboardData.FlowerProgress[i] = 0;
 
                 for (int i = 0; i < 26; i++)

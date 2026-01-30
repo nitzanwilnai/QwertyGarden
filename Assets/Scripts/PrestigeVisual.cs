@@ -2,6 +2,7 @@ using CommonTools;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace QwertyGarden
 {
@@ -9,12 +10,12 @@ namespace QwertyGarden
     {
         GameObject m_UI;
 
-        TutorialGUI m_tutorialGUI = new TutorialGUI();
-
-        Animation m_prestigeCostAnim;
         TextMeshProUGUI m_prestigeCostText;
         TextMeshProUGUI m_coinsText;
         TextMeshProUGUI m_totalText;
+
+        Button m_prestigeButton;
+        Image m_prestigeButtonImage;
 
         MetaData metaData;
         KeyboardData keyboardData;
@@ -29,11 +30,16 @@ namespace QwertyGarden
             m_UI = UI;
 
             GUIRef guiRef = m_UI.GetComponent<GUIRef>();
-            CommonVisual.InitTutorialGUI(guiRef, m_tutorialGUI);
             m_prestigeCostText = guiRef.GetTextGUI("PrestigeCost");
             m_coinsText = guiRef.GetTextGUI("Coins");
             m_totalText = guiRef.GetTextGUI("Total");
-            m_prestigeCostAnim = guiRef.GetAnimation("PrestigeCost");
+
+            guiRef.GetButton("Exit").onClick.AddListener(closePrestigePopup);
+            guiRef.GetButton("Cancel").onClick.AddListener(closePrestigePopup);
+            m_prestigeButton = guiRef.GetButton("Prestige");
+            m_prestigeButton.onClick.AddListener(doPrestige);
+
+            m_prestigeButtonImage = guiRef.GetImage("Prestige");
 
             Hide();
         }
@@ -42,14 +48,18 @@ namespace QwertyGarden
         {
             m_UI.SetActive(true);
 
-            CommonVisual.CheckTutorialFlag(metaData, m_tutorialGUI);
-
             double prestigeCost = MetaLogic.GetPrestigeCost(metaData, balance);
-            m_prestigeCostText.text = "cost: " + MetaLogic.ToShortScale(prestigeCost) + " <sprite name=coin>";
+            m_prestigeCostText.text = MetaLogic.ToShortScale(prestigeCost) + " <sprite name=coin>";
 
-            m_totalText.text = "Total: <b>+" + (metaData.Prestige+1).ToString("N0") + "</b> flowers";
+            m_totalText.text = "Total: <b>+" + (metaData.Prestige + 1).ToString("N0") + "</b> flowers";
 
-            m_coinsText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=coin>";
+            string s = "<color=#";
+            s += (prestigeCost <= metaData.Coins) ? ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangePositive) : ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangeNegative);
+            s += ">";
+            m_coinsText.text = s + MetaLogic.ToShortScale(metaData.Coins) + "</color> <sprite name=coin>";
+
+            m_prestigeButton.enabled = prestigeCost <= metaData.Coins;
+            m_prestigeButtonImage.color = prestigeCost <= metaData.Coins ? AssetManager.Instance.PrestigeEnabled : AssetManager.Instance.PrestigeDisabled;
         }
 
         public void Hide()
@@ -59,28 +69,18 @@ namespace QwertyGarden
 
         public void Tick()
         {
-            if (Keyboard.current != null)
+        }
+
+        void closePrestigePopup()
+        {
+            Game.Instance.SetMenuState(metaData.PrevMenuState);
+        }
+
+        void doPrestige()
+        {
+            if (MetaLogic.TryPrestige(metaData, keyboardData, balance))
             {
-                if (CommonVisual.CheckTutorialKey(m_tutorialGUI))
-                {
-
-                }
-
-                if (Keyboard.current.mKey.wasReleasedThisFrame)
-                {
-                    Game.Instance.SetMenuState(MENU_STATE.MAIN_MENU);
-                }
-                else if (Keyboard.current.backspaceKey.wasReleasedThisFrame)
-                {
-                    if (MetaLogic.TryPrestige(metaData, keyboardData, balance))
-                    {
-                        Game.Instance.SetMenuState(MENU_STATE.MAIN_MENU);
-                    }
-                    else
-                    {
-                        m_prestigeCostAnim.Play("Grow");
-                    }
-                }
+                Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
             }
         }
     }

@@ -7,8 +7,9 @@ namespace QwertyGarden
     {
         public GameObject[] LettersGO;
         public Transform FlowerParent;
-        public Transform ParticleParent;
         public TextMeshPro WordText;
-        public Transform CoinParent;
+        public TextMeshPro WPMText;
+        public TextMeshPro AccuracyText;
+        public TextMeshPro MoneyText;
     }
 }

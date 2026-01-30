@@ -9,7 +9,7 @@ namespace QwertyGarden
 {
     public static class KeyboardDataIO
     {
-        public static int VERSION = 1;
+        public static int VERSION = 3;
         public static void SaveKeyboard(KeyboardData keyboardData, int index)
         {
             string fileName = Application.persistentDataPath + "/keyboarddata_v" + VERSION + "_kb" + index + ".dat";
@@ -21,6 +21,8 @@ namespace QwertyGarden
                 bw.Write(26);
                 for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.FlowerType[i]);
+                for (int i = 0; i < 26; i++)
+                    bw.Write(keyboardData.NewFlowerType[i]);
                 for (int i = 0; i < 26; i++)
                     bw.Write(keyboardData.CharacterCount[i]);
                 for (int i = 0; i < 26; i++)
@@ -35,8 +37,9 @@ namespace QwertyGarden
                 bw.Write(keyboardData.TypedWord);
 
                 bw.Write(keyboardData.WrongLetter);
-                bw.Write(keyboardData.WordCount);
-                bw.Write(keyboardData.WordTime);
+                bw.Write(keyboardData.WPMWordCount);
+                bw.Write(keyboardData.WPMCharacterCount);
+                bw.Write(keyboardData.WPMWordTime);
                 bw.Write(keyboardData.CorrectCount);
                 bw.Write(keyboardData.MistakeCount);
 
@@ -50,7 +53,60 @@ namespace QwertyGarden
             return File.Exists(fileName);
         }
 
-        public static void LoadKeyboard(KeyboardData keyboardData, int index)
+        public static bool LoadKeyboard(KeyboardData keyboardData, int index)
+        {
+            string fileName = Application.persistentDataPath + "/keyboarddata_v" + VERSION + "_kb" + index + ".dat";
+            if (File.Exists(fileName))
+            {
+                using (var stream = File.Open(fileName, FileMode.Open))
+                {
+                    using (BinaryReader br = new BinaryReader(stream))
+                    {
+                        keyboardData.WordIndex = br.ReadInt32();
+                        keyboardData.KeyboardType = br.ReadInt32();
+
+                        int maxFlowers = br.ReadInt32();
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerType[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.NewFlowerType[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.CharacterCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerProgress[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.PrestigeCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.GrowTime[i] = br.ReadSingle();
+
+                        keyboardData.TypedWord = br.ReadString();
+
+                        keyboardData.WrongLetter = br.ReadInt32();
+                        keyboardData.WPMWordCount = br.ReadInt32();
+                        keyboardData.WPMCharacterCount = br.ReadInt32();
+                        keyboardData.WPMWordTime = br.ReadSingle();
+                        keyboardData.CorrectCount = br.ReadInt32();
+                        keyboardData.MistakeCount = br.ReadInt32();
+
+                        int magic = br.ReadInt32();
+                        Debug.Log("LoadKeyboard(" + index + ") magic " + magic);
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static bool LoadKeyboardV2(KeyboardData keyboardData, int index)
         {
             string fileName = Application.persistentDataPath + "/keyboarddata_v" + VERSION + "_kb" + index + ".dat";
             if (File.Exists(fileName))
@@ -84,17 +140,70 @@ namespace QwertyGarden
                         keyboardData.TypedWord = br.ReadString();
 
                         keyboardData.WrongLetter = br.ReadInt32();
-                        keyboardData.WordCount = br.ReadInt32();
-                        keyboardData.WordTime = br.ReadSingle();
+                        keyboardData.WPMWordCount = br.ReadInt32();
+                        keyboardData.WPMCharacterCount = br.ReadInt32();
+                        keyboardData.WPMWordTime = br.ReadSingle();
                         keyboardData.CorrectCount = br.ReadInt32();
                         keyboardData.MistakeCount = br.ReadInt32();
 
                         int magic = br.ReadInt32();
                         Debug.Log("LoadKeyboard(" + index + ") magic " + magic);
+
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
+        public static bool LoadKeyboardV1(KeyboardData keyboardData, int index)
+        {
+            int version = 1;
+            string fileName = Application.persistentDataPath + "/keyboarddata_v" + version + "_kb" + index + ".dat";
+            if (File.Exists(fileName))
+            {
+                using (var stream = File.Open(fileName, FileMode.Open))
+                {
+                    using (BinaryReader br = new BinaryReader(stream))
+                    {
+                        keyboardData.WordIndex = br.ReadInt32();
+                        keyboardData.KeyboardType = br.ReadInt32();
+
+                        int maxFlowers = br.ReadInt32();
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerType[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.CharacterCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerProgress[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.PrestigeCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.GrowTime[i] = br.ReadSingle();
+
+                        keyboardData.TypedWord = br.ReadString();
+
+                        keyboardData.WrongLetter = br.ReadInt32();
+                        keyboardData.WPMWordCount = br.ReadInt32();
+                        keyboardData.WPMWordTime = br.ReadSingle();
+                        keyboardData.CorrectCount = br.ReadInt32();
+                        keyboardData.MistakeCount = br.ReadInt32();
+
+                        int magic = br.ReadInt32();
+                        Debug.Log("LoadKeyboard(" + index + ") magic " + magic);
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
