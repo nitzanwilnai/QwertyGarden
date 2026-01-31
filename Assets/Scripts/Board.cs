@@ -458,6 +458,20 @@ namespace QwertyGarden
             }
         }
 
+#if VIDEO || UNITY_EDITOR
+        public void IncAllFlowerProgress()
+        {
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                KeyboardLogic.IncrementCharacterCount(metaData, keyboardData, balance, (char)(keyIdx + 65));
+
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            {
+                int progress = keyboardData.FlowerProgress[keyIdx];
+                m_flowers[keyIdx].GrowFlower(progress);
+            }
+        }
+#endif
+
         public void ShowInvoice()
         {
             m_showInvoice = true;
