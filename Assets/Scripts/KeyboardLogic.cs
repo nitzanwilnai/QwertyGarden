@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -50,17 +49,21 @@ namespace QwertyGarden
             return Mathf.FloorToInt((keyboardData.CorrectCount - keyboardData.MistakeCount) / (float)keyboardData.CorrectCount * 100.0f);
         }
 
-        public static float GetWPMBonus(KeyboardData keyboardData)
+        public static float GetWPMBonus(MetaData metaData, KeyboardData keyboardData)
         {
             if (keyboardData.WPMWordTime <= 0.0f)
-                return 0.0f;
+                return 1.0f;
+            if (metaData.WPM)
+                return 2.0f;
             return 1.0f + keyboardData.WPMWordCount / (keyboardData.WPMWordTime / 60.0f) / 100.0f;
         }
 
-        public static float GetAccuracyBonus(KeyboardData keyboardData)
+        public static float GetAccuracyBonus(MetaData metaData, KeyboardData keyboardData)
         {
             if (keyboardData.CorrectCount == 0)
                 return 0.0f;
+            if (metaData.WPM)
+                return 2.0f;
             return 1.0f + (keyboardData.CorrectCount - keyboardData.MistakeCount) / (float)keyboardData.CorrectCount;
         }
 

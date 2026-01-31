@@ -58,7 +58,7 @@ namespace QwertyGarden
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_keyboardData, m_balance);
             m_settingsVisual.Init(UISettings, m_metaData);
             m_prestigeVisual.Init(UIPrestige, m_metaData, m_keyboardData, m_balance);
-            m_titleVisual.Init(UITitle, m_balance);
+            m_titleVisual.Init(m_metaData, UITitle, m_balance);
 
             UIDemo.SetActive(false);
 #if DEMO
@@ -73,6 +73,8 @@ namespace QwertyGarden
             // m_metaData.MenuState = MENU_STATE.TITLE;
             MetaDataIO.SaveMeta(m_metaData);
 
+            m_metaData.PrevMenuState = m_metaData.MenuState;
+            m_metaData.MenuState = MENU_STATE.TITLE;
             showNewMenu();
 
             MusicManager.Instance.PlayMusic();
@@ -95,10 +97,10 @@ namespace QwertyGarden
             {
                 // v2 loaded
             }
-            else if (KeyboardDataIO.LoadKeyboardV1(m_keyboardData, m_metaData.KeyboardIndex))
-            {
-                // v1 loaded
-            }
+            // else if (KeyboardDataIO.LoadKeyboardV1(m_keyboardData, m_metaData.KeyboardIndex))
+            // {
+            //     // v1 loaded
+            // }
         }
 
         public void LoadNewKeyboard(int keyboardIndex)
@@ -189,7 +191,7 @@ namespace QwertyGarden
             }
 
 #endif
-#if VIDEO
+#if VIDEO || UNITY_EDITOR
             if (Keyboard.current.digit0Key.wasPressedThisFrame)
             {
                 m_metaData.Coins *= 2.0d;
@@ -266,6 +268,11 @@ namespace QwertyGarden
         public void BuySelectedSeedsAndPlay()
         {
             m_editFlowersVisual.BuySelectedSeedsAndPlay();
+        }
+
+        public void GoToWishlist()
+        {
+            Application.OpenURL("steam://openurl/https://store.steampowered.com/app/4255650/Qwerty_Garden/");
         }
     }
 }

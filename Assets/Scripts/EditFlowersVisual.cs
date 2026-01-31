@@ -10,6 +10,8 @@ namespace QwertyGarden
 {
     public class EditFlowersVisual
     {
+        readonly int MAX_DEMO_FLOWERS = 4;
+
         public class FlowerPopupGUI
         {
             public GameObject GO;
@@ -60,7 +62,6 @@ namespace QwertyGarden
 
         public bool m_showSettings = false;
 
-        RectTransform m_line;
         Canvas m_canvas;
 
         KeyboardData keyboardData;
@@ -79,7 +80,6 @@ namespace QwertyGarden
 
             GUIRef guiRef = m_UI.GetComponent<GUIRef>();
             m_keyboardParent = guiRef.GetGameObject("Keyboard").transform;
-            m_line = guiRef.GetGameObject("Line").GetComponent<RectTransform>();
             m_darken = guiRef.GetGameObject("Darken");
 
             GUIRef receeiptGUIRef = guiRef.GetGameObject("Receipt").GetComponent<GUIRef>();
@@ -143,8 +143,6 @@ namespace QwertyGarden
         {
             CommonVisual.AutoCanvasScaler(m_UI);
 
-            m_line.gameObject.SetActive(false);
-
             this.keyboardData = keyboardData;
             m_UI.SetActive(true);
             m_keyboardImages = GameObject.Instantiate(AssetManager.Instance.KeyboardImages[keyboardData.KeyboardType], m_keyboardParent);
@@ -157,13 +155,14 @@ namespace QwertyGarden
                 totalCharCount += keyboardData.CharacterCount[keyIdx];
 
             m_keyboardImages.KeyPctText = new TextMeshProUGUI[26];
+            m_keyboardImages.KeyButtonImages = new Image[26];
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
                 int flowerType = keyboardData.NewFlowerType[keyIdx];
                 m_keyboardImages.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
 
                 m_keyboardImages.KeyPctText[keyIdx] = m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<TextMeshProUGUI>();
-
+                m_keyboardImages.KeyButtonImages[keyIdx] = m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<Image>();
 
                 float pct = Mathf.FloorToInt((float)keyboardData.CharacterCount[keyIdx] / (float)totalCharCount * 100.0f);
                 m_keyboardImages.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + "\n" + pct.ToString("N0") + "%";
@@ -187,7 +186,10 @@ namespace QwertyGarden
 
             m_navButtonGUI.PlayButton.SetActive(true);
             m_navButtonGUI.GardenButton.SetActive(false);
+
+            MetaLogic.TryShowPrestige(metaData);
             m_navButtonGUI.PrestigeButton.SetActive(metaData.ShowPrestige);
+
             CommonVisual.HideSettings(m_navButtonGUI);
 
             m_showSettings = false;
@@ -280,12 +282,7 @@ namespace QwertyGarden
             }
 
             // if (moveCards)
-            {
-                Vector3 cardPosition = m_flowerPopupGUI[m_flowerType].GO.transform.position;
-                cardPosition.y -= m_flowerPopupGUI[m_flowerType].GO.GetComponent<RectTransform>().rect.height / 2.0f;
-                SetLine(m_line, WorldToCanvas(m_canvas.GetComponent<RectTransform>(), cardPosition), WorldToCanvas(m_canvas.GetComponent<RectTransform>(), m_keyboardImages.KeyImages[m_keyIdx].transform.position));
-                m_cardsParent.transform.localPosition = new Vector3(m_currentX, -192.0f, 0.0f);
-            }
+            m_cardsParent.transform.localPosition = new Vector3(m_currentX, -192.0f, 0.0f);
 
 
             void SetLine(RectTransform line, Vector2 start, Vector2 end)
@@ -353,6 +350,11 @@ namespace QwertyGarden
 
             int oldFlowerType = keyboardData.FlowerType[m_keyIdx];
 
+#if DEMO
+            if (newFlowerType >= MAX_DEMO_FLOWERS)
+                return;
+#endif
+
             if (balance.FlowerSeedCost[newFlowerType] <= moneyLeftOver || oldFlowerType == newFlowerType)
             {
                 m_keyboardImages.KeyImages[m_keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
@@ -367,9 +369,6 @@ namespace QwertyGarden
         {
             SoundManager.Instance.PlaySFXKeyClick();
 
-            if (!m_line.gameObject.activeSelf)
-                m_line.gameObject.SetActive(true);
-
             updateReceiptItems();
 
             m_currentX = m_cardsParent.transform.localPosition.x;
@@ -383,10 +382,17 @@ namespace QwertyGarden
 
                 bool flowerChangeOK = (balance.FlowerSeedCost[flowerType] <= moneyLeftOver) || flowerType == oldFlowerType;
 
+#if DEMO
+                if (flowerType >= MAX_DEMO_FLOWERS)
+                    flowerChangeOK = false;
+#endif
+
                 m_flowerPopupGUI[flowerType].Outline.color = flowerChangeOK ? AssetManager.Instance.FlowerPopupGreen : AssetManager.Instance.FlowerPopupRed;
 
                 m_targetScale[flowerType] = flowerType == newFlowerType ? 1.0f : 0.8f;
             }
+
+            KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
         }
 
         void selectKey(int keyIndex)
@@ -399,48 +405,10 @@ namespace QwertyGarden
             double currentGardenCost = CozyLogic.CalculateGardenCost(keyboardData, balance, tempGardenFlowers);
             double moneyLeftOver = metaData.Coins - currentGardenCost;
 
+            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                m_keyboardImages.KeyButtonImages[keyIdx].color = m_keyIdx == keyIdx ? AssetManager.Instance.KeySelected : AssetManager.Instance.KeyNotSelected;
+
             selectFlowerCommon(keyboardData.FlowerType[keyIndex], keyboardData.FlowerType[keyIndex], moneyLeftOver);
         }
-
-        void toggleKey(int keyIndex)
-        {
-            Span<int> tempGardenFlowers = stackalloc int[26];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-                if (keyIdx != keyIndex)
-                    tempGardenFlowers[keyIdx] = keyboardData.NewFlowerType[keyIdx];
-                else
-                    tempGardenFlowers[keyIdx] = keyboardData.FlowerType[keyIdx];
-            double currentGardenCost = CozyLogic.CalculateGardenCost(keyboardData, balance, tempGardenFlowers);
-            double moneyLeftOver = metaData.Coins - currentGardenCost;
-
-            int oldFlowerType = keyboardData.FlowerType[keyIndex];
-            int currentFlowerType = keyboardData.NewFlowerType[keyIndex];
-            int newFlowerType = keyIndex == m_keyIdx ? (currentFlowerType + 1) % balance.NumFlowers : currentFlowerType;
-
-            m_keyIdx = keyIndex;
-
-#if DEMO
-            if(newFlowerType > 3)
-                newFlowerType = 0;
-#endif
-
-            if (newFlowerType > oldFlowerType && balance.FlowerSeedCost[newFlowerType] > moneyLeftOver)
-            {
-                newFlowerType = 0;
-                m_changeAnimation.Play("Grow");
-            }
-            else if (newFlowerType < oldFlowerType && balance.FlowerSeedCost[newFlowerType] > moneyLeftOver)
-            {
-                newFlowerType = oldFlowerType;
-            }
-
-            keyboardData.NewFlowerType[keyIndex] = newFlowerType;
-
-            selectFlowerCommon(oldFlowerType, newFlowerType, moneyLeftOver);
-
-            m_keyboardImages.KeyImages[keyIndex].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
-
-        }
-
     }
 }

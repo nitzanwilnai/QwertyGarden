@@ -2394,7 +2394,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 721601334850834310, guid: 9dbda6c0bba2a4100a0f65d3a57e87dc, type: 2}
+  - {fileID: -65145339932855797, guid: 9970fffed69ae49ac8f5a7f15e30c0da, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2436,11 +2436,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <size=3.75><sprite name=smile emoji></size> QWERTY GARDEN <size=3.75><sprite
-    name=smile emoji></size>
+  m_text: dazzl
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9dbda6c0bba2a4100a0f65d3a57e87dc, type: 2}
-  m_sharedMaterial: {fileID: 721601334850834310, guid: 9dbda6c0bba2a4100a0f65d3a57e87dc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9970fffed69ae49ac8f5a7f15e30c0da, type: 2}
+  m_sharedMaterial: {fileID: -65145339932855797, guid: 9970fffed69ae49ac8f5a7f15e30c0da, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -1,7 +1,9 @@
 using CommonTools;
 using NUnit.Framework.Constraints;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 namespace QwertyGarden
 {
@@ -15,8 +17,12 @@ namespace QwertyGarden
 
         int m_numFlowers;
 
-        public void Init(GameObject UI, Balance balance)
+        MetaData metaData;
+
+        public void Init(MetaData metaData, GameObject UI, Balance balance)
         {
+            this.metaData = metaData;
+
             m_UI = UI;
 
             m_numFlowers = Mathf.FloorToInt(Screen.width / 12.8f);
@@ -39,8 +45,11 @@ namespace QwertyGarden
             float halfScreenWidth = screenWidth / 2.0f;
             for (int i = 0; i < m_UIFlowers.Length; i++)
             {
-                float scale = Random.value * 0.1f + 0.9f;
-                m_UIFlowers[i].transform.localScale = new Vector3(scale, scale, 1.0f);
+                float scaleY = Random.value * 0.1f + 0.9f;
+                float scaleX = scaleY;
+                if (Random.value < 0.5f)
+                    scaleX = -scaleX;
+                m_UIFlowers[i].transform.localScale = new Vector3(scaleX, scaleY, 1.0f);
             }
 
             int oneThird = m_numFlowers / 3;
@@ -73,7 +82,10 @@ namespace QwertyGarden
 
         void startGame()
         {
-            Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
+            if (metaData.PrevMenuState == MENU_STATE.IN_GAME || metaData.PrevMenuState == MENU_STATE.EDIT_GARDEN)
+                Game.Instance.SetMenuState(metaData.PrevMenuState);
+            else
+                Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
         }
     }
 }

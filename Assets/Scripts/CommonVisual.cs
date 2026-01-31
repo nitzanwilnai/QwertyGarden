@@ -125,6 +125,12 @@ namespace QwertyGarden
             buttonGUIRef.GetButton("Settings").onClick.AddListener(Game.Instance.ToggleShowSettings);
             prestigeButton.onClick.AddListener(() => { Game.Instance.SetMenuState(MENU_STATE.PRESTIGE); });
 
+            buttonGUIRef.GetButton("Wishlist").onClick.AddListener(Game.Instance.GoToWishlist);
+            buttonGUIRef.GetButton("Wishlist").gameObject.SetActive(false);
+#if DEMO
+            buttonGUIRef.GetButton("Wishlist").gameObject.SetActive(true);
+#endif
+
             Button sfxButton = buttonGUIRef.GetButton("SFX");
             Button musicButton = buttonGUIRef.GetButton("Music");
             Button wpmButton = buttonGUIRef.GetButton("WPM");

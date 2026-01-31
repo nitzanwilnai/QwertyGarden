@@ -15,20 +15,20 @@ namespace QwertyGarden
             metaData.MenuState = newMenuState;
         }
 
-        public static double GetSellValue(KeyboardData keyboardData, Balance balance)
+        public static double GetSellValue(MetaData metaData, KeyboardData keyboardData, Balance balance)
         {
             double totalSellValue = 0;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
                 totalSellValue += balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
 
-            float accuracyBonus = KeyboardLogic.GetAccuracyBonus(keyboardData);
-            float wpmBonus = KeyboardLogic.GetWPMBonus(keyboardData);
+            float accuracyBonus = KeyboardLogic.GetAccuracyBonus(metaData, keyboardData);
+            float wpmBonus = KeyboardLogic.GetWPMBonus(metaData, keyboardData);
             return System.Math.Floor(totalSellValue * accuracyBonus * wpmBonus);
         }
 
         public static void SellCollectedFlowers(MetaData metaData, KeyboardData keyboardData, Balance balance)
         {
-            metaData.Coins += GetSellValue(keyboardData, balance);
+            metaData.Coins += GetSellValue(metaData, keyboardData, balance);
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
                 keyboardData.FlowerCount[flowerType] = 0;

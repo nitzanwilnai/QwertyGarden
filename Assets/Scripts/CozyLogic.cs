@@ -74,9 +74,17 @@ namespace QwertyGarden
             if (totalCost <= metaData.Coins)
             {
                 for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                    if (keyboardData.FlowerType[keyIdx] != keyboardData.NewFlowerType[keyIdx])
+                        keyboardData.FlowerProgress[keyIdx] = 0;
+
+                for (int keyIdx = 0; keyIdx < 26; keyIdx++)
                     keyboardData.FlowerType[keyIdx] = keyboardData.NewFlowerType[keyIdx];
 
-                KeyboardLogic.ContinueGame(keyboardData);
+                for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+                    keyboardData.FlowerCount[keyIdx] = 0;
+
+                keyboardData.WrongLetter = 0;
+
                 commonStartCozy(metaData, keyboardData, balance, totalCost);
 
                 return true;

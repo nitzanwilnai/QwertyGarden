@@ -27,6 +27,8 @@ namespace QwertyGarden
         public Color FlowerPopupRed;
         public Color PrestigeEnabled;
         public Color PrestigeDisabled;
+        public Color KeySelected;
+        public Color KeyNotSelected;
         public static bool UseAssetBundles = false;
         AssetBundle m_commonBundle;
 
