@@ -4,6 +4,10 @@ using CommonTools;
 using UnityEngine.InputSystem;
 using System.IO;
 
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
+using Steamworks;
+#endif
+
 namespace QwertyGarden
 {
     public class Game : Singleton<Game>
@@ -64,6 +68,18 @@ namespace QwertyGarden
 #if DEMO
             UIDemo.SetActive(true);
 #endif
+
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
+            bool steamInit = SteamAPI.Init();
+            if (!steamInit)
+            {
+                Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed. Refer to Valve's documentation or the comment above this line for more information.", this);
+            }
+            else
+                Debug.Log("Steam Init Success");
+
+#endif
+
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created

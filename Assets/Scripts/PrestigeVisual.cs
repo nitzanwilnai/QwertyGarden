@@ -48,18 +48,21 @@ namespace QwertyGarden
         {
             m_UI.SetActive(true);
 
+            double totalSellValue = MetaLogic.GetSellValue(metaData, keyboardData, balance);
+            double totalCoins = metaData.Coins + totalSellValue;
+
             double prestigeCost = MetaLogic.GetPrestigeCost(metaData, balance);
             m_prestigeCostText.text = MetaLogic.ToShortScale(prestigeCost) + " <sprite name=coin>";
 
             m_totalText.text = "Total: <b>+" + (metaData.Prestige + 1).ToString("N0") + "</b> flowers";
 
             string s = "<color=#";
-            s += (prestigeCost <= metaData.Coins) ? ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangePositive) : ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangeNegative);
+            s += (prestigeCost <= totalCoins) ? ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangePositive) : ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangeNegative);
             s += ">";
-            m_coinsText.text = s + MetaLogic.ToShortScale(metaData.Coins) + "</color> <sprite name=coin>";
+            m_coinsText.text = s + MetaLogic.ToShortScale(totalCoins) + "</color> <sprite name=coin>";
 
-            m_prestigeButton.enabled = prestigeCost <= metaData.Coins;
-            m_prestigeButtonImage.color = prestigeCost <= metaData.Coins ? AssetManager.Instance.PrestigeEnabled : AssetManager.Instance.PrestigeDisabled;
+            m_prestigeButton.enabled = prestigeCost <= totalCoins;
+            m_prestigeButtonImage.color = prestigeCost <= totalCoins ? AssetManager.Instance.PrestigeEnabled : AssetManager.Instance.PrestigeDisabled;
         }
 
         public void Hide()

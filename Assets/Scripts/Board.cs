@@ -209,7 +209,6 @@ namespace QwertyGarden
 
             this.keyboardData = keyboardData;
 
-            KeyboardLogic.ResetWPMAndAccuracy(keyboardData);
             KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
 
             m_showInvoice = false;
@@ -288,7 +287,6 @@ namespace QwertyGarden
         {
             m_localCoinCount = m_targetCoinCount = metaData.Coins;
             double totalSellValue = MetaLogic.GetSellValue(metaData, keyboardData, balance);
-            // m_coinsText.text = MetaLogic.ToShortScale(m_localCoinCount + totalSellValue) + " <sprite name=\"coin\">";
             m_keyboardRef.MoneyText.text = MetaLogic.ToShortScale(m_localCoinCount + totalSellValue);
 
             int wpm = KeyboardLogic.GetWPM(keyboardData);
@@ -475,6 +473,7 @@ namespace QwertyGarden
         public void ShowInvoice()
         {
             m_showInvoice = true;
+            m_startTyping.SetActive(false);
             m_darken.SetActive(true);
             m_pressedAnywhere.SetActive(true);
             m_inoviceGUI.InoviceGO.SetActive(true);

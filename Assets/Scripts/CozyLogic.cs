@@ -12,29 +12,6 @@ namespace QwertyGarden
             commonStartCozy(metaData, keyboardData, balance, 0);
         }
 
-        public static bool TryStartCozy(KeyboardData keyboardData, MetaData metaData, Balance balance)
-        {
-            Span<int> flowerCount = stackalloc int[balance.NumFlowers];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-            {
-                int flowerType = keyboardData.FlowerType[keyIdx];
-                flowerCount[flowerType]++;
-            }
-            double totalCost = 0;
-            for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
-                if (flowerCount[flowerType] > 0)
-                    totalCost += balance.FlowerSeedCost[flowerType] * flowerCount[flowerType];
-
-            if (totalCost <= metaData.Coins)
-            {
-                KeyboardLogic.StartGame(keyboardData);
-                commonStartCozy(metaData, keyboardData, balance, totalCost);
-
-                return true;
-            }
-            return false;
-        }
-
         public static double CalculateGardenCost(KeyboardData keyboardData, Balance balance, Span<int> newFlowerTypes)
         {
             double totalCost = 0;
@@ -98,6 +75,8 @@ namespace QwertyGarden
 
             int randomIndex = Mathf.FloorToInt(UnityEngine.Random.value * balance.Words.Length);
             keyboardData.WordIndex = randomIndex;
+
+            KeyboardLogic.ResetWPMAndAccuracy(keyboardData);
 
             assignNextGameWord(keyboardData, balance);
         }

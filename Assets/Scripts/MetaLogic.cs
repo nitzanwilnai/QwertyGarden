@@ -22,6 +22,8 @@ namespace QwertyGarden
                 totalSellValue += balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
 
             float accuracyBonus = KeyboardLogic.GetAccuracyBonus(metaData, keyboardData);
+            if (accuracyBonus == 0.0f)
+                accuracyBonus = 2.0f;
             float wpmBonus = KeyboardLogic.GetWPMBonus(metaData, keyboardData);
             return System.Math.Floor(totalSellValue * accuracyBonus * wpmBonus);
         }
@@ -124,7 +126,9 @@ namespace QwertyGarden
         public static bool TryPrestige(MetaData metaData, KeyboardData keyboardData, Balance balance)
         {
             double prestigeCost = GetPrestigeCost(metaData, balance);
-            if (prestigeCost < metaData.Coins)
+            double totalSellValue = MetaLogic.GetSellValue(metaData, keyboardData, balance);
+
+            if (prestigeCost < metaData.Coins + totalSellValue)
             {
                 metaData.Coins -= prestigeCost;
                 metaData.Prestige++;
