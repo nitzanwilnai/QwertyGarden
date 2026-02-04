@@ -60,6 +60,9 @@ namespace QwertyGarden
                         metaData.Music = br.ReadBoolean();
                         metaData.WPM = br.ReadBoolean();
 
+                        if (metaData.Coins < 0.0f)
+                            metaData.Coins = 0.0f;
+
                         //TEST
                         // metaData.TutorialFlags = 0;
                     }

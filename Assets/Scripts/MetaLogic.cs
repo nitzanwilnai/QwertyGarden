@@ -130,6 +130,7 @@ namespace QwertyGarden
 
             if (prestigeCost < metaData.Coins + totalSellValue)
             {
+                metaData.Coins += totalSellValue;
                 metaData.Coins -= prestigeCost;
                 metaData.Prestige++;
 
