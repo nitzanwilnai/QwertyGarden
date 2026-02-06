@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class KeyboardImages : MonoBehaviour
 {
-    public Image[] KeyImages;
-    public GameObject[] KeyPct;
-    public TextMeshProUGUI[] KeyPctText;
-    public Image[] KeyButtonImages;
+    public GameObject[] KeysGO;
+    [HideInInspector] public Image[] KeyFlowerIcon;
+    [HideInInspector] public TextMeshProUGUI[] KeyPctText;
+    [HideInInspector] public Image[] KeyButtonImages;
     public TextMeshProUGUI MoneyText;
 }

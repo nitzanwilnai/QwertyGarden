@@ -366,6 +366,16 @@ namespace QwertyGarden
                             if (m_showSettings)
                                 ToggleShowSettings();
                         }
+
+#if UNITY_EDITOR
+                        if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+                        {
+                            string currentWord = balance.Words[keyboardData.WordIndex];
+                            c = Char.ToUpper(currentWord[keyboardData.TypedWord.Length]);
+                            keyIndex = (int)c - 65;
+                            gameTextInput(keyIndex, c);
+                        }
+#endif
                         /*
                         else if (Keyboard.current.spaceKey.wasReleasedThisFrame)
                         {

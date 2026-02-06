@@ -132,9 +132,9 @@ namespace QwertyGarden
 
         static void Build(BuildTarget buildTarget, string path, BuildOptions options, string scene)
         {
-            BalanceParser.ParseLocal();
+            DateTime startTime = DateTime.UtcNow;
 
-            float time = Time.realtimeSinceStartup;
+            BalanceParser.ParseLocal();
 
             DateTime theTime = DateTime.Now;
             string dateTime = theTime.ToString("yyyy-MM-dd HH.mm.ss");
@@ -149,7 +149,7 @@ namespace QwertyGarden
 
             CreateAssetBundles.BuildAllAssetBundles(buildTarget);
 
-            UnityEngine.Debug.LogFormat("BuildAllAssetBundles elapsed time {0}", Time.realtimeSinceStartup - time);
+            UnityEngine.Debug.Log($"BuildAllAssetBundles time: {(DateTime.UtcNow - startTime).TotalSeconds} seconds");
 
             // Get filename.
             string[] levels = new string[] { scene };
@@ -157,7 +157,7 @@ namespace QwertyGarden
             // Build player.
             BuildPipeline.BuildPlayer(levels, path, buildTarget, options);
 
-            UnityEngine.Debug.LogFormat("Build elapsed time {0}", Time.realtimeSinceStartup - time);
+            UnityEngine.Debug.Log($"Built time: {(DateTime.UtcNow - startTime).TotalSeconds} seconds");
         }
 
         [PostProcessBuild(999)]

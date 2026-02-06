@@ -109,7 +109,7 @@ namespace QwertyGarden
 #if UNITY_EDITOR
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
-                m_keyboardData.FlowerType[keyIdx] = Mathf.FloorToInt(UnityEngine.Random.value * 4.0f + 11.0f);
+                m_keyboardData.NewFlowerType[keyIdx] =m_keyboardData.FlowerType[keyIdx] = Mathf.FloorToInt(UnityEngine.Random.value * 4.0f + 11.0f);
                 m_keyboardData.FlowerProgress[keyIdx] = Mathf.RoundToInt(UnityEngine.Random.value * 1.0f + 8.0f);
             }
 #endif

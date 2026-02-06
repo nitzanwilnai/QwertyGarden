@@ -29,7 +29,6 @@ namespace QwertyGarden
             public TextMeshProUGUI Value;
         }
 
-        float m_flowerCardOffset = 270.0f;
         float m_slideVelocity = 2000.0f;
 
         GameObject m_UI;
@@ -48,6 +47,8 @@ namespace QwertyGarden
         TextMeshProUGUI m_changeText;
         TextMeshProUGUI m_currentCoinText;
         Animation m_changeAnimation;
+
+        GameObject m_selectKeyGO;
 
         float m_currentX;
         float m_targetX;
@@ -88,6 +89,8 @@ namespace QwertyGarden
             m_changeText = receeiptGUIRef.GetTextGUI("Change");
             m_changeAnimation = receeiptGUIRef.GetAnimation("Change");
             receeiptGUIRef.GetButton("Play").onClick.AddListener(Game.Instance.BuySelectedSeedsAndPlay);
+
+            m_selectKeyGO = guiRef.GetGameObject("Select");
 
             int numFlowers = balance.NumFlowers;
             Transform flowerReceipt = receeiptGUIRef.GetGameObject("ReceiptItems").transform;
@@ -154,21 +157,24 @@ namespace QwertyGarden
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
                 totalCharCount += keyboardData.CharacterCount[keyIdx];
 
+            m_keyboardImages.KeyFlowerIcon = new Image[26];
             m_keyboardImages.KeyPctText = new TextMeshProUGUI[26];
             m_keyboardImages.KeyButtonImages = new Image[26];
             for (int keyIdx = 0; keyIdx < 26; keyIdx++)
             {
-                int flowerType = keyboardData.NewFlowerType[keyIdx];
-                m_keyboardImages.KeyImages[keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[flowerType], balance.FlowerCard[flowerType]);
+                GUIRef keyGUIRef = m_keyboardImages.KeysGO[keyIdx].GetComponent<GUIRef>();
+                m_keyboardImages.KeyFlowerIcon[keyIdx] = keyGUIRef.GetImage("Flower");
+                m_keyboardImages.KeyPctText[keyIdx] = keyGUIRef.GetTextGUI("Text");
+                m_keyboardImages.KeyButtonImages[keyIdx] = keyGUIRef.GetImage("Button");
 
-                m_keyboardImages.KeyPctText[keyIdx] = m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<TextMeshProUGUI>();
-                m_keyboardImages.KeyButtonImages[keyIdx] = m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<Image>();
+                int flowerType = keyboardData.NewFlowerType[keyIdx];
+                m_keyboardImages.KeyFlowerIcon[keyIdx].sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
 
                 float pct = Mathf.FloorToInt((float)keyboardData.CharacterCount[keyIdx] / (float)totalCharCount * 100.0f);
-                m_keyboardImages.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + "\n" + pct.ToString("N0") + "%";
+                m_keyboardImages.KeyPctText[keyIdx].text = (char)(keyIdx + 65) + " " + pct.ToString("N0") + "%";
 
                 int localIdx = keyIdx;
-                m_keyboardImages.KeyPct[keyIdx].GetComponentInChildren<Button>().onClick.AddListener(() => { selectKey(localIdx); });
+                keyGUIRef.GetButton("Button").onClick.AddListener(() => { selectKey(localIdx); });
             }
 
             m_keyboardImages.MoneyText.text = MetaLogic.ToShortScale(metaData.Coins);
@@ -199,6 +205,8 @@ namespace QwertyGarden
 
             m_tutorialGO.SetActive(CommonVisual.AutoShowTutorial(metaData));
             m_darken.SetActive(CommonVisual.AutoShowTutorial(metaData));
+
+            m_selectKeyGO.SetActive(true);
         }
 
         public void Hide()
@@ -357,7 +365,7 @@ namespace QwertyGarden
 
             if (balance.FlowerSeedCost[newFlowerType] <= moneyLeftOver || oldFlowerType == newFlowerType)
             {
-                m_keyboardImages.KeyImages[m_keyIdx].sprite = AssetManager.Instance.LoadFlowerCard(balance.FlowerName[newFlowerType], balance.FlowerCard[newFlowerType]);
+                m_keyboardImages.KeyFlowerIcon[m_keyIdx].sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[newFlowerType], balance.FlowerIcon[newFlowerType]);
 
                 keyboardData.NewFlowerType[m_keyIdx] = newFlowerType;
 
@@ -397,6 +405,8 @@ namespace QwertyGarden
 
         void selectKey(int keyIndex)
         {
+            m_selectKeyGO.SetActive(false);
+
             m_keyIdx = keyIndex;
 
             Span<int> tempGardenFlowers = stackalloc int[26];
