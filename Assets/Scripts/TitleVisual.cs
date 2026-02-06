@@ -1,5 +1,6 @@
 using CommonTools;
 using NUnit.Framework.Constraints;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,8 @@ namespace QwertyGarden
 
         UIFlower[] m_UIFlowers;
 
+        TextMeshProUGUI m_version;
+
         int m_numFlowers;
 
         MetaData metaData;
@@ -29,6 +32,7 @@ namespace QwertyGarden
 
             GUIRef guiRef = m_UI.GetComponent<GUIRef>();
             m_flowerParent = guiRef.GetGameObject("Flowers").transform;
+            m_version = guiRef.GetTextGUI("Version");
 
             m_UIFlowers = new UIFlower[m_numFlowers];
             for (int i = 0; i < m_UIFlowers.Length; i++)
@@ -64,6 +68,9 @@ namespace QwertyGarden
 
         public void Show()
         {
+            TextAsset versionText = (TextAsset)Resources.Load("Version");
+            m_version.text = "Version: " + versionText.text;
+
             m_UI.SetActive(true);
         }
 

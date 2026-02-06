@@ -3,6 +3,8 @@ using UnityEngine;
 using CommonTools;
 using UnityEngine.InputSystem;
 using System.IO;
+using TMPro;
+
 
 #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
 using Steamworks;
