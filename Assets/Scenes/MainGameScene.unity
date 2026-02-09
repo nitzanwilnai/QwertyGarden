@@ -6486,8 +6486,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: DEMO VERSION - FIRST FOUR FLOWERS ONLY - For feedback email contact@nitzan.games
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9dbda6c0bba2a4100a0f65d3a57e87dc, type: 2}
-  m_sharedMaterial: {fileID: 721601334850834310, guid: 9dbda6c0bba2a4100a0f65d3a57e87dc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6511,7 +6511,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.5
+  m_fontSize: 35
   m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 1

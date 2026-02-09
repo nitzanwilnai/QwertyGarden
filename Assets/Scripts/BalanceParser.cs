@@ -62,9 +62,9 @@ namespace QwertyGarden
                     for (int flowerType = 0; flowerType < balanceSO.Flowers.Length; flowerType++)
                     {
                         bw.Write(balanceSO.Flowers[flowerType].FlowerPrefab.name);
-                        bw.Write(balanceSO.Flowers[flowerType].FlowerCard.name);
                         bw.Write(balanceSO.Flowers[flowerType].FlowerIcon.name);
                         bw.Write(balanceSO.Flowers[flowerType].FlowerName);
+                        bw.Write(balanceSO.Flowers[flowerType].Achievement);
                         bw.Write(balanceSO.Flowers[flowerType].SeedCost);
                         bw.Write(balanceSO.Flowers[flowerType].SellValue);
                         bw.Write(balanceSO.Flowers[flowerType].GrowTime);
@@ -138,20 +138,6 @@ namespace QwertyGarden
                 // Debug.Log("WordCounter[length] " + wordCounter[length] + " m_wordsForLength[" + length + "].Length " + m_wordsForLength[length].Length);
                 m_wordsForLength[length][wordCounter[length]++] = words[i];
             }
-
-            // Span<int> letterCounter = stackalloc int[26];
-            // for (int wordIdx = 0; wordIdx < words.Length; wordIdx++)
-            // {
-            //     for (int letterIdx = 0; letterIdx < words[wordIdx].Length; letterIdx++)
-            //     {
-            //         for (char c = 'A'; c <= 'Z'; c++)
-            //             if (words[wordIdx][letterIdx] == c)
-            //                 letterCounter[(int)c - 65]++;
-            //     }
-            // }
-
-            // for (int i = 0; i < 26; i++)
-            //     Debug.Log((char)(i + 65) + " count " + letterCounter[i]);
 
             int[][] wordsForLetters = new int[26][];
             Span<int> letterCounter = stackalloc int[26];

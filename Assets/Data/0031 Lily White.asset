@@ -16,8 +16,9 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: db00eadceec53418891041f677551a98, type: 3}
   FlowerIcon: {fileID: 21300000, guid: d9b9e3e1a8b824e50a8f95a4138207cf, type: 3}
   FlowerName: Lily
-  SeedCost: 200000000
-  SellValue: 332329
+  Achievement: FLOWER_LILY_WHITE
+  SeedCost: 2000000000
+  SellValue: 1628413
   GrowTime: 900
   FlowerFrames:
   - {fileID: 21300000, guid: 82a00235002cb47b3ab0731fe4b85cd4, type: 3}

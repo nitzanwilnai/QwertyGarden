@@ -22,5 +22,8 @@ namespace QwertyGarden
         public bool SFX;
         public bool Music;
         public bool WPM;
+
+        public int[] FlowerCollectedCount;
+        public int TotalCollectedCount;
     }
 }

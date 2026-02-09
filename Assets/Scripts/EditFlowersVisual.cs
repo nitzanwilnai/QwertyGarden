@@ -10,8 +10,9 @@ namespace QwertyGarden
 {
     public class EditFlowersVisual
     {
+#if DEMO
         readonly int MAX_DEMO_FLOWERS = 4;
-
+#endif
         public class FlowerPopupGUI
         {
             public GameObject GO;
@@ -124,8 +125,8 @@ namespace QwertyGarden
                 m_flowerPopupGUI[flowerType].GO.transform.localScale = Vector3.one;
                 m_flowerPopupGUI[flowerType].GO.transform.localPosition = new Vector3(288.0f * flowerType, 0.0f, 0.0f);
 
-                m_flowerPopupGUI[flowerType].SellValue.text = MetaLogic.ToShortScale(balance.FlowerSellValue[flowerType]);
-                m_flowerPopupGUI[flowerType].SeedCost.text = MetaLogic.ToShortScale(balance.FlowerSeedCost[flowerType]);
+                m_flowerPopupGUI[flowerType].SellValue.text = CommonVisual.ToShortScale(balance.FlowerSellValue[flowerType]);
+                m_flowerPopupGUI[flowerType].SeedCost.text = CommonVisual.ToShortScale(balance.FlowerSeedCost[flowerType]);
                 m_flowerPopupGUI[flowerType].FlowerName.text = balance.FlowerName[flowerType];
                 m_flowerPopupGUI[flowerType].Flower.sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
 
@@ -154,13 +155,13 @@ namespace QwertyGarden
             m_keyboardImages.transform.SetAsFirstSibling();
 
             int totalCharCount = 0;
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
                 totalCharCount += keyboardData.CharacterCount[keyIdx];
 
-            m_keyboardImages.KeyFlowerIcon = new Image[26];
-            m_keyboardImages.KeyPctText = new TextMeshProUGUI[26];
-            m_keyboardImages.KeyButtonImages = new Image[26];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            m_keyboardImages.KeyFlowerIcon = new Image[Balance.LETTERS];
+            m_keyboardImages.KeyPctText = new TextMeshProUGUI[Balance.LETTERS];
+            m_keyboardImages.KeyButtonImages = new Image[Balance.LETTERS];
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
             {
                 GUIRef keyGUIRef = m_keyboardImages.KeysGO[keyIdx].GetComponent<GUIRef>();
                 m_keyboardImages.KeyFlowerIcon[keyIdx] = keyGUIRef.GetImage("Flower");
@@ -177,7 +178,7 @@ namespace QwertyGarden
                 keyGUIRef.GetButton("Button").onClick.AddListener(() => { selectKey(localIdx); });
             }
 
-            m_keyboardImages.MoneyText.text = MetaLogic.ToShortScale(metaData.Coins);
+            m_keyboardImages.MoneyText.text = CommonVisual.ToShortScale(metaData.Coins);
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
                 m_flowerPopupGUI[flowerType].GO.SetActive(false);
@@ -193,7 +194,7 @@ namespace QwertyGarden
             m_navButtonGUI.PlayButton.SetActive(true);
             m_navButtonGUI.GardenButton.SetActive(false);
 
-            MetaLogic.TryShowPrestige(metaData);
+            Logic.TryShowPrestige(metaData);
             m_navButtonGUI.PrestigeButton.SetActive(metaData.ShowPrestige);
 
             CommonVisual.HideSettings(m_navButtonGUI);
@@ -224,8 +225,8 @@ namespace QwertyGarden
             for (int keyIdx = 0; keyIdx < balance.NumFlowers; keyIdx++)
                 flowerCount[keyIdx] = 0;
 
-            Span<int> flowerCost = stackalloc int[balance.NumFlowers];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            Span<double> flowerCost = stackalloc double[balance.NumFlowers];
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
             {
                 int newFlowerType = keyboardData.NewFlowerType[keyIdx];
                 int oldFlowerType = keyboardData.FlowerType[keyIdx];
@@ -239,21 +240,21 @@ namespace QwertyGarden
             int itemCount = 0;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                int itemCost = flowerCost[flowerType];
+                double itemCost = flowerCost[flowerType];
                 m_receiptItems[itemCount].Item.text = balance.FlowerName[flowerType] + " x " + flowerCount[flowerType];
-                m_receiptItems[itemCount].Value.text = MetaLogic.ToShortScale(itemCost) + " <sprite name=\"coin\">";
+                m_receiptItems[itemCount].Value.text = CommonVisual.ToShortScale(itemCost) + " <sprite name=\"coin\">";
                 m_receiptItems[itemCount].GO.SetActive(flowerCount[flowerType] > 0);
                 itemCount++;
             }
 
-            double totalCost = CozyLogic.CalculateCurrentGardenCost(keyboardData, balance);
+            double totalCost = Logic.CalculateCurrentGardenCost(keyboardData, balance);
             double change = metaData.Coins - totalCost;
 
-            m_totalCostText.text = MetaLogic.ToShortScale(totalCost) + " <sprite name=\"coin\">";
-            m_currentCoinText.text = MetaLogic.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
+            m_totalCostText.text = CommonVisual.ToShortScale(totalCost) + " <sprite name=\"coin\">";
+            m_currentCoinText.text = CommonVisual.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
             string symbol = change < 0 ? "-" : "";
             double changeAbs = change < 0 ? -change : change;
-            m_changeText.text = symbol + MetaLogic.ToShortScale(changeAbs) + " <sprite name=\"coin\">";
+            m_changeText.text = symbol + CommonVisual.ToShortScale(changeAbs) + " <sprite name=\"coin\">";
             m_changeText.color = change >= 0 ? AssetManager.Instance.ReceiptChangePositive : AssetManager.Instance.ReceiptChangeNegative;
         }
 
@@ -291,27 +292,6 @@ namespace QwertyGarden
 
             // if (moveCards)
             m_cardsParent.transform.localPosition = new Vector3(m_currentX, -192.0f, 0.0f);
-
-
-            void SetLine(RectTransform line, Vector2 start, Vector2 end)
-            {
-                Vector2 dir = end - start;
-                line.sizeDelta = new Vector2(dir.magnitude, line.sizeDelta.y);
-                line.anchoredPosition = start + dir * 0.5f;
-                line.localRotation = Quaternion.Euler(0, 0,
-                    Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
-            }
-
-            Vector2 WorldToCanvas(RectTransform canvas, Vector3 worldPos)
-            {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvas,
-                    RectTransformUtility.WorldToScreenPoint(null, worldPos),
-                    null,
-                    out Vector2 localPos
-                );
-                return localPos;
-            }
         }
 
         public void ToggleShowSettings()
@@ -342,7 +322,7 @@ namespace QwertyGarden
 
         public void BuySelectedSeedsAndPlay()
         {
-            if (CozyLogic.TryEditCozy(keyboardData, metaData, balance))
+            if (Logic.TryEditCozy(keyboardData, metaData, balance))
             {
                 SoundManager.Instance.PlaySFXMoney();
                 MetaDataIO.SaveMeta(metaData);
@@ -353,7 +333,7 @@ namespace QwertyGarden
 
         void selectFlower(int newFlowerType)
         {
-            double currentGardenCost = CozyLogic.CalculateCurrentGardenCost(keyboardData, balance);
+            double currentGardenCost = Logic.CalculateCurrentGardenCost(keyboardData, balance);
             double moneyLeftOver = metaData.Coins - currentGardenCost;
 
             int oldFlowerType = keyboardData.FlowerType[m_keyIdx];
@@ -409,13 +389,13 @@ namespace QwertyGarden
 
             m_keyIdx = keyIndex;
 
-            Span<int> tempGardenFlowers = stackalloc int[26];
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            Span<int> tempGardenFlowers = stackalloc int[Balance.LETTERS];
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
                 tempGardenFlowers[keyIdx] = keyboardData.NewFlowerType[keyIdx];
-            double currentGardenCost = CozyLogic.CalculateGardenCost(keyboardData, balance, tempGardenFlowers);
+            double currentGardenCost = Logic.CalculateGardenCost(keyboardData, balance, tempGardenFlowers);
             double moneyLeftOver = metaData.Coins - currentGardenCost;
 
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
                 m_keyboardImages.KeyButtonImages[keyIdx].color = m_keyIdx == keyIdx ? AssetManager.Instance.KeySelected : AssetManager.Instance.KeyNotSelected;
 
             selectFlowerCommon(keyboardData.FlowerType[keyIndex], keyboardData.FlowerType[keyIndex], moneyLeftOver);

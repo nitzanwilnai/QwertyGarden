@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 14cf9014591e94d0cbe20f463f81adf6, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 4d7509785d7f342f7b5afc8fed5353fb, type: 3}
   FlowerName: Dandelion
+  Achievement: FLOWER_DANDELION
   SeedCost: 20
   SellValue: 4
   GrowTime: 300

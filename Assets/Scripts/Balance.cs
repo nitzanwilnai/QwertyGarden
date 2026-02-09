@@ -20,14 +20,16 @@ namespace QwertyGarden
     {
         public int NumFlowers;
         public string[] FlowerPrefab;
-        public string[] FlowerCard;
         public string[] FlowerIcon;
         public string[] FlowerName;
-        public int[] FlowerSeedCost;
-        public int[] FlowerSellValue;
+        public string[] Achievement;
+        public double[] FlowerSeedCost;
+        public double[] FlowerSellValue;
         public float[] FlowerGrowTime;
         public string[][] FlowerFrames;
 
+        public static int LETTERS = 26;
+        public static int MAX_FLOWER_TYPES = 256;
 
         public int MaxFlowerFrames = 10;
         public int MaxKeyboards = 128;
@@ -60,21 +62,21 @@ namespace QwertyGarden
 
                 NumFlowers = br.ReadInt32();
                 FlowerPrefab = new string[NumFlowers];
-                FlowerCard = new string[NumFlowers];
                 FlowerIcon = new string[NumFlowers];
                 FlowerName = new string[NumFlowers];
-                FlowerSeedCost = new int[NumFlowers];
-                FlowerSellValue = new int[NumFlowers];
+                Achievement = new string[NumFlowers];
+                FlowerSeedCost = new double[NumFlowers];
+                FlowerSellValue = new double[NumFlowers];
                 FlowerGrowTime = new float[NumFlowers];
                 FlowerFrames = new string[NumFlowers][];
                 for (int i = 0; i < NumFlowers; i++)
                 {
                     FlowerPrefab[i] = br.ReadString();
-                    FlowerCard[i] = br.ReadString();
                     FlowerIcon[i] = br.ReadString();
                     FlowerName[i] = br.ReadString();
-                    FlowerSeedCost[i] = br.ReadInt32();
-                    FlowerSellValue[i] = br.ReadInt32();
+                    Achievement[i] = br.ReadString();
+                    FlowerSeedCost[i] = br.ReadDouble();
+                    FlowerSellValue[i] = br.ReadDouble();
                     FlowerGrowTime[i] = br.ReadSingle();
                     FlowerFrames[i] = new string[br.ReadInt32()];
                     for (int j = 0; j < FlowerFrames[i].Length; j++)
@@ -93,8 +95,8 @@ namespace QwertyGarden
             for (int wordIdx = 0; wordIdx < numWords; wordIdx++)
                 Words[wordIdx] = br.ReadString();
 
-            WordsForLetters = new int[26][];
-            for (int letterIdx = 0; letterIdx < 26; letterIdx++)
+            WordsForLetters = new int[LETTERS][];
+            for (int letterIdx = 0; letterIdx < LETTERS; letterIdx++)
             {
                 int numWordsForLetter = br.ReadInt32();
                 WordsForLetters[letterIdx] = new int[numWordsForLetter];
@@ -102,8 +104,8 @@ namespace QwertyGarden
                     WordsForLetters[letterIdx][wordIdx] = br.ReadInt32();
             }
 
-            LetterMultiplier = new int[26];
-            for (int letterIdx = 0; letterIdx < 26; letterIdx++)
+            LetterMultiplier = new int[LETTERS];
+            for (int letterIdx = 0; letterIdx < LETTERS; letterIdx++)
                 LetterMultiplier[letterIdx] = br.ReadInt32();
         }
 

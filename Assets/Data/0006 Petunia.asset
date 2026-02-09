@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 7be6309af459c42b8af01e1330653007, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 1885b0566d23e480992958971eab2497, type: 3}
   FlowerName: Petunia
+  Achievement: FLOWER_PETUNIA
   SeedCost: 200000
   SellValue: 2824
   GrowTime: 300

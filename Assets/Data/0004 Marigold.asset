@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: b6bd802e761b44157b5ef2aef38ff39f, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 2d66468cb107443148c48fd447d4dba3, type: 3}
   FlowerName: Marigold
+  Achievement: FLOWER_MARIGOLD
   SeedCost: 2000
   SellValue: 117
   GrowTime: 300

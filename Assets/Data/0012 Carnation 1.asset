@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 25e72bba64cb14231ab3baf49c14583e, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 293eed3f5226c40ccad714c8db2d15f3, type: 3}
   FlowerName: Carnation
+  Achievement: FLOWER_CARNATION1
   SeedCost: 20000000
   SellValue: 67822
   GrowTime: 300

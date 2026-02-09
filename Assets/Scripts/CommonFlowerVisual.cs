@@ -30,8 +30,8 @@ namespace QwertyGarden
         {
             GUIRef flowerCardGUIRef = flowerCard.GetComponent<GUIRef>();
             flowerCardGUIRef.GetTextGUI("FlowerName").text = balance.FlowerName[flowerType];
-            flowerCardGUIRef.GetTextGUI("Cost").text = MetaLogic.ToShortScale(balance.FlowerSeedCost[flowerType]) + " <sprite name=\"coin\">";
-            flowerCardGUIRef.GetTextGUI("Sell").text = MetaLogic.ToShortScale(balance.FlowerSellValue[flowerType]) + " <sprite name=\"coin\">";
+            flowerCardGUIRef.GetTextGUI("Cost").text = CommonVisual.ToShortScale(balance.FlowerSeedCost[flowerType]) + " <sprite name=\"coin\">";
+            flowerCardGUIRef.GetTextGUI("Sell").text = CommonVisual.ToShortScale(balance.FlowerSellValue[flowerType]) + " <sprite name=\"coin\">";
             float seconds = balance.FlowerGrowTime[flowerType];
             TimeSpan t = TimeSpan.FromSeconds(seconds);
             string growString = "";

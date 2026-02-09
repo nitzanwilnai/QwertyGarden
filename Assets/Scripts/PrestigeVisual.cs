@@ -48,18 +48,18 @@ namespace QwertyGarden
         {
             m_UI.SetActive(true);
 
-            double totalSellValue = MetaLogic.GetSellValue(metaData, keyboardData, balance);
+            double totalSellValue = Logic.GetSellValue(metaData, keyboardData, balance);
             double totalCoins = metaData.Coins + totalSellValue;
 
-            double prestigeCost = MetaLogic.GetPrestigeCost(metaData, balance);
-            m_prestigeCostText.text = MetaLogic.ToShortScale(prestigeCost) + " <sprite name=coin>";
+            double prestigeCost = Logic.GetPrestigeCost(metaData, balance);
+            m_prestigeCostText.text = CommonVisual.ToShortScale(prestigeCost) + " <sprite name=coin>";
 
             m_totalText.text = "Total: <b>+" + (metaData.Prestige + 1).ToString("N0") + "</b> flowers";
 
             string s = "<color=#";
             s += (prestigeCost <= totalCoins) ? ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangePositive) : ColorUtility.ToHtmlStringRGBA(AssetManager.Instance.ReceiptChangeNegative);
             s += ">";
-            m_coinsText.text = s + MetaLogic.ToShortScale(totalCoins) + "</color> <sprite name=coin>";
+            m_coinsText.text = s + CommonVisual.ToShortScale(totalCoins) + "</color> <sprite name=coin>";
 
             m_prestigeButton.enabled = prestigeCost <= totalCoins;
             m_prestigeButtonImage.color = prestigeCost <= totalCoins ? AssetManager.Instance.PrestigeEnabled : AssetManager.Instance.PrestigeDisabled;
@@ -81,7 +81,7 @@ namespace QwertyGarden
 
         void doPrestige()
         {
-            if (MetaLogic.TryPrestige(metaData, keyboardData, balance))
+            if (Logic.TryPrestige(metaData, keyboardData, balance))
             {
                 Game.Instance.SetMenuState(MENU_STATE.IN_GAME);
             }

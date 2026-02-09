@@ -29,7 +29,6 @@ namespace QwertyGarden
         TitleVisual m_titleVisual = new();
 
         Balance m_balance = new Balance();
-        LessonData m_lessonData = new LessonData();
         MetaData m_metaData = new MetaData();
 
         KeyboardData m_keyboardData = new KeyboardData();
@@ -40,26 +39,22 @@ namespace QwertyGarden
             AssetManager.Instance.LoadCommonAssetBundle();
 
             m_balance.LoadBalance();
-            Board.Init(m_metaData, m_lessonData, m_balance, Camera);
-            MetaLogic.Init(m_metaData, m_balance);
-            KeyboardLogic.InitKeyboardData(m_keyboardData);
-            LessonLogic.InitLessonData(m_lessonData, m_balance);
+            Board.Init(m_metaData, m_balance, Camera);
+            Logic.InitMetaData(m_metaData, m_balance);
+            Logic.InitKeyboardData(m_keyboardData);
 
             m_metaData.MenuState = MENU_STATE.TITLE;
-            MetaDataIO.TryLoadMeta(m_metaData);
+            if (!MetaDataIO.TryLoadMeta(m_metaData))
+            {
+                MetaDataIO.TryLoadMetaV2(m_metaData);
+            }
 
             SoundManager.Instance.Init(m_metaData);
             MusicManager.Instance.Init(m_metaData);
 
             // m_metaData.Prestige = 15;
 
-            if (KeyboardDataIO.KeyboardDataExists(0))
-                LoadKeyboard(0);
-            else
-            {
-                LoadNewKeyboard(0);
-            }
-            // MetaDataIO.SaveMeta(m_metaData);
+            TryLoadKeyboard(0);
 
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_keyboardData, m_balance);
             m_settingsVisual.Init(UISettings, m_metaData);
@@ -91,11 +86,15 @@ namespace QwertyGarden
             //     Board.StartGame();
         }
 
-        public void LoadKeyboard(int keyboardIndex)
+        public void TryLoadKeyboard(int keyboardIndex)
         {
             m_metaData.KeyboardIndex = keyboardIndex;
             MetaDataIO.SaveMeta(m_metaData);
             if (KeyboardDataIO.LoadKeyboard(m_keyboardData, m_metaData.KeyboardIndex))
+            {
+                // v4 loaded
+            }
+            else if (KeyboardDataIO.LoadKeyboardV3(m_keyboardData, m_metaData.KeyboardIndex))
             {
                 // v3 loaded
             }
@@ -103,17 +102,22 @@ namespace QwertyGarden
             {
                 // v2 loaded
             }
+            else
+            {
+                LoadNewKeyboard(keyboardIndex);
+            }
+
             // else if (KeyboardDataIO.LoadKeyboardV1(m_keyboardData, m_metaData.KeyboardIndex))
             // {
             //     // v1 loaded
             // }
 
 #if UNITY_EDITOR
-            for (int keyIdx = 0; keyIdx < 26; keyIdx++)
-            {
-                m_keyboardData.NewFlowerType[keyIdx] =m_keyboardData.FlowerType[keyIdx] = Mathf.FloorToInt(UnityEngine.Random.value * 4.0f + 11.0f);
-                m_keyboardData.FlowerProgress[keyIdx] = Mathf.RoundToInt(UnityEngine.Random.value * 1.0f + 8.0f);
-            }
+            // for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
+            // {
+            //     m_keyboardData.NewFlowerType[keyIdx] = m_keyboardData.FlowerType[keyIdx] = Mathf.FloorToInt(UnityEngine.Random.value * 4.0f + 11.0f);
+            //     m_keyboardData.FlowerProgress[keyIdx] = Mathf.RoundToInt(UnityEngine.Random.value * 1.0f + 8.0f);
+            // }
 #endif
         }
 
@@ -121,8 +125,8 @@ namespace QwertyGarden
         {
             m_metaData.KeyboardIndex = keyboardIndex;
             MetaDataIO.SaveMeta(m_metaData);
-            KeyboardLogic.InitKeyboardData(m_keyboardData);
-            CozyLogic.StartCozy(m_keyboardData, m_metaData, m_balance);
+            Logic.InitKeyboardData(m_keyboardData);
+            Logic.StartCozy(m_keyboardData, m_metaData, m_balance);
             KeyboardDataIO.SaveKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
         }
 

@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 3890846b429e041e5867dd862c94b6f1, type: 3}
   FlowerIcon: {fileID: 21300000, guid: 7e0f8f63bf78b41cb89d05e62045ec8e, type: 3}
   FlowerName: Tulip
+  Achievement: FLOWER_TULIP3
   SeedCost: 2000000
   SellValue: 13841
   GrowTime: 300

@@ -16,6 +16,7 @@ MonoBehaviour:
   FlowerCard: {fileID: 21300000, guid: 91283a01edadb43b2838ca46bdb5d6bb, type: 3}
   FlowerIcon: {fileID: 21300000, guid: acdc1d56c93144b6e8d32e0cdfa9957a, type: 3}
   FlowerName: Daisy
+  Achievement: FLOWER_DAISY
   SeedCost: 2
   SellValue: 1
   GrowTime: 300

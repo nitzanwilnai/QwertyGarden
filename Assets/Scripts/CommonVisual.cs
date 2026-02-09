@@ -65,9 +65,9 @@ namespace QwertyGarden
 
         public static bool AutoShowTutorial(MetaData metaData)
         {
-            if (!MetaLogic.IsFlagSet(metaData.TutorialFlags, (int)metaData.MenuState))
+            if (!Logic.IsFlagSet(metaData.TutorialFlags, (int)metaData.MenuState))
             {
-                MetaLogic.SetFlag(ref metaData.TutorialFlags, (int)metaData.MenuState);
+                Logic.SetFlag(ref metaData.TutorialFlags, (int)metaData.MenuState);
                 MetaDataIO.SaveMeta(metaData);
                 return true;
             }
@@ -178,6 +178,43 @@ namespace QwertyGarden
             navButtonGUI.MusicButton.SetActive(false);
             navButtonGUI.WPMButton.SetActive(false);
             navButtonGUI.ExitButton.SetActive(false);
+        }
+
+        private static readonly (double value, string name)[] Scales =
+{
+                (1e18, "quintillion"),
+                (1e15, "quadrillion"),
+                (1e12, "trillion"),
+                (1e9,  "billion"),
+                (1e6,  "million"),
+                // (1e3,  "thousand"),
+            };
+
+        public static string ToShortScale(double number)
+        {
+            double abs = System.Math.Abs(number);
+
+            foreach (var (value, name) in Scales)
+            {
+                if (abs >= value)
+                {
+                    double scaled = number / value;
+                    return $"{formatThreeDigits(scaled)} {name}";
+                }
+            }
+
+            return number.ToString("N0");
+        }
+
+        private static string formatThreeDigits(double value)
+        {
+            double abs = System.Math.Abs(value);
+
+            if (abs >= 100.0)
+                return value.ToString("0");      // 3 digits, no decimals
+            if (abs >= 10.0)
+                return value.ToString("0.0");    // 2 digits + 1 decimal
+            return value.ToString("0.00");       // 1 digit + 2 decimals
         }
     }
 }
