@@ -5,14 +5,14 @@ namespace QwertyGarden
 {
     public static class SteamAchievements
     {
-        public static void UnlockAchievement(string apiName)
+        public static bool UnlockAchievement(string apiName)
         {
             Debug.Log("UnlockAchievement(" + apiName + ")");
 
             if (!SteamManager.Initialized)
             {
                 Debug.LogWarning("Steam not initialized. Cannot unlock achievement.");
-                return;
+                return false;
             }
 
             // 1. Check if it's already unlocked to avoid redundant calls
@@ -28,8 +28,12 @@ namespace QwertyGarden
                     // Without this, the 'toast' notification might not pop up.
                     SteamUserStats.StoreStats();
                     Debug.Log($"Achievement '{apiName}' unlocked successfully!");
+
+                    return true;
                 }
             }
+
+            return false;
         }
     }
 }

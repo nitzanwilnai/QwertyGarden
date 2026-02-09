@@ -502,17 +502,18 @@ namespace QwertyGarden
             else
             {
                 SoundManager.Instance.PlaySFXKeyClick();
+
+                int flowerType = keyboardData.FlowerType[keyIndex];
+                if (!metaData.FlowerAchievement[flowerType])
+                {
+                    if (SteamAchievements.UnlockAchievement(balance.Achievement[flowerType]))
+                        metaData.FlowerAchievement[flowerType] = true;
+                }
+
             }
 
             KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
             MetaDataIO.SaveMeta(metaData);
-
-            if(wordComplete)
-            {
-                int flowerType = keyboardData.FlowerType[keyIndex];
-                if(metaData.FlowerCollectedCount[flowerType] == 1)
-                SteamAchievements.UnlockAchievement(balance.Achievement[flowerType]);
-            }
 
             // int charIndex = incorrectCharacter ? currentWord[keyboardData.TypedWord.Length] - 65 : char.ToUpper(c) - 65;
             // Vector2 pos = PlantKeys[charIndex].transform.position;

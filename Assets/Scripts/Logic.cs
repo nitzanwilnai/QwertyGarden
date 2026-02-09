@@ -14,6 +14,7 @@ namespace QwertyGarden
             metaData.WPM = true;
             metaData.TotalCollectedCount = 0;
             metaData.FlowerCollectedCount = new int[Balance.MAX_FLOWER_TYPES];
+            metaData.FlowerAchievement = new bool[Balance.MAX_FLOWER_TYPES];
         }
 
         public static void SetMenuState(MetaData metaData, MENU_STATE newMenuState)

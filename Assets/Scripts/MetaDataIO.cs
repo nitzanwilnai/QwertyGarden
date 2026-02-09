@@ -36,6 +36,8 @@ namespace QwertyGarden
                 bw.Write(metaData.TotalCollectedCount);
                 for (int flowerType = 0; flowerType < Balance.MAX_FLOWER_TYPES; flowerType++)
                     bw.Write(metaData.FlowerCollectedCount[flowerType]);
+                for (int flowerType = 0; flowerType < Balance.MAX_FLOWER_TYPES; flowerType++)
+                    bw.Write(metaData.FlowerAchievement[flowerType]);
             }
         }
 
@@ -69,6 +71,8 @@ namespace QwertyGarden
                         metaData.TotalCollectedCount = br.ReadInt32();
                         for (int flowerType = 0; flowerType < Balance.MAX_FLOWER_TYPES; flowerType++)
                             metaData.FlowerCollectedCount[flowerType] = br.ReadInt32();
+                        for (int flowerType = 0; flowerType < Balance.MAX_FLOWER_TYPES; flowerType++)
+                            metaData.FlowerAchievement[flowerType] = br.ReadBoolean();
 
                         if (metaData.Coins < 0.0f)
                             metaData.Coins = 0.0f;

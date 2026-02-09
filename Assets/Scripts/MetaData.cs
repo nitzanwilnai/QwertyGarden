@@ -25,5 +25,6 @@ namespace QwertyGarden
 
         public int[] FlowerCollectedCount;
         public int TotalCollectedCount;
+        public bool[] FlowerAchievement;
     }
 }
