@@ -4,12 +4,14 @@ using System.IO;
 using UnityEngine;
 using CommonTools;
 using UnityEditor;
+using TMPro;
 
 namespace QwertyGarden
 {
     public class AssetManager : Singleton<AssetManager>
     {
         // public FlowerSO[] Flowers;
+        public TMP_FontAsset[] Fonts;
         public KeyboardImages[] KeyboardImages;
         public GameObject KeyboardSelectionBox;
         public KeyboardRef[] KeyboardRefs;

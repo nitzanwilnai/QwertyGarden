@@ -1,11 +1,10 @@
 using System;
-using UnityEngine;
-using CommonTools;
-using UnityEngine.InputSystem;
 using System.IO;
+using System.Security.Cryptography;
+using CommonTools;
 using TMPro;
-
-
+using UnityEngine;
+using UnityEngine.InputSystem;
 #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
 using Steamworks;
 #endif
@@ -24,7 +23,6 @@ namespace QwertyGarden
         public GameObject UITitle;
 
         EditFlowersVisual m_editFlowersVisual = new();
-        SettingsVisual m_settingsVisual = new();
         PrestigeVisual m_prestigeVisual = new();
         TitleVisual m_titleVisual = new();
 
@@ -44,9 +42,17 @@ namespace QwertyGarden
             Logic.InitKeyboardData(m_keyboardData);
 
             m_metaData.MenuState = MENU_STATE.TITLE;
-            if (!MetaDataIO.TryLoadMeta(m_metaData))
+            if (MetaDataIO.TryLoadMeta(m_metaData))
             {
-                MetaDataIO.TryLoadMetaV2(m_metaData);
+                Debug.Log("Loaded meta version " + MetaDataIO.VERSION);
+            }
+            else if (MetaDataIO.TryLoadMetaV4(m_metaData))
+            {
+                Debug.Log("Loaded meta version 4");
+            }
+            else if (MetaDataIO.TryLoadMetaV2(m_metaData))
+            {
+                Debug.Log("Loaded meta version 2");
             }
 
             SoundManager.Instance.Init(m_metaData);
@@ -57,7 +63,6 @@ namespace QwertyGarden
             TryLoadKeyboard(0);
 
             m_editFlowersVisual.Init(UIEditFlowers, m_metaData, m_keyboardData, m_balance);
-            m_settingsVisual.Init(UISettings, m_metaData);
             m_prestigeVisual.Init(UIPrestige, m_metaData, m_keyboardData, m_balance);
             m_titleVisual.Init(m_metaData, UITitle, m_balance);
 
@@ -148,8 +153,6 @@ namespace QwertyGarden
                 m_editFlowersVisual.Show(m_keyboardData);
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.PlayCozy(m_keyboardData);
-            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
-                m_settingsVisual.Show();
             else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
                 m_prestigeVisual.Show();
             else if (m_metaData.MenuState == MENU_STATE.TITLE)
@@ -162,8 +165,6 @@ namespace QwertyGarden
                 m_editFlowersVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
                 Board.Hide();
-            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
-                m_settingsVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
                 m_prestigeVisual.Hide();
             else if (m_metaData.MenuState == MENU_STATE.TITLE)
@@ -181,8 +182,6 @@ namespace QwertyGarden
 
             if (m_metaData.MenuState == MENU_STATE.EDIT_GARDEN)
                 m_editFlowersVisual.Tick(dt);
-            else if (m_metaData.MenuState == MENU_STATE.SETTINGS)
-                m_settingsVisual.Tick();
             else if (m_metaData.MenuState == MENU_STATE.PRESTIGE)
                 m_prestigeVisual.Tick();
             else if (m_metaData.MenuState == MENU_STATE.IN_GAME)
@@ -196,14 +195,20 @@ namespace QwertyGarden
             if (Keyboard.current.backspaceKey.wasPressedThisFrame)
                 Debug.Log("back space key pressed!");
 
-
             if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
             {
                 if (!Directory.Exists("Screenshots"))
                     Directory.CreateDirectory("Screenshots");
 
                 DateTimeOffset now = DateTime.UtcNow;
-                string name = "Screenshots/" + Screen.width + "x" + Screen.height + "_" + now.ToString("yyyy-MM-dd HH.mm.ss") + ".png";
+                string name =
+                    "Screenshots/"
+                    + Screen.width
+                    + "x"
+                    + Screen.height
+                    + "_"
+                    + now.ToString("yyyy-MM-dd HH.mm.ss")
+                    + ".png";
                 Debug.Log("Screenshot " + name + " taken!");
                 ScreenCapture.CaptureScreenshot(name);
             }
@@ -234,6 +239,7 @@ namespace QwertyGarden
         public void ToggleSFX(NavButtonGUI navButtonGUI)
         {
             m_metaData.SFX = !m_metaData.SFX;
+            MetaDataIO.SaveMeta(m_metaData);
 
             CommonVisual.ShowSettings(navButtonGUI, m_metaData);
         }
@@ -241,6 +247,8 @@ namespace QwertyGarden
         public void ToggleMusic(NavButtonGUI navButtonGUI)
         {
             m_metaData.Music = !m_metaData.Music;
+            MetaDataIO.SaveMeta(m_metaData);
+
             MusicManager.Instance.Mute();
 
             CommonVisual.ShowSettings(navButtonGUI, m_metaData);
@@ -249,10 +257,23 @@ namespace QwertyGarden
         public void ToggleWPM(NavButtonGUI navButtonGUI)
         {
             m_metaData.WPM = !m_metaData.WPM;
+            MetaDataIO.SaveMeta(m_metaData);
+
             if (m_metaData.MenuState == MENU_STATE.IN_GAME)
             {
                 Board.UpdateUI();
             }
+
+            CommonVisual.ShowSettings(navButtonGUI, m_metaData);
+        }
+
+        public void ToggleFont(NavButtonGUI navButtonGUI)
+        {
+            m_metaData.Font = (m_metaData.Font + 1) % AssetManager.Instance.Fonts.Length;
+            MetaDataIO.SaveMeta(m_metaData);
+
+            if (m_metaData.MenuState == MENU_STATE.IN_GAME)
+                Board.UpdateFonts();
 
             CommonVisual.ShowSettings(navButtonGUI, m_metaData);
         }
@@ -298,7 +319,9 @@ namespace QwertyGarden
 
         public void GoToWishlist()
         {
-            Application.OpenURL("steam://openurl/https://store.steampowered.com/app/4255650/Qwerty_Garden/");
+            Application.OpenURL(
+                "steam://openurl/https://store.steampowered.com/app/4255650/Qwerty_Garden/"
+            );
         }
     }
 }

@@ -24,6 +24,7 @@ namespace QwertyGarden
         public GameObject MusicButton;
         public GameObject WPMButton;
         public GameObject ExitButton;
+        public GameObject FontButton;
 
         public GameObject SFXOn;
         public GameObject SFXOff;
@@ -31,6 +32,8 @@ namespace QwertyGarden
         public GameObject MusicOff;
         public GameObject WPMOn;
         public GameObject WPMOff;
+        public GameObject Font1;
+        public GameObject Font2;
     }
 
     public static class CommonVisual
@@ -122,8 +125,13 @@ namespace QwertyGarden
             playButton.onClick.AddListener(Game.Instance.BuySelectedSeedsAndPlay);
             gardenButton.onClick.AddListener(Game.Instance.ShowInvoice);
             buttonGUIRef.GetButton("Tutorial").onClick.AddListener(Game.Instance.ShowTutorial);
-            buttonGUIRef.GetButton("Settings").onClick.AddListener(Game.Instance.ToggleShowSettings);
-            prestigeButton.onClick.AddListener(() => { Game.Instance.SetMenuState(MENU_STATE.PRESTIGE); });
+            buttonGUIRef
+                .GetButton("Settings")
+                .onClick.AddListener(Game.Instance.ToggleShowSettings);
+            prestigeButton.onClick.AddListener(() =>
+            {
+                Game.Instance.SetMenuState(MENU_STATE.PRESTIGE);
+            });
 
             buttonGUIRef.GetButton("Wishlist").onClick.AddListener(Game.Instance.GoToWishlist);
             buttonGUIRef.GetButton("Wishlist").gameObject.SetActive(false);
@@ -135,11 +143,25 @@ namespace QwertyGarden
             Button musicButton = buttonGUIRef.GetButton("Music");
             Button wpmButton = buttonGUIRef.GetButton("WPM");
             Button exitButton = buttonGUIRef.GetButton("Exit");
+            Button fontButton = buttonGUIRef.GetButton("Font");
 
-            sfxButton.onClick.AddListener(() => { Game.Instance.ToggleSFX(navButtonGUI); });
-            musicButton.onClick.AddListener(() => { Game.Instance.ToggleMusic(navButtonGUI); });
-            wpmButton.onClick.AddListener(() => { Game.Instance.ToggleWPM(navButtonGUI); });
-            exitButton.onClick.AddListener(() => { Game.Instance.ExitGame(); });
+            sfxButton.onClick.AddListener(() =>
+            {
+                Game.Instance.ToggleSFX(navButtonGUI);
+            });
+            musicButton.onClick.AddListener(() =>
+            {
+                Game.Instance.ToggleMusic(navButtonGUI);
+            });
+            wpmButton.onClick.AddListener(() =>
+            {
+                Game.Instance.ToggleWPM(navButtonGUI);
+            });
+            exitButton.onClick.AddListener(Game.Instance.ExitGame);
+            fontButton.onClick.AddListener(() =>
+            {
+                Game.Instance.ToggleFont(navButtonGUI);
+            });
 
             navButtonGUI.PlayButton = playButton.gameObject;
             navButtonGUI.GardenButton = gardenButton.gameObject;
@@ -148,6 +170,7 @@ namespace QwertyGarden
             navButtonGUI.WPMButton = wpmButton.gameObject;
             navButtonGUI.MusicButton = musicButton.gameObject;
             navButtonGUI.ExitButton = exitButton.gameObject;
+            navButtonGUI.FontButton = fontButton.gameObject;
 
             navButtonGUI.SFXOn = buttonGUIRef.GetGameObject("SFXOn");
             navButtonGUI.SFXOff = buttonGUIRef.GetGameObject("SFXOff");
@@ -155,6 +178,8 @@ namespace QwertyGarden
             navButtonGUI.MusicOff = buttonGUIRef.GetGameObject("MusicOff");
             navButtonGUI.WPMOn = buttonGUIRef.GetGameObject("WPMOn");
             navButtonGUI.WPMOff = buttonGUIRef.GetGameObject("WPMOff");
+            navButtonGUI.Font1 = buttonGUIRef.GetGameObject("Font1");
+            navButtonGUI.Font2 = buttonGUIRef.GetGameObject("Font2");
         }
 
         public static void ShowSettings(NavButtonGUI navButtonGUI, MetaData metaData)
@@ -163,6 +188,7 @@ namespace QwertyGarden
             navButtonGUI.MusicButton.SetActive(true);
             navButtonGUI.WPMButton.SetActive(true);
             navButtonGUI.ExitButton.SetActive(true);
+            navButtonGUI.FontButton.SetActive(true);
 
             navButtonGUI.SFXOn.SetActive(metaData.SFX);
             navButtonGUI.SFXOff.SetActive(!metaData.SFX);
@@ -170,6 +196,8 @@ namespace QwertyGarden
             navButtonGUI.MusicOff.SetActive(!metaData.Music);
             navButtonGUI.WPMOn.SetActive(metaData.WPM);
             navButtonGUI.WPMOff.SetActive(!metaData.WPM);
+            navButtonGUI.Font1.SetActive(metaData.Font == 0);
+            navButtonGUI.Font2.SetActive(metaData.Font == 1);
         }
 
         public static void HideSettings(NavButtonGUI navButtonGUI)
@@ -178,17 +206,18 @@ namespace QwertyGarden
             navButtonGUI.MusicButton.SetActive(false);
             navButtonGUI.WPMButton.SetActive(false);
             navButtonGUI.ExitButton.SetActive(false);
+            navButtonGUI.FontButton.SetActive(false);
         }
 
         private static readonly (double value, string name)[] Scales =
-{
-                (1e18, "quintillion"),
-                (1e15, "quadrillion"),
-                (1e12, "trillion"),
-                (1e9,  "billion"),
-                (1e6,  "million"),
-                // (1e3,  "thousand"),
-            };
+        {
+            (1e18, "quintillion"),
+            (1e15, "quadrillion"),
+            (1e12, "trillion"),
+            (1e9, "billion"),
+            (1e6, "million"),
+            // (1e3,  "thousand"),
+        };
 
         public static string ToShortScale(double number)
         {
@@ -211,10 +240,10 @@ namespace QwertyGarden
             double abs = System.Math.Abs(value);
 
             if (abs >= 100.0)
-                return value.ToString("0");      // 3 digits, no decimals
+                return value.ToString("0"); // 3 digits, no decimals
             if (abs >= 10.0)
-                return value.ToString("0.0");    // 2 digits + 1 decimal
-            return value.ToString("0.00");       // 1 digit + 2 decimals
+                return value.ToString("0.0"); // 2 digits + 1 decimal
+            return value.ToString("0.00"); // 1 digit + 2 decimals
         }
     }
 }

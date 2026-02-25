@@ -124,11 +124,25 @@ namespace QwertyGarden
             m_collectedFlowers.FlyingFlowers = new GameObject[balance.NumFlowers];
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                GameObject uiFlower = Instantiate(AssetManager.Instance.InGameUIFlower, uiFlowerParent);
+                Debug.Log("flowerType " + flowerType);
+                Debug.Log(
+                    "balance.FlowerName[" + flowerType + "] " + balance.FlowerName[flowerType]
+                );
+                Debug.Log(
+                    "balance.FlowerIcon[" + flowerType + "] " + balance.FlowerIcon[flowerType]
+                );
+
+                GameObject uiFlower = Instantiate(
+                    AssetManager.Instance.InGameUIFlower,
+                    uiFlowerParent
+                );
                 GUIRef flowerGUIRef = uiFlower.GetComponent<GUIRef>();
                 m_collectedFlowers.FlowersText[flowerType] = flowerGUIRef.GetTextGUI("Count");
                 m_collectedFlowers.FlowersText[flowerType].text = "";
-                flowerGUIRef.GetImage("Flower").sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[flowerType], balance.FlowerIcon[flowerType]);
+                flowerGUIRef.GetImage("Flower").sprite = AssetManager.Instance.LoadFlowerIcon(
+                    balance.FlowerName[flowerType],
+                    balance.FlowerIcon[flowerType]
+                );
                 uiFlower.SetActive(false);
                 m_collectedFlowers.FlowersUI[flowerType] = uiFlower;
                 m_collectedFlowers.FlowersAnim[flowerType] = flowerGUIRef.GetAnimation("Grow");
@@ -148,24 +162,32 @@ namespace QwertyGarden
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
                 InvoiceLineGUI invoiceLine = new InvoiceLineGUI();
-                GameObject invoiceLineGO = GameObject.Instantiate(AssetManager.Instance.ShopReceiptItem, flowerLineParent);
+                GameObject invoiceLineGO = GameObject.Instantiate(
+                    AssetManager.Instance.ShopReceiptItem,
+                    flowerLineParent
+                );
                 GUIRef receiptGUIRef = invoiceLineGO.GetComponent<GUIRef>();
                 invoiceLine.GO = invoiceLineGO;
                 invoiceLine.Item = receiptGUIRef.GetTextGUI("Name");
                 invoiceLine.Value = receiptGUIRef.GetTextGUI("Value");
-                invoiceLine.GO.transform.SetSiblingIndex(m_invoiceAnimation.ItemLineIndexStart + flowerType);
+                invoiceLine.GO.transform.SetSiblingIndex(
+                    m_invoiceAnimation.ItemLineIndexStart + flowerType
+                );
                 m_invoiceLines[flowerType] = invoiceLine;
                 invoiceLine.GO.SetActive(false);
-                m_invoiceAnimation.InvoiceLines[m_invoiceAnimation.ItemLineIndexStart + flowerType] = invoiceLine.GO;
+                m_invoiceAnimation.InvoiceLines[
+                    m_invoiceAnimation.ItemLineIndexStart + flowerType
+                ] = invoiceLine.GO;
             }
 
             m_darken = guiRef.GetGameObject("Darken");
             Button pressAnywhereButton = guiRef.GetButton("PressAnywhere");
-            pressAnywhereButton.onClick.AddListener(() => Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN));
+            pressAnywhereButton.onClick.AddListener(() =>
+                Game.Instance.SetMenuState(MENU_STATE.EDIT_GARDEN)
+            );
             m_pressedAnywhere = pressAnywhereButton.gameObject;
             m_darken.SetActive(false);
             m_pressedAnywhere.SetActive(false);
-
 
             m_UI.SetActive(false);
 
@@ -206,7 +228,10 @@ namespace QwertyGarden
             m_pressedAnywhere.SetActive(false);
             m_inoviceGUI.InoviceGO.SetActive(false);
 
-            m_keyboardRef = Instantiate(AssetManager.Instance.KeyboardRefs[keyboardData.KeyboardType], SpriteParent);
+            m_keyboardRef = Instantiate(
+                AssetManager.Instance.KeyboardRefs[keyboardData.KeyboardType],
+                SpriteParent
+            );
             m_keyboardRef.transform.localPosition = new Vector3(0.0f, -0.75f, 0.0f);
 
             m_wordText = m_keyboardRef.WordText;
@@ -214,14 +239,28 @@ namespace QwertyGarden
             for (int keyIndex = 0; keyIndex < Balance.LETTERS; keyIndex++)
             {
                 int flowerType = keyboardData.FlowerType[keyIndex];
-                Flower flower = AssetManager.Instance.LoadFlowerPrefab(balance.FlowerPrefab[flowerType], m_keyboardRef.FlowerParent);
+                Flower flower = AssetManager.Instance.LoadFlowerPrefab(
+                    balance.FlowerPrefab[flowerType],
+                    m_keyboardRef.FlowerParent
+                );
                 m_flowers[keyIndex] = flower;
                 m_flowers[keyIndex].ResetFlower(balance.MaxFlowerFrames);
 
                 for (int frameIdx = 0; frameIdx < balance.MaxFlowerFrames; frameIdx++)
                 {
-                    Debug.Log("keyIndex " + keyIndex + " frameIdx " + frameIdx + " flowerType " + flowerType);
-                    m_flowers[keyIndex].Sprites[frameIdx] = AssetManager.Instance.LoadFlowerProgress(balance.FlowerName[flowerType], balance.FlowerFrames[flowerType][frameIdx]);
+                    Debug.Log(
+                        "keyIndex "
+                            + keyIndex
+                            + " frameIdx "
+                            + frameIdx
+                            + " flowerType "
+                            + flowerType
+                    );
+                    m_flowers[keyIndex].Sprites[frameIdx] =
+                        AssetManager.Instance.LoadFlowerProgress(
+                            balance.FlowerName[flowerType],
+                            balance.FlowerFrames[flowerType][frameIdx]
+                        );
                 }
 
                 int progress = keyboardData.FlowerProgress[keyIndex];
@@ -251,6 +290,7 @@ namespace QwertyGarden
             m_showSettings = false;
 
             UpdateUI();
+            UpdateFonts();
 
             SpriteParent.gameObject.SetActive(true);
             m_UI.SetActive(true);
@@ -275,7 +315,9 @@ namespace QwertyGarden
         {
             m_localCoinCount = m_targetCoinCount = metaData.Coins;
             double totalSellValue = Logic.GetSellValue(metaData, keyboardData, balance);
-            m_keyboardRef.MoneyText.text = CommonVisual.ToShortScale(m_localCoinCount + totalSellValue);
+            m_keyboardRef.MoneyText.text = CommonVisual.ToShortScale(
+                m_localCoinCount + totalSellValue
+            );
 
             int wpm = Logic.GetWPM(keyboardData);
             int accuracy = Logic.GetAccuracy(keyboardData);
@@ -289,13 +331,25 @@ namespace QwertyGarden
             bool collected = false;
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                m_collectedFlowers.FlowersText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
-                m_collectedFlowers.FlowersUI[flowerType].SetActive(keyboardData.FlowerCount[flowerType] > 0);
+                m_collectedFlowers.FlowersText[flowerType].text = keyboardData
+                    .FlowerCount[flowerType]
+                    .ToString("N0");
+                m_collectedFlowers
+                    .FlowersUI[flowerType]
+                    .SetActive(keyboardData.FlowerCount[flowerType] > 0);
                 if (keyboardData.FlowerCount[flowerType] > 0)
                     collected = true;
             }
 
             m_startTyping.SetActive(!collected);
+        }
+
+        public void UpdateFonts()
+        {
+            m_keyboardRef.WPMText.font = AssetManager.Instance.Fonts[metaData.Font];
+            m_keyboardRef.AccuracyText.font = AssetManager.Instance.Fonts[metaData.Font];
+            m_wordText.font = AssetManager.Instance.Fonts[metaData.Font];
+            m_keyboardRef.MoneyText.font = AssetManager.Instance.Fonts[metaData.Font];
         }
 
         public void Hide()
@@ -409,7 +463,6 @@ namespace QwertyGarden
                     keyboardData.WordIndex = m_videoWordIndex;
 
                     // m_versionText.text = "VERSION: " + versionText.text.ToUpper();
-
                 }
 #endif
             }
@@ -439,19 +492,26 @@ namespace QwertyGarden
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
             {
-                double totalCoinsForThisFlower = balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
-                m_invoiceLines[flowerType].Item.text = balance.FlowerName[flowerType] + " x" + keyboardData.FlowerCount[flowerType];
-                m_invoiceLines[flowerType].Value.text = CommonVisual.ToShortScale(totalCoinsForThisFlower) + " <sprite name=\"coin\">";
-                m_invoiceAnimation.ShowInvoiceLIne[flowerType + m_invoiceAnimation.ItemLineIndexStart] = keyboardData.FlowerCount[flowerType] > 0;
+                double totalCoinsForThisFlower =
+                    balance.FlowerSellValue[flowerType] * keyboardData.FlowerCount[flowerType];
+                m_invoiceLines[flowerType].Item.text =
+                    balance.FlowerName[flowerType] + " x" + keyboardData.FlowerCount[flowerType];
+                m_invoiceLines[flowerType].Value.text =
+                    CommonVisual.ToShortScale(totalCoinsForThisFlower) + " <sprite name=\"coin\">";
+                m_invoiceAnimation.ShowInvoiceLIne[
+                    flowerType + m_invoiceAnimation.ItemLineIndexStart
+                ] = keyboardData.FlowerCount[flowerType] > 0;
             }
             float accuracyBonus = Logic.GetAccuracyBonus(metaData, keyboardData);
             float wpmBonus = Logic.GetWPMBonus(metaData, keyboardData);
             double totalSellValue = Logic.GetSellValue(metaData, keyboardData, balance);
             m_inoviceGUI.AccuracyBonus.text = "x" + accuracyBonus.ToString("N2");
             m_inoviceGUI.WPMBonus.text = "x" + wpmBonus.ToString("N2");
-            m_inoviceGUI.SubTotal.text = CommonVisual.ToShortScale(totalSellValue) + " <sprite name=\"coin\">";
+            m_inoviceGUI.SubTotal.text =
+                CommonVisual.ToShortScale(totalSellValue) + " <sprite name=\"coin\">";
 
-            m_inoviceGUI.CurrentCoinText.text = CommonVisual.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
+            m_inoviceGUI.CurrentCoinText.text =
+                CommonVisual.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
 
             Logic.SellCollectedFlowers(metaData, keyboardData, balance);
             SoundManager.Instance.PlaySFXMoney();
@@ -460,8 +520,8 @@ namespace QwertyGarden
 
             m_targetCoinCount = metaData.Coins;
 
-
-            m_inoviceGUI.BalanceText.text = CommonVisual.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
+            m_inoviceGUI.BalanceText.text =
+                CommonVisual.ToShortScale(metaData.Coins) + " <sprite name=\"coin\">";
 
             m_invoiceAnimation.StartAnimation();
         }
@@ -492,7 +552,15 @@ namespace QwertyGarden
 
             string currentWord = balance.Words[keyboardData.WordIndex];
 
-            Logic.GameTyping(metaData, keyboardData, balance, c, out wordComplete, out incorrectCharacter, ref m_wordStartTime);
+            Logic.GameTyping(
+                metaData,
+                keyboardData,
+                balance,
+                c,
+                out wordComplete,
+                out incorrectCharacter,
+                ref m_wordStartTime
+            );
             updateWord(keyboardData.TypedWord, wordComplete, incorrectCharacter, currentWord);
 
             if (incorrectCharacter)
@@ -509,7 +577,6 @@ namespace QwertyGarden
                     if (SteamAchievements.UnlockAchievement(balance.Achievement[flowerType]))
                         metaData.FlowerAchievement[flowerType] = true;
                 }
-
             }
 
             KeyboardDataIO.SaveKeyboard(keyboardData, metaData.KeyboardIndex);
@@ -518,7 +585,6 @@ namespace QwertyGarden
             // int charIndex = incorrectCharacter ? currentWord[keyboardData.TypedWord.Length] - 65 : char.ToUpper(c) - 65;
             // Vector2 pos = PlantKeys[charIndex].transform.position;
             // ParticleSystemBoard.Emit(particleColor, pos, ParticleSystemBoard.particleBalance.NumSprites);
-
 
             // if (keyboardData.FlowerProgress[keyIndex] > prevProgress)
             m_flowers[keyIndex].GrowFlower(keyboardData.FlowerProgress[keyIndex]);
@@ -534,7 +600,9 @@ namespace QwertyGarden
 
                 SoundManager.Instance.PlaySFXFlowerCollected();
 
-                m_collectedFlowers.FlowersText[flowerType].text = keyboardData.FlowerCount[flowerType].ToString("N0");
+                m_collectedFlowers.FlowersText[flowerType].text = keyboardData
+                    .FlowerCount[flowerType]
+                    .ToString("N0");
                 if (!m_collectedFlowers.FlowersUI[flowerType].activeSelf)
                     m_collectedFlowers.FlowersUI[flowerType].SetActive(true);
                 m_collectedFlowers.FlowersAnim[flowerType].Play("Grow");
@@ -543,7 +611,12 @@ namespace QwertyGarden
             UpdateUI();
         }
 
-        private void updateWord(string typedWord, bool wordComplete, bool incorrectCharacter, string currentWord)
+        private void updateWord(
+            string typedWord,
+            bool wordComplete,
+            bool incorrectCharacter,
+            string currentWord
+        )
         {
             if (wordComplete)
             {
@@ -577,7 +650,6 @@ namespace QwertyGarden
                         s += "<color=#" + wrongColorString + ">";
                     else
                         s += "<color=#" + wordColorString + ">";
-
 
                     s += currentWord[i];
                     s += "</color>";
