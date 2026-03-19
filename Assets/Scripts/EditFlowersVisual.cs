@@ -31,6 +31,7 @@ namespace QwertyGarden
         }
 
         float m_slideVelocity = 2000.0f;
+        const float CARD_SPACING = 256.0f;
 
         GameObject m_UI;
 
@@ -38,7 +39,6 @@ namespace QwertyGarden
 
         Transform m_keyboardParent;
         Transform m_cardsParent;
-        float m_cardsParentTargetX;
 
         ReceiptLineGUI[] m_receiptItems;
 
@@ -123,7 +123,7 @@ namespace QwertyGarden
                 m_flowerPopupGUI[flowerType].Outline = popupGUIRef.GetImage("Outline");
                 m_flowerPopupGUI[flowerType].GO.SetActive(false);
                 m_flowerPopupGUI[flowerType].GO.transform.localScale = Vector3.one;
-                m_flowerPopupGUI[flowerType].GO.transform.localPosition = new Vector3(288.0f * flowerType, 0.0f, 0.0f);
+                m_flowerPopupGUI[flowerType].GO.transform.localPosition = new Vector3(CARD_SPACING * flowerType, 0.0f, 0.0f);
 
                 m_flowerPopupGUI[flowerType].SellValue.text = CommonVisual.ToShortScale(balance.FlowerSellValue[flowerType]);
                 m_flowerPopupGUI[flowerType].SeedCost.text = CommonVisual.ToShortScale(balance.FlowerSeedCost[flowerType]);
@@ -373,7 +373,7 @@ namespace QwertyGarden
             updateReceiptItems();
 
             m_currentX = m_cardsParent.transform.localPosition.x;
-            m_targetX = -256.0f * newFlowerType;
+            m_targetX = -CARD_SPACING * newFlowerType;
             m_flowerType = newFlowerType;
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
