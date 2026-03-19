@@ -343,7 +343,7 @@ namespace QwertyGarden
                 return;
 #endif
 
-            if (balance.FlowerSeedCost[newFlowerType] <= moneyLeftOver || oldFlowerType == newFlowerType)
+            if (flowerChangeOK(newFlowerType))
             {
                 m_keyboardImages.KeyFlowerIcon[m_keyIdx].sprite = AssetManager.Instance.LoadFlowerIcon(balance.FlowerName[newFlowerType], balance.FlowerIcon[newFlowerType]);
 
@@ -353,6 +353,19 @@ namespace QwertyGarden
             }
         }
 
+        bool flowerChangeOK(int newFlowerType)
+        {
+            double currentGardenCost = Logic.CalculateCurrentGardenCost(keyboardData, balance);
+            double moneyLeftOver = metaData.Coins - currentGardenCost;
+
+            int oldFlowerType = keyboardData.FlowerType[m_keyIdx];
+            int currentFlowerType = keyboardData.NewFlowerType[m_keyIdx];
+            double currentFlowerTypeCost = balance.FlowerSeedCost[currentFlowerType];
+            double newFlowerTypeCost = balance.FlowerSeedCost[newFlowerType];
+
+            return newFlowerTypeCost <= moneyLeftOver || oldFlowerType == newFlowerType || newFlowerTypeCost == currentFlowerTypeCost;
+        }
+
         void selectFlowerCommon(int oldFlowerType, int newFlowerType, double moneyLeftOver)
         {
             SoundManager.Instance.PlaySFXKeyClick();
@@ -360,7 +373,7 @@ namespace QwertyGarden
             updateReceiptItems();
 
             m_currentX = m_cardsParent.transform.localPosition.x;
-            m_targetX = -288.0f * newFlowerType;
+            m_targetX = -256.0f * newFlowerType;
             m_flowerType = newFlowerType;
 
             for (int flowerType = 0; flowerType < balance.NumFlowers; flowerType++)
@@ -368,14 +381,14 @@ namespace QwertyGarden
                 if (!m_flowerPopupGUI[flowerType].GO.activeSelf)
                     m_flowerPopupGUI[flowerType].GO.SetActive(true);
 
-                bool flowerChangeOK = (balance.FlowerSeedCost[flowerType] <= moneyLeftOver) || flowerType == oldFlowerType;
+                bool canChangeFlower = flowerChangeOK(flowerType);// (balance.FlowerSeedCost[flowerType] <= moneyLeftOver) || flowerType == oldFlowerType;
 
 #if DEMO
                 if (flowerType >= MAX_DEMO_FLOWERS)
-                    flowerChangeOK = false;
+                    canChangeFlower = false;
 #endif
 
-                m_flowerPopupGUI[flowerType].Outline.color = flowerChangeOK ? AssetManager.Instance.FlowerPopupGreen : AssetManager.Instance.FlowerPopupRed;
+                m_flowerPopupGUI[flowerType].Outline.color = canChangeFlower ? AssetManager.Instance.FlowerPopupGreen : AssetManager.Instance.FlowerPopupRed;
 
                 m_targetScale[flowerType] = flowerType == newFlowerType ? 1.0f : 0.8f;
             }

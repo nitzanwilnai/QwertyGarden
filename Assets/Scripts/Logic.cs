@@ -151,7 +151,12 @@ namespace QwertyGarden
             {
                 int oldFlowerType = keyboardData.FlowerType[keyIdx];
                 int newFlowerType = keyboardData.NewFlowerType[keyIdx];
-                if (newFlowerType != oldFlowerType)
+
+                double oldFlowerCost = balance.FlowerSeedCost[oldFlowerType];
+                double newFlowerCost = balance.FlowerSeedCost[newFlowerType];
+
+
+                if (newFlowerType != oldFlowerType && oldFlowerCost != newFlowerCost)
                 {
                     double newCost = balance.FlowerSeedCost[newFlowerType];
                     totalCost += newCost;
