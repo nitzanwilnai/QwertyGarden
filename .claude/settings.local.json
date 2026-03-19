@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r 'namespace CommonTools' /Users/nitzanwilnai/Programming/UnityRelease/QwertyGarden/Assets --include=*.cs)",
+      "Bash(grep -r 'public class.*Visual' /Users/nitzanwilnai/Programming/UnityRelease/QwertyGarden/Assets/Scripts --include=*.cs)",
+      "Bash(wc -l /Users/nitzanwilnai/Programming/UnityRelease/QwertyGarden/Assets/Scripts/*.cs)"
+    ]
+  }
+}

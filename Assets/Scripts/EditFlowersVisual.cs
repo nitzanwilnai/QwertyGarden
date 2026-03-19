@@ -58,10 +58,15 @@ namespace QwertyGarden
         int m_keyIdx;
         int m_flowerType;
         bool m_isDragging;
+        bool m_isCoasting;
         bool m_wasDragging;
         float m_dragStartMouseX;
         float m_dragStartX;
+        float m_dragVelocity;
+        float m_dragLastMouseX;
         const float DRAG_THRESHOLD = 10.0f;
+        const float MOMENTUM_DECELERATION = 8.0f;
+        const float MOMENTUM_SNAP_THRESHOLD = 50.0f;
 
         NavButtonGUI m_navButtonGUI = new NavButtonGUI();
         GameObject m_tutorialGO;
@@ -209,6 +214,7 @@ namespace QwertyGarden
             m_currentX = 0.0f;
             m_targetX = 0.0f;
             m_isDragging = false;
+            m_isCoasting = false;
             m_wasDragging = false;
 
             m_tutorialGO.SetActive(CommonVisual.AutoShowTutorial(metaData));
@@ -276,14 +282,21 @@ namespace QwertyGarden
             if (mouse.leftButton.wasPressedThisFrame)
             {
                 m_isDragging = true;
+                m_isCoasting = false;
                 m_wasDragging = false;
                 m_dragStartMouseX = mouseX;
                 m_dragStartX = m_currentX;
+                m_dragLastMouseX = mouseX;
+                m_dragVelocity = 0.0f;
             }
 
             if (m_isDragging && mouse.leftButton.isPressed)
             {
                 float screenDelta = mouseX - m_dragStartMouseX;
+                float frameDelta = mouseX - m_dragLastMouseX;
+                float frameVelocity = frameDelta / m_canvas.scaleFactor;
+                m_dragVelocity = Mathf.Lerp(m_dragVelocity, frameVelocity, 0.3f);
+                m_dragLastMouseX = mouseX;
                 if (Mathf.Abs(screenDelta) > DRAG_THRESHOLD)
                 {
                     m_wasDragging = true;
@@ -297,17 +310,30 @@ namespace QwertyGarden
             {
                 m_isDragging = false;
                 if (m_wasDragging)
-                {
-                    float snapped = Mathf.Round(m_currentX / CARD_SPACING) * CARD_SPACING;
-                    float minX = -(balance.NumFlowers - 1) * CARD_SPACING;
-                    m_targetX = Mathf.Clamp(snapped, minX, 0.0f);
-                }
+                    m_isCoasting = true;
             }
         }
 
         public void Tick(float dt)
         {
             handleDragInput();
+
+            if (m_isCoasting)
+            {
+                m_currentX += m_dragVelocity * dt * 60.0f;
+                m_dragVelocity *= (1.0f - MOMENTUM_DECELERATION * dt);
+
+                float minX = -(balance.NumFlowers - 1) * CARD_SPACING;
+                m_currentX = Mathf.Clamp(m_currentX, minX, 0.0f);
+                m_targetX = m_currentX;
+
+                if (Mathf.Abs(m_dragVelocity) < MOMENTUM_SNAP_THRESHOLD * dt)
+                {
+                    m_isCoasting = false;
+                    float snapped = Mathf.Round(m_currentX / CARD_SPACING) * CARD_SPACING;
+                    m_targetX = Mathf.Clamp(snapped, minX, 0.0f);
+                }
+            }
 
             if (m_currentX < m_targetX)
             {
