@@ -382,6 +382,9 @@ namespace QwertyGarden
 
         void selectFlower(int newFlowerType)
         {
+            if (m_wasDragging)
+                return;
+
             double currentGardenCost = Logic.CalculateCurrentGardenCost(keyboardData, balance);
             double moneyLeftOver = metaData.Coins - currentGardenCost;
 
