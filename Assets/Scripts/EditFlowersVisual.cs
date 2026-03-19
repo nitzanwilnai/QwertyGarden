@@ -57,6 +57,11 @@ namespace QwertyGarden
         float[] m_targetScale;
         int m_keyIdx;
         int m_flowerType;
+        bool m_isDragging;
+        bool m_wasDragging;
+        float m_dragStartMouseX;
+        float m_dragStartX;
+        const float DRAG_THRESHOLD = 10.0f;
 
         NavButtonGUI m_navButtonGUI = new NavButtonGUI();
         GameObject m_tutorialGO;
@@ -203,6 +208,8 @@ namespace QwertyGarden
 
             m_currentX = 0.0f;
             m_targetX = 0.0f;
+            m_isDragging = false;
+            m_wasDragging = false;
 
             m_tutorialGO.SetActive(CommonVisual.AutoShowTutorial(metaData));
             m_darken.SetActive(CommonVisual.AutoShowTutorial(metaData));
