@@ -265,8 +265,50 @@ namespace QwertyGarden
             m_changeText.color = change >= 0 ? AssetManager.Instance.ReceiptChangePositive : AssetManager.Instance.ReceiptChangeNegative;
         }
 
+        void handleDragInput()
+        {
+            Mouse mouse = Mouse.current;
+            if (mouse == null)
+                return;
+
+            float mouseX = mouse.position.ReadValue().x;
+
+            if (mouse.leftButton.wasPressedThisFrame)
+            {
+                m_isDragging = true;
+                m_wasDragging = false;
+                m_dragStartMouseX = mouseX;
+                m_dragStartX = m_currentX;
+            }
+
+            if (m_isDragging && mouse.leftButton.isPressed)
+            {
+                float screenDelta = mouseX - m_dragStartMouseX;
+                if (Mathf.Abs(screenDelta) > DRAG_THRESHOLD)
+                {
+                    m_wasDragging = true;
+                    float canvasDelta = screenDelta / m_canvas.scaleFactor;
+                    m_currentX = m_dragStartX + canvasDelta;
+                    m_targetX = m_currentX;
+                }
+            }
+
+            if (mouse.leftButton.wasReleasedThisFrame && m_isDragging)
+            {
+                m_isDragging = false;
+                if (m_wasDragging)
+                {
+                    float snapped = Mathf.Round(m_currentX / CARD_SPACING) * CARD_SPACING;
+                    float minX = -(balance.NumFlowers - 1) * CARD_SPACING;
+                    m_targetX = Mathf.Clamp(snapped, minX, 0.0f);
+                }
+            }
+        }
+
         public void Tick(float dt)
         {
+            handleDragInput();
+
             if (m_currentX < m_targetX)
             {
                 m_currentX += dt * m_slideVelocity;
