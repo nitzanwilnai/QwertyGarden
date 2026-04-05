@@ -278,6 +278,14 @@ namespace QwertyGarden
             CommonVisual.ShowSettings(navButtonGUI, m_metaData);
         }
 
+        public void ToggleSmiley(NavButtonGUI navButtonGUI)
+        {
+            m_metaData.Smiley = !m_metaData.Smiley;
+            MetaDataIO.SaveMeta(m_metaData);
+
+            CommonVisual.ShowSettings(navButtonGUI, m_metaData);
+        }
+
         public void ExitGame()
         {
             Application.Quit();

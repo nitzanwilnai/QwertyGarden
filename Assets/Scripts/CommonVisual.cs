@@ -1,5 +1,6 @@
 using CommonTools;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ namespace QwertyGarden
         public GameObject WPMButton;
         public GameObject ExitButton;
         public GameObject FontButton;
+        public GameObject SmileyButton;
 
         public GameObject SFXOn;
         public GameObject SFXOff;
@@ -34,6 +36,8 @@ namespace QwertyGarden
         public GameObject WPMOff;
         public GameObject Font1;
         public GameObject Font2;
+        public GameObject SmileyOn;
+        public GameObject SmileyOff;
     }
 
     public static class CommonVisual
@@ -144,24 +148,14 @@ namespace QwertyGarden
             Button wpmButton = buttonGUIRef.GetButton("WPM");
             Button exitButton = buttonGUIRef.GetButton("Exit");
             Button fontButton = buttonGUIRef.GetButton("Font");
+            Button smileyButton = buttonGUIRef.GetButton("Smiley");
 
-            sfxButton.onClick.AddListener(() =>
-            {
-                Game.Instance.ToggleSFX(navButtonGUI);
-            });
-            musicButton.onClick.AddListener(() =>
-            {
-                Game.Instance.ToggleMusic(navButtonGUI);
-            });
-            wpmButton.onClick.AddListener(() =>
-            {
-                Game.Instance.ToggleWPM(navButtonGUI);
-            });
+            sfxButton.onClick.AddListener(() => { Game.Instance.ToggleSFX(navButtonGUI); });
+            musicButton.onClick.AddListener(() => { Game.Instance.ToggleMusic(navButtonGUI); });
+            wpmButton.onClick.AddListener(() => { Game.Instance.ToggleWPM(navButtonGUI); });
             exitButton.onClick.AddListener(Game.Instance.ExitGame);
-            fontButton.onClick.AddListener(() =>
-            {
-                Game.Instance.ToggleFont(navButtonGUI);
-            });
+            fontButton.onClick.AddListener(() => { Game.Instance.ToggleFont(navButtonGUI); });
+            smileyButton.onClick.AddListener(() => { Game.Instance.ToggleSmiley(navButtonGUI); });
 
             navButtonGUI.PlayButton = playButton.gameObject;
             navButtonGUI.GardenButton = gardenButton.gameObject;
@@ -171,6 +165,7 @@ namespace QwertyGarden
             navButtonGUI.MusicButton = musicButton.gameObject;
             navButtonGUI.ExitButton = exitButton.gameObject;
             navButtonGUI.FontButton = fontButton.gameObject;
+            navButtonGUI.SmileyButton = smileyButton.gameObject;
 
             navButtonGUI.SFXOn = buttonGUIRef.GetGameObject("SFXOn");
             navButtonGUI.SFXOff = buttonGUIRef.GetGameObject("SFXOff");
@@ -180,6 +175,8 @@ namespace QwertyGarden
             navButtonGUI.WPMOff = buttonGUIRef.GetGameObject("WPMOff");
             navButtonGUI.Font1 = buttonGUIRef.GetGameObject("Font1");
             navButtonGUI.Font2 = buttonGUIRef.GetGameObject("Font2");
+            navButtonGUI.SmileyOn = buttonGUIRef.GetGameObject("SmileyOn");
+            navButtonGUI.SmileyOff = buttonGUIRef.GetGameObject("SmileyOff");
         }
 
         public static void ShowSettings(NavButtonGUI navButtonGUI, MetaData metaData)
@@ -189,6 +186,7 @@ namespace QwertyGarden
             navButtonGUI.WPMButton.SetActive(true);
             navButtonGUI.ExitButton.SetActive(true);
             navButtonGUI.FontButton.SetActive(true);
+            navButtonGUI.SmileyButton.SetActive(true);
 
             navButtonGUI.SFXOn.SetActive(metaData.SFX);
             navButtonGUI.SFXOff.SetActive(!metaData.SFX);
@@ -198,6 +196,8 @@ namespace QwertyGarden
             navButtonGUI.WPMOff.SetActive(!metaData.WPM);
             navButtonGUI.Font1.SetActive(metaData.Font == 0);
             navButtonGUI.Font2.SetActive(metaData.Font == 1);
+            navButtonGUI.SmileyOn.SetActive(metaData.Smiley);
+            navButtonGUI.SmileyOff.SetActive(!metaData.Smiley);
         }
 
         public static void HideSettings(NavButtonGUI navButtonGUI)
@@ -207,6 +207,7 @@ namespace QwertyGarden
             navButtonGUI.WPMButton.SetActive(false);
             navButtonGUI.ExitButton.SetActive(false);
             navButtonGUI.FontButton.SetActive(false);
+            navButtonGUI.SmileyButton.SetActive(false);
         }
 
         private static readonly (double value, string name)[] Scales =

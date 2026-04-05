@@ -12,6 +12,7 @@ namespace QwertyGarden
             metaData.SFX = true;
             metaData.Music = true;
             metaData.WPM = true;
+            metaData.Smiley = true;
             metaData.TotalCollectedCount = 0;
             metaData.FlowerCollectedCount = new int[Balance.MAX_FLOWER_TYPES];
             metaData.FlowerAchievement = new bool[Balance.MAX_FLOWER_TYPES];
@@ -400,132 +401,132 @@ namespace QwertyGarden
         public static int GetTypedKeyIndex(out char c)
         {
             c = ' ';
-            if (Keyboard.current.aKey.wasReleasedThisFrame)
+            if (Keyboard.current.aKey.wasPressedThisFrame)
             {
                 c = 'a';
                 return 0;
             }
-            if (Keyboard.current.bKey.wasReleasedThisFrame)
+            if (Keyboard.current.bKey.wasPressedThisFrame)
             {
                 c = 'b';
                 return 1;
             }
-            if (Keyboard.current.cKey.wasReleasedThisFrame)
+            if (Keyboard.current.cKey.wasPressedThisFrame)
             {
                 c = 'c';
                 return 2;
             }
-            if (Keyboard.current.dKey.wasReleasedThisFrame)
+            if (Keyboard.current.dKey.wasPressedThisFrame)
             {
                 c = 'd';
                 return 3;
             }
-            if (Keyboard.current.eKey.wasReleasedThisFrame)
+            if (Keyboard.current.eKey.wasPressedThisFrame)
             {
                 c = 'e';
                 return 4;
             }
-            if (Keyboard.current.fKey.wasReleasedThisFrame)
+            if (Keyboard.current.fKey.wasPressedThisFrame)
             {
                 c = 'f';
                 return 5;
             }
-            if (Keyboard.current.gKey.wasReleasedThisFrame)
+            if (Keyboard.current.gKey.wasPressedThisFrame)
             {
                 c = 'g';
                 return 6;
             }
-            if (Keyboard.current.hKey.wasReleasedThisFrame)
+            if (Keyboard.current.hKey.wasPressedThisFrame)
             {
                 c = 'h';
                 return 7;
             }
-            if (Keyboard.current.iKey.wasReleasedThisFrame)
+            if (Keyboard.current.iKey.wasPressedThisFrame)
             {
                 c = 'i';
                 return 8;
             }
-            if (Keyboard.current.jKey.wasReleasedThisFrame)
+            if (Keyboard.current.jKey.wasPressedThisFrame)
             {
                 c = 'j';
                 return 9;
             }
-            if (Keyboard.current.kKey.wasReleasedThisFrame)
+            if (Keyboard.current.kKey.wasPressedThisFrame)
             {
                 c = 'k';
                 return 10;
             }
-            if (Keyboard.current.lKey.wasReleasedThisFrame)
+            if (Keyboard.current.lKey.wasPressedThisFrame)
             {
                 c = 'l';
                 return 11;
             }
-            if (Keyboard.current.mKey.wasReleasedThisFrame)
+            if (Keyboard.current.mKey.wasPressedThisFrame)
             {
                 c = 'm';
                 return 12;
             }
-            if (Keyboard.current.nKey.wasReleasedThisFrame)
+            if (Keyboard.current.nKey.wasPressedThisFrame)
             {
                 c = 'n';
                 return 13;
             }
-            if (Keyboard.current.oKey.wasReleasedThisFrame)
+            if (Keyboard.current.oKey.wasPressedThisFrame)
             {
                 c = 'o';
                 return 14;
             }
-            if (Keyboard.current.pKey.wasReleasedThisFrame)
+            if (Keyboard.current.pKey.wasPressedThisFrame)
             {
                 c = 'p';
                 return 15;
             }
-            if (Keyboard.current.qKey.wasReleasedThisFrame)
+            if (Keyboard.current.qKey.wasPressedThisFrame)
             {
                 c = 'q';
                 return 16;
             }
-            if (Keyboard.current.rKey.wasReleasedThisFrame)
+            if (Keyboard.current.rKey.wasPressedThisFrame)
             {
                 c = 'r';
                 return 17;
             }
-            if (Keyboard.current.sKey.wasReleasedThisFrame)
+            if (Keyboard.current.sKey.wasPressedThisFrame)
             {
                 c = 's';
                 return 18;
             }
-            if (Keyboard.current.tKey.wasReleasedThisFrame)
+            if (Keyboard.current.tKey.wasPressedThisFrame)
             {
                 c = 't';
                 return 19;
             }
-            if (Keyboard.current.uKey.wasReleasedThisFrame)
+            if (Keyboard.current.uKey.wasPressedThisFrame)
             {
                 c = 'u';
                 return 20;
             }
-            if (Keyboard.current.vKey.wasReleasedThisFrame)
+            if (Keyboard.current.vKey.wasPressedThisFrame)
             {
                 c = 'v';
                 return 21;
             }
-            if (Keyboard.current.wKey.wasReleasedThisFrame)
+            if (Keyboard.current.wKey.wasPressedThisFrame)
             {
                 c = 'w';
                 return 22;
             }
-            if (Keyboard.current.xKey.wasReleasedThisFrame)
+            if (Keyboard.current.xKey.wasPressedThisFrame)
             {
                 c = 'x';
                 return 23;
             }
-            if (Keyboard.current.yKey.wasReleasedThisFrame)
+            if (Keyboard.current.yKey.wasPressedThisFrame)
             {
                 c = 'y';
                 return 24;
             }
-            if (Keyboard.current.zKey.wasReleasedThisFrame)
+            if (Keyboard.current.zKey.wasPressedThisFrame)
             {
                 c = 'z';
                 return 25;

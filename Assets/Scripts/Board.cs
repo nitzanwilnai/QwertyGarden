@@ -620,7 +620,10 @@ namespace QwertyGarden
         {
             if (wordComplete)
             {
-                WordStateTime = 0.5f;
+                if (metaData.Smiley)
+                    WordStateTime = 0.5f;
+                else
+                    WordStateTime = 0.001f;
                 SoundManager.Instance.PlaySFXWordComplete();
                 string s = "";
                 string guessedColorString = ColorUtility.ToHtmlStringRGBA(GuessedColor);

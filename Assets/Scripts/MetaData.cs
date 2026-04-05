@@ -23,6 +23,7 @@ namespace QwertyGarden
         public bool Music;
         public bool WPM;
         public int Font;
+        public bool Smiley;
 
         public int[] FlowerCollectedCount;
         public int TotalCollectedCount;
