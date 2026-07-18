@@ -9,7 +9,7 @@ namespace QwertyGarden
 {
     public static class KeyboardDataIO
     {
-        public static int VERSION = 4;
+        public static int VERSION = 5;
         public static void SaveKeyboard(KeyboardData keyboardData, int index)
         {
             string fileName = Application.persistentDataPath + "/keyboarddata_v" + VERSION + "_kb" + index + ".dat";
@@ -102,6 +102,61 @@ namespace QwertyGarden
 
                         int magic = br.ReadInt32();
                         Debug.Log("LoadKeyboard(" + index + ") magic " + magic);
+
+                        success = true;
+                    }
+                }
+            }
+            return success;
+        }
+
+        public static bool LoadKeyboardV4(KeyboardData keyboardData, int index)
+        {
+            bool success = false;
+
+            string fileName = Application.persistentDataPath + "/keyboarddata_v4_kb" + index + ".dat";
+            if (File.Exists(fileName))
+            {
+                using (var stream = File.Open(fileName, FileMode.Open))
+                {
+                    using (BinaryReader br = new BinaryReader(stream))
+                    {
+                        keyboardData.WordIndex = br.ReadInt32();
+                        keyboardData.KeyboardType = br.ReadInt32();
+
+                        int maxFlowers = br.ReadInt32();
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerType[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.NewFlowerType[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.CharacterCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.FlowerProgress[i] = br.ReadInt32();
+
+                        for (int i = 0; i < Balance.MAX_FLOWER_TYPES; i++)
+                            keyboardData.FlowerCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.PrestigeCount[i] = br.ReadInt32();
+
+                        for (int i = 0; i < maxFlowers; i++)
+                            keyboardData.GrowTime[i] = br.ReadSingle();
+
+                        keyboardData.TypedWord = br.ReadString();
+
+                        keyboardData.WrongLetter = br.ReadInt32();
+                        keyboardData.WPMWordCount = br.ReadInt32();
+                        keyboardData.WPMCharacterCount = br.ReadInt32();
+                        keyboardData.WPMWordTime = br.ReadSingle();
+                        keyboardData.CorrectCount = br.ReadInt32();
+                        keyboardData.MistakeCount = br.ReadInt32();
+
+                        int magic = br.ReadInt32();
+                        Debug.Log("LoadKeyboardV4(" + index + ") magic " + magic);
 
                         success = true;
                     }

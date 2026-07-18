@@ -23,6 +23,41 @@ namespace QwertyGarden
             metaData.MenuState = newMenuState;
         }
 
+        // Lavender was inserted into the flower list at this index, shifting every
+        // flower at or above it up by one. Saves written before that change use the
+        // old numbering; these functions remap old save data to the new indices.
+        // Version-gated in Game so each save is migrated exactly once (idempotent).
+        public const int LAVENDER_INSERT_INDEX = 15;
+
+        public static void MigrateKeyboardFlowerIndices(KeyboardData keyboardData)
+        {
+            // FlowerType / NewFlowerType hold flower-type VALUES per key: bump values >= insert index.
+            for (int keyIdx = 0; keyIdx < Balance.LETTERS; keyIdx++)
+            {
+                if (keyboardData.FlowerType[keyIdx] >= LAVENDER_INSERT_INDEX)
+                    keyboardData.FlowerType[keyIdx]++;
+                if (keyboardData.NewFlowerType[keyIdx] >= LAVENDER_INSERT_INDEX)
+                    keyboardData.NewFlowerType[keyIdx]++;
+            }
+
+            // FlowerCount is indexed BY flower type: shift elements up from the top, clear the new slot.
+            for (int flowerType = Balance.MAX_FLOWER_TYPES - 1; flowerType > LAVENDER_INSERT_INDEX; flowerType--)
+                keyboardData.FlowerCount[flowerType] = keyboardData.FlowerCount[flowerType - 1];
+            keyboardData.FlowerCount[LAVENDER_INSERT_INDEX] = 0;
+        }
+
+        public static void MigrateMetaFlowerIndices(MetaData metaData)
+        {
+            // Both arrays are indexed BY flower type: shift elements up from the top, clear the new slot.
+            for (int flowerType = Balance.MAX_FLOWER_TYPES - 1; flowerType > LAVENDER_INSERT_INDEX; flowerType--)
+            {
+                metaData.FlowerCollectedCount[flowerType] = metaData.FlowerCollectedCount[flowerType - 1];
+                metaData.FlowerAchievement[flowerType] = metaData.FlowerAchievement[flowerType - 1];
+            }
+            metaData.FlowerCollectedCount[LAVENDER_INSERT_INDEX] = 0;
+            metaData.FlowerAchievement[LAVENDER_INSERT_INDEX] = false;
+        }
+
         public static double GetSellValue(MetaData metaData, KeyboardData keyboardData, Balance balance)
         {
             double totalSellValue = 0;

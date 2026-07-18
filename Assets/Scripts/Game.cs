@@ -46,13 +46,20 @@ namespace QwertyGarden
             {
                 Debug.Log("Loaded meta version " + MetaDataIO.VERSION);
             }
+            else if (MetaDataIO.TryLoadMetaV6(m_metaData))
+            {
+                Debug.Log("Loaded meta version 6");
+                Logic.MigrateMetaFlowerIndices(m_metaData);
+            }
             else if (MetaDataIO.TryLoadMetaV4(m_metaData))
             {
                 Debug.Log("Loaded meta version 4");
+                Logic.MigrateMetaFlowerIndices(m_metaData);
             }
             else if (MetaDataIO.TryLoadMetaV2(m_metaData))
             {
                 Debug.Log("Loaded meta version 2");
+                // v2 predates the flower-type arrays; nothing to remap.
             }
 
             SoundManager.Instance.Init(m_metaData);
@@ -97,15 +104,25 @@ namespace QwertyGarden
             MetaDataIO.SaveMeta(m_metaData);
             if (KeyboardDataIO.LoadKeyboard(m_keyboardData, m_metaData.KeyboardIndex))
             {
-                // v4 loaded
+                // v5 loaded (already uses the new flower numbering)
+            }
+            else if (KeyboardDataIO.LoadKeyboardV4(m_keyboardData, m_metaData.KeyboardIndex))
+            {
+                // v4 loaded: remap old flower indices, then persist as current version
+                Logic.MigrateKeyboardFlowerIndices(m_keyboardData);
+                KeyboardDataIO.SaveKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
             }
             else if (KeyboardDataIO.LoadKeyboardV3(m_keyboardData, m_metaData.KeyboardIndex))
             {
-                // v3 loaded
+                // v3 loaded: remap old flower indices, then persist as current version
+                Logic.MigrateKeyboardFlowerIndices(m_keyboardData);
+                KeyboardDataIO.SaveKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
             }
             else if (KeyboardDataIO.LoadKeyboardV2(m_keyboardData, m_metaData.KeyboardIndex))
             {
-                // v2 loaded
+                // v2 loaded: remap old flower indices, then persist as current version
+                Logic.MigrateKeyboardFlowerIndices(m_keyboardData);
+                KeyboardDataIO.SaveKeyboard(m_keyboardData, m_metaData.KeyboardIndex);
             }
             else
             {
