@@ -18,7 +18,7 @@ MonoBehaviour:
   FlowerName: Lavender
   Achievement: FLOWER_LAVENDER
   SeedCost: 200000000
-  SellValue: 332.329
+  SellValue: 332329
   GrowTime: 900
   FlowerFrames:
   - {fileID: 21300000, guid: 9dc2383df75bf4b4f931a7a857be63fb, type: 3}
